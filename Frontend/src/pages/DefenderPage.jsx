@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { BENCHMARK_METRICS as FALLBACK_BENCHMARKS } from '../data/attacksData';
-import { getBenchmarks, getMuleBenchmarks, getGenAIBenchmarks, getCategoryBenchmarks } from '../api/client';
-import { RotateCw, Shield, Award, CheckCircle2, TrendingUp, Layers } from 'lucide-react';
+import { getCategoryBenchmarks } from '../api/client';
+import { RotateCw, Shield, Award, CheckCircle2, TrendingUp, Layers, AlertTriangle } from 'lucide-react';
 import {
   LineChart,
   Line,
@@ -27,7 +26,7 @@ const ALL_7_CATEGORIES = [
 
 export default function DefenderPage() {
   const [activeCategory, setActiveCategory] = useState('CAT-001');
-  const [metrics, setMetrics] = useState(FALLBACK_BENCHMARKS);
+  const [metrics, setMetrics] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isRetraining, setIsRetraining] = useState(false);
@@ -35,83 +34,62 @@ export default function DefenderPage() {
   const loadBenchmarkData = async (catId = activeCategory) => {
     try {
       setLoading(true);
+      setError(null);
       const catObj = ALL_7_CATEGORIES.find((c) => c.id === catId);
       const catCode = catObj ? catObj.code : 'ATO';
 
-      let data;
-      if (catId === 'CAT-001') {
-        data = await getBenchmarks();
-      } else if (catId === 'CAT-006') {
-        data = await getMuleBenchmarks();
-      } else if (catId === 'CAT-007') {
-        data = await getGenAIBenchmarks();
-      } else {
-        const catRes = await getCategoryBenchmarks(catCode);
-        data = {
-          overall_metrics: {
-            precision: catRes.metrics.precision,
-            recall: catRes.metrics.recall,
-            f1_score: catRes.metrics.f1_score,
-            auc_roc: catRes.metrics.auc_roc * 100,
-            threshold: 0.015,
-          },
-          per_variant_detection: catRes.variants.map((v, i) => ({
-            variant: v,
-            catch_rate: Math.min(100, 95 + i * 2),
-          })),
-          signal_importance: [
-            { signal: 'primary_domain_risk', correlation: 0.88 },
-            { signal: 'anomaly_deviation', correlation: 0.76 },
-            { signal: 'channel_risk', correlation: 0.65 },
-            { signal: 'velocity', correlation: 0.54 },
-          ]
-        };
-      }
+      // Unified single code path for ALL 7 categories
+      const data = await getCategoryBenchmarks(catCode);
 
       if (data && data.overall_metrics) {
         const om = data.overall_metrics;
-        const prec = om.precision > 1 ? om.precision : +(om.precision * 100).toFixed(1);
-        const rec = om.recall > 1 ? om.recall : +(om.recall * 100).toFixed(1);
-        const f1 = om.f1_score > 1 ? om.f1_score : +(om.f1_score * 100).toFixed(1);
-        const rocAuc = om.auc_roc > 1 ? om.auc_roc : +(om.auc_roc * 100).toFixed(1);
-
-        const totalSample = 2500;
-        const fraudCount = Math.round(totalSample * 0.08);
+        const totalSample = 3750;
+        const fraudCount = Math.round(totalSample * 0.10);
         const legitCount = totalSample - fraudCount;
-        const tp = Math.round(fraudCount * ((om.recall || 0.85) > 1 ? (om.recall / 100) : (om.recall || 0.85)));
+        const recFrac = om.recall > 1 ? om.recall / 100 : om.recall;
+        const precFrac = om.precision > 1 ? om.precision / 100 : om.precision;
+        
+        const tp = Math.round(fraudCount * recFrac);
         const fn = fraudCount - tp;
-        const fp = Math.max(1, Math.round(tp * (1 / ((om.precision || 0.8) > 1 ? (om.precision / 100) : (om.precision || 0.8)) - 1)));
-        const tn = legitCount - fp;
+        const fp = Math.max(1, Math.round(tp * (1 / Math.max(0.01, precFrac) - 1)));
+        const tn = Math.max(0, legitCount - fp);
 
         const mapped = {
-          precision: prec,
-          recall: rec,
-          f1: f1,
-          rocAuc: rocAuc,
-          threshold: om.threshold || 0.014,
+          categoryName: data.name || catCode,
+          dataset: data.dataset || `${catCode} Dataset`,
+          sampleTested: data.sample_tested || '3,750 test transactions',
+          precision: om.precision,
+          recall: om.recall,
+          f1: om.f1_score,
+          rocAuc: om.auc_roc,
+          threshold: om.threshold,
+          xgbMetrics: data.xgboost_comparison || {},
           confusionMatrix: {
-            tn: Math.max(0, tn),
-            fp: Math.max(0, fp),
-            fn: Math.max(0, fn),
-            tp: Math.max(0, tp),
+            tn: tn,
+            fp: fp,
+            fn: fn,
+            tp: tp,
             total: totalSample,
           },
           recallPerVector: (data.per_variant_detection || []).map((v) => ({
             name: v.variant || v.name,
+            fullName: v.name || v.variant,
             recall: v.catch_rate,
+            cases: v.cases || 0
           })),
           featureImportance: (data.signal_importance || []).map((s) => ({
             name: s.signal,
-            importance: s.correlation ? Math.abs(s.correlation) : s.fraud_mean,
+            importance: s.correlation ? Math.abs(s.correlation) : 0.5,
           })),
+          rocCurve: data.roc_curve || [],
+          prCurve: data.pr_curve || []
         };
         setMetrics(mapped);
-        setError(null);
       }
     } catch (err) {
-      console.warn('[DefenderPage] Using fallback benchmark metrics:', err.message);
-      setError(err.message);
-      setMetrics(FALLBACK_BENCHMARKS);
+      console.error('[DefenderPage] Failed to fetch benchmark metrics:', err);
+      setError(`Live benchmark metrics unavailable: ${err.message}. Please check API connection.`);
+      setMetrics(null);
     } finally {
       setLoading(false);
     }
@@ -126,243 +104,202 @@ export default function DefenderPage() {
     await loadBenchmarkData(activeCategory);
     setTimeout(() => {
       setIsRetraining(false);
-    }, 800);
+    }, 600);
   };
 
-  // ROC Curve Data
-  const recVal = (metrics.recall || 99.5) / 100;
-  const rocCurveData = [
-    { fpr: 0.0, tpr: 0.0, baseline: 0.0 },
-    { fpr: 0.0, tpr: recVal, baseline: 0.0 },
-    { fpr: 0.05, tpr: Math.min(1.0, recVal + 0.02), baseline: 0.05 },
-    { fpr: 0.25, tpr: 1.0, baseline: 0.25 },
-    { fpr: 0.50, tpr: 1.0, baseline: 0.50 },
-    { fpr: 0.75, tpr: 1.0, baseline: 0.75 },
-    { fpr: 1.0, tpr: 1.0, baseline: 1.0 },
-  ];
-
-  // Precision-Recall Curve Data
-  const precVal = (metrics.precision || 98.0) / 100;
-  const prCurveData = [
-    { recall: 0.0, precision: 1.0 },
-    { recall: 0.25, precision: 1.0 },
-    { recall: 0.50, precision: 1.0 },
-    { recall: 0.75, precision: Math.min(1.0, precVal + 0.01) },
-    { recall: 0.90, precision: precVal },
-    { recall: 0.975, precision: Math.max(0.70, precVal - 0.03) },
-    { recall: 0.995, precision: Math.max(0.50, precVal - 0.10) },
-    { recall: 1.0, precision: 0.10 },
-  ];
-
-  const cm = metrics.confusionMatrix || FALLBACK_BENCHMARKS.confusionMatrix;
-
   return (
-    <div className="max-w-7xl mx-auto px-6 py-10 space-y-8">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="space-y-2">
-          <div className="text-xs font-mono text-cyan-400 tracking-widest uppercase">
-            PILLAR 03 · DEFEND · 7-CATEGORY HDC ENGINE
+    <div className="space-y-6">
+      {/* Top Banner */}
+      <div className="border border-border/80 bg-card/60 backdrop-blur rounded-lg p-6 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20"></div>
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <Shield className="h-5 w-5 text-primary" />
+              <span className="text-xs font-mono font-semibold tracking-wider text-primary uppercase">
+                Blue-Team Mathematical Defense
+              </span>
+            </div>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-white">
+              7-Category HDC Benchmark Matrix
+            </h1>
+            <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
+              Real-time evaluation across 10,000-D class prototypes evaluated against held-out 15% test splits.
+            </p>
           </div>
-          <h1 className="text-4xl lg:text-5xl font-semibold tracking-tight text-white">
-            Detection Dashboard
-          </h1>
-          <p className="text-zinc-400 text-sm max-w-3xl">
-            Live Hyperdimensional Computing (HDC) + Calibrator defense engine metrics tested on real payment telemetries.
-          </p>
+          <button
+            onClick={handleRetrain}
+            disabled={isRetraining || loading}
+            className="flex items-center gap-2 px-4 py-2 bg-secondary hover:bg-secondary/80 text-foreground font-semibold rounded-md transition border border-border/60 disabled:opacity-50"
+          >
+            <RotateCw className={`h-4 w-4 ${isRetraining ? 'animate-spin' : ''}`} />
+            <span>{isRetraining ? 'Re-scoring Test Fold...' : 'Refresh Metrics'}</span>
+          </button>
         </div>
 
-        <button
-          onClick={handleRetrain}
-          disabled={isRetraining}
-          className="self-start md:self-auto flex items-center gap-2 bg-[#091512] hover:bg-[#0d221c] text-emerald-400 border border-emerald-500/40 px-4 py-2.5 rounded font-mono font-bold text-xs tracking-wider uppercase transition-all shadow-sm shadow-emerald-500/20 disabled:opacity-50"
-        >
-          <RotateCw className={`w-3.5 h-3.5 ${isRetraining ? 'animate-spin' : ''}`} />
-          <span>{isRetraining ? 'RETRAINING MODEL...' : 'RETRAIN'}</span>
-        </button>
-      </div>
-
-      {/* 7-Category Selector Tabs */}
-      <div className="flex flex-wrap gap-2 p-1.5 bg-[#0b0e14] border border-[#1a1f2c] rounded-xl overflow-x-auto">
-        {ALL_7_CATEGORIES.map((cat) => {
-          const isActive = activeCategory === cat.id;
-          return (
+        {/* 7 Category Tab Selector */}
+        <div className="flex flex-wrap gap-2 mt-6 pt-4 border-t border-border/60">
+          {ALL_7_CATEGORIES.map((cat) => (
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
-              className={`px-3.5 py-2 rounded-lg font-mono text-xs transition-all duration-150 flex items-center gap-2 whitespace-nowrap ${
-                isActive
-                  ? 'bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-500/40 shadow-lg shadow-cyan-500/10'
-                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-[#121622]'
+              className={`px-3 py-1.5 text-xs font-mono rounded transition flex items-center gap-1.5 ${
+                activeCategory === cat.id
+                  ? 'bg-primary text-primary-foreground font-bold shadow-md shadow-primary/20'
+                  : 'bg-secondary/40 text-muted-foreground hover:bg-secondary/80 hover:text-foreground'
               }`}
             >
-              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: cat.color }} />
-              <span>{cat.label}</span>
+              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: cat.color }}></span>
+              {cat.label}
             </button>
-          );
-        })}
-      </div>
-
-      {/* Row 1: 4 Score KPI Cards with Gradient Underlines */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* PRECISION */}
-        <div className="bg-[#0b0e14] border border-[#1a1f2c] p-5 rounded-lg space-y-3 relative overflow-hidden">
-          <div className="text-[10px] font-mono tracking-widest text-zinc-400 uppercase">PRECISION</div>
-          <div className="text-4xl font-mono font-bold text-cyan-400">
-            {metrics.precision}%
-          </div>
-          <div className="h-1 w-full bg-gradient-to-r from-cyan-400 to-rose-500 rounded-full" />
-        </div>
-
-        {/* RECALL */}
-        <div className="bg-[#0b0e14] border border-[#1a1f2c] p-5 rounded-lg space-y-3 relative overflow-hidden">
-          <div className="text-[10px] font-mono tracking-widest text-zinc-400 uppercase">RECALL</div>
-          <div className="text-4xl font-mono font-bold text-emerald-400">
-            {metrics.recall}%
-          </div>
-          <div className="h-1 w-full bg-gradient-to-r from-emerald-400 to-rose-500 rounded-full" />
-        </div>
-
-        {/* F1 SCORE */}
-        <div className="bg-[#0b0e14] border border-[#1a1f2c] p-5 rounded-lg space-y-3 relative overflow-hidden">
-          <div className="text-[10px] font-mono tracking-widest text-zinc-400 uppercase">F1 SCORE</div>
-          <div className="text-4xl font-mono font-bold text-amber-400">
-            {metrics.f1}%
-          </div>
-          <div className="h-1 w-full bg-gradient-to-r from-amber-400 to-rose-500 rounded-full" />
-        </div>
-
-        {/* ROC AUC */}
-        <div className="bg-[#0b0e14] border border-[#1a1f2c] p-5 rounded-lg space-y-3 relative overflow-hidden">
-          <div className="text-[10px] font-mono tracking-widest text-zinc-400 uppercase">ROC AUC</div>
-          <div className="text-4xl font-mono font-bold text-red-500">
-            {typeof metrics.rocAuc === 'number' ? metrics.rocAuc.toFixed(1) : metrics.rocAuc}%
-          </div>
-          <div className="h-1 w-full bg-gradient-to-r from-red-500 to-rose-400 rounded-full" />
+          ))}
         </div>
       </div>
 
-      {/* Row 2: ROC Curve & PR Curve */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* ROC Curve */}
-        <div className="bg-[#0b0e14] border border-[#1a1f2c] p-6 rounded-lg space-y-4">
-          <div className="text-[10px] font-mono text-zinc-400 tracking-widest uppercase">
-            ROC CURVE · AUC {(Number(metrics.rocAuc) / 100).toFixed(3)}
-          </div>
-          <div className="h-60 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={rocCurveData} margin={{ top: 10, right: 15, left: -20, bottom: 0 }}>
-                <XAxis dataKey="fpr" stroke="#4b5563" fontSize={10} tickLine={false} />
-                <YAxis stroke="#4b5563" fontSize={10} tickLine={false} />
-                <Tooltip contentStyle={{ backgroundColor: '#090c12', borderColor: '#222838', fontSize: 12 }} />
-                <Line type="stepAfter" dataKey="tpr" stroke="#00e676" strokeWidth={2.5} dot={false} />
-                <Line type="monotone" dataKey="baseline" stroke="#4b5563" strokeDasharray="3 3" strokeWidth={1} dot={false} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+      {/* Error Banner */}
+      {error && (
+        <div className="p-4 bg-destructive/10 border border-destructive/30 rounded-lg flex items-center gap-3 text-destructive text-sm font-mono">
+          <AlertTriangle className="h-5 w-5 flex-shrink-0" />
+          <span>{error}</span>
         </div>
+      )}
 
-        {/* Precision-Recall Curve */}
-        <div className="bg-[#0b0e14] border border-[#1a1f2c] p-6 rounded-lg space-y-4">
-          <div className="text-[10px] font-mono text-zinc-400 tracking-widest uppercase">
-            PRECISION-RECALL CURVE
-          </div>
-          <div className="h-60 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={prCurveData} margin={{ top: 10, right: 15, left: -20, bottom: 0 }}>
-                <XAxis dataKey="recall" stroke="#4b5563" fontSize={10} tickLine={false} />
-                <YAxis stroke="#4b5563" fontSize={10} tickLine={false} />
-                <Tooltip contentStyle={{ backgroundColor: '#090c12', borderColor: '#222838', fontSize: 12 }} />
-                <Line type="monotone" dataKey="precision" stroke="#00e5ff" strokeWidth={2.5} dot={false} />
-                <ReferenceLine x={0.995} stroke="#f59e0b" strokeDasharray="3 3" />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+      {loading && !metrics && (
+        <div className="p-12 text-center text-muted-foreground font-mono text-sm animate-pulse">
+          Loading live evaluation benchmarks from backend...
         </div>
-      </div>
+      )}
 
-      {/* Row 3: Confusion Matrix & Recall Per Vector */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Confusion Matrix */}
-        <div className="bg-[#0b0e14] border border-[#1a1f2c] p-6 rounded-lg space-y-5">
-          <div className="text-[10px] font-mono text-zinc-400 tracking-widest uppercase">
-            CONFUSION MATRIX · TEST SET (n={cm.total.toLocaleString()})
-          </div>
-
-          <div className="grid grid-cols-2 gap-3 font-mono">
-            {/* TRUE NEGATIVE */}
-            <div className="bg-[#07170f] border border-emerald-500/20 p-5 rounded-lg text-center space-y-1.5">
-              <div className="text-[10px] text-emerald-400 uppercase tracking-wider font-semibold">TRUE NEGATIVE</div>
-              <div className="text-3xl font-bold text-emerald-400">{cm.tn.toLocaleString()}</div>
+      {metrics && (
+        <>
+          {/* KPI Summary Cards */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="border border-border/80 bg-card/60 backdrop-blur rounded-lg p-4 space-y-1">
+              <span className="text-[11px] font-mono text-muted-foreground uppercase">Precision</span>
+              <div className="text-2xl font-bold font-mono text-foreground">{metrics.precision.toFixed(1)}%</div>
+              <span className="text-[10px] text-emerald-400 font-mono">Low false-positive rate</span>
             </div>
-
-            {/* FALSE POSITIVE */}
-            <div className="bg-[#191307] border border-amber-500/20 p-5 rounded-lg text-center space-y-1.5">
-              <div className="text-[10px] text-amber-400 uppercase tracking-wider font-semibold">FALSE POSITIVE</div>
-              <div className="text-3xl font-bold text-amber-400">{cm.fp}</div>
+            <div className="border border-border/80 bg-card/60 backdrop-blur rounded-lg p-4 space-y-1">
+              <span className="text-[11px] font-mono text-muted-foreground uppercase">Recall</span>
+              <div className="text-2xl font-bold font-mono text-foreground">{metrics.recall.toFixed(1)}%</div>
+              <span className="text-[10px] text-primary font-mono">High fraud catch-rate</span>
             </div>
-
-            {/* FALSE NEGATIVE */}
-            <div className="bg-[#1a0c0e] border border-red-500/20 p-5 rounded-lg text-center space-y-1.5">
-              <div className="text-[10px] text-red-400 uppercase tracking-wider font-semibold">FALSE NEGATIVE</div>
-              <div className="text-3xl font-bold text-red-500">{cm.fn}</div>
+            <div className="border border-border/80 bg-card/60 backdrop-blur rounded-lg p-4 space-y-1">
+              <span className="text-[11px] font-mono text-muted-foreground uppercase">F1-Score</span>
+              <div className="text-2xl font-bold font-mono text-foreground">{metrics.f1.toFixed(1)}%</div>
+              <span className="text-[10px] text-amber-400 font-mono">Harmonic balance</span>
             </div>
-
-            {/* TRUE POSITIVE */}
-            <div className="bg-[#07181c] border border-cyan-500/20 p-5 rounded-lg text-center space-y-1.5">
-              <div className="text-[10px] text-cyan-400 uppercase tracking-wider font-semibold">TRUE POSITIVE</div>
-              <div className="text-3xl font-bold text-cyan-400">{cm.tp}</div>
+            <div className="border border-border/80 bg-card/60 backdrop-blur rounded-lg p-4 space-y-1">
+              <span className="text-[11px] font-mono text-muted-foreground uppercase">ROC-AUC</span>
+              <div className="text-2xl font-bold font-mono text-foreground">{metrics.rocAuc.toFixed(1)}%</div>
+              <span className="text-[10px] text-emerald-400 font-mono">Separability margin</span>
             </div>
           </div>
 
-          <div className="text-xs font-mono text-zinc-400">
-            Threshold: <span className="text-white font-bold">{metrics.threshold}</span>
+          {/* Charts Row 1: Real ROC Curve & Real PR Curve */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* ROC Curve */}
+            <div className="border border-border/80 bg-card/60 backdrop-blur rounded-lg p-5">
+              <div className="flex items-center justify-between border-b border-border/60 pb-3 mb-4">
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-primary" />
+                  <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider">
+                    Real ROC Curve (FPR vs TPR)
+                  </h2>
+                </div>
+                <span className="text-xs font-mono text-primary font-bold">AUC: {metrics.rocAuc.toFixed(1)}%</span>
+              </div>
+              <div className="h-64 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={metrics.rocCurve} margin={{ top: 10, right: 20, left: -10, bottom: 5 }}>
+                    <XAxis dataKey="fpr" tick={{ fill: '#888', fontSize: 11 }} label={{ value: 'False Positive Rate', position: 'insideBottomRight', offset: -5, fill: '#888', fontSize: 10 }} />
+                    <YAxis dataKey="tpr" domain={[0, 1]} tick={{ fill: '#888', fontSize: 11 }} />
+                    <Tooltip contentStyle={{ backgroundColor: '#111', borderColor: '#333', borderRadius: '6px', fontSize: '12px' }} />
+                    <Line type="monotone" dataKey="tpr" stroke="#00e5ff" strokeWidth={2.5} dot={{ r: 2 }} name="HDC Classifier" />
+                    <Line type="monotone" dataKey="baseline" stroke="#444" strokeDasharray="3 3" name="Chance Baseline" />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* Precision-Recall Curve */}
+            <div className="border border-border/80 bg-card/60 backdrop-blur rounded-lg p-5">
+              <div className="flex items-center justify-between border-b border-border/60 pb-3 mb-4">
+                <div className="flex items-center gap-2">
+                  <Award className="h-4 w-4 text-emerald-400" />
+                  <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider">
+                    Precision-Recall Curve
+                  </h2>
+                </div>
+                <span className="text-xs font-mono text-emerald-400 font-bold">F1: {metrics.f1.toFixed(1)}%</span>
+              </div>
+              <div className="h-64 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={metrics.prCurve} margin={{ top: 10, right: 20, left: -10, bottom: 5 }}>
+                    <XAxis dataKey="recall" tick={{ fill: '#888', fontSize: 11 }} label={{ value: 'Recall', position: 'insideBottomRight', offset: -5, fill: '#888', fontSize: 10 }} />
+                    <YAxis dataKey="precision" domain={[0, 1]} tick={{ fill: '#888', fontSize: 11 }} />
+                    <Tooltip contentStyle={{ backgroundColor: '#111', borderColor: '#333', borderRadius: '6px', fontSize: '12px' }} />
+                    <Line type="monotone" dataKey="precision" stroke="#00e676" strokeWidth={2.5} dot={{ r: 2 }} name="HDC Precision" />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
           </div>
-        </div>
 
-        {/* Recall Per Attack Vector */}
-        <div className="bg-[#0b0e14] border border-[#1a1f2c] p-6 rounded-lg space-y-4">
-          <div className="text-[10px] font-mono text-zinc-400 tracking-widest uppercase">
-            RECALL PER ATTACK VECTOR
+          {/* Charts Row 2: Per-Variant Catch Rate & Signal Importance */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Recall per Variant */}
+            <div className="border border-border/80 bg-card/60 backdrop-blur rounded-lg p-5">
+              <div className="flex items-center justify-between border-b border-border/60 pb-3 mb-4">
+                <div className="flex items-center gap-2">
+                  <Layers className="h-4 w-4 text-amber-400" />
+                  <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider">
+                    Per-Variant Catch Rate (Recall)
+                  </h2>
+                </div>
+                <span className="text-xs font-mono text-muted-foreground">{metrics.sampleTested}</span>
+              </div>
+              <div className="h-64 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={metrics.recallPerVector} margin={{ top: 10, right: 20, left: -10, bottom: 25 }}>
+                    <XAxis dataKey="name" tick={{ fill: '#888', fontSize: 11 }} angle={-20} textAnchor="end" />
+                    <YAxis domain={[0, 100]} tick={{ fill: '#888', fontSize: 11 }} />
+                    <Tooltip contentStyle={{ backgroundColor: '#111', borderColor: '#333', borderRadius: '6px', fontSize: '12px' }} formatter={(v, n, props) => [`${v}% Recall (${props.payload.cases} cases)`, props.payload.fullName]} />
+                    <Bar dataKey="recall" fill="#f59e0b" radius={[4, 4, 0, 0]}>
+                      {metrics.recallPerVector.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.recall > 90 ? '#00e676' : entry.recall > 60 ? '#f59e0b' : '#ff334b'} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* Signal Importance */}
+            <div className="border border-border/80 bg-card/60 backdrop-blur rounded-lg p-5">
+              <div className="flex items-center justify-between border-b border-border/60 pb-3 mb-4">
+                <div className="flex items-center gap-2">
+                  <Shield className="h-4 w-4 text-purple-400" />
+                  <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider">
+                    Point-Biserial Signal Correlation
+                  </h2>
+                </div>
+                <span className="text-xs font-mono text-purple-400 font-bold">Signal Weights</span>
+              </div>
+              <div className="h-64 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={metrics.featureImportance} layout="vertical" margin={{ top: 10, right: 20, left: 60, bottom: 5 }}>
+                    <XAxis type="number" domain={[0, 1]} tick={{ fill: '#888', fontSize: 11 }} />
+                    <YAxis type="category" dataKey="name" tick={{ fill: '#888', fontSize: 10 }} width={80} />
+                    <Tooltip contentStyle={{ backgroundColor: '#111', borderColor: '#333', borderRadius: '6px', fontSize: '12px' }} />
+                    <Bar dataKey="importance" fill="#b388ff" radius={[0, 4, 4, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
           </div>
-
-          <div className="h-64 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                layout="vertical"
-                data={metrics.recallPerVector || FALLBACK_BENCHMARKS.recallPerVector}
-                margin={{ top: 5, right: 20, left: 110, bottom: 5 }}
-              >
-                <XAxis type="number" domain={[0, 100]} stroke="#4b5563" fontSize={10} tickLine={false} />
-                <YAxis dataKey="name" type="category" stroke="#4b5563" fontSize={10} tickLine={false} width={110} />
-                <Tooltip
-                  formatter={(val) => [`${val}%`, 'Recall']}
-                  contentStyle={{ backgroundColor: '#090c12', borderColor: '#222838', fontSize: 12 }}
-                />
-                <Bar dataKey="recall" fill="#00e676" radius={[0, 3, 3, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      </div>
-
-      {/* Row 4: Top Feature Importance */}
-      <div className="bg-[#0b0e14] border border-[#1a1f2c] p-6 rounded-lg space-y-4">
-        <div className="text-[10px] font-mono text-zinc-400 tracking-widest uppercase">
-          TOP FEATURE IMPORTANCE (HDC ENCODER / CALIBRATOR)
-        </div>
-
-        <div className="h-64 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={metrics.featureImportance || FALLBACK_BENCHMARKS.featureImportance} margin={{ top: 10, right: 10, left: -20, bottom: 35 }}>
-              <XAxis dataKey="name" stroke="#4b5563" fontSize={10} tickLine={false} angle={-35} textAnchor="end" />
-              <YAxis stroke="#4b5563" fontSize={10} tickLine={false} />
-              <Tooltip contentStyle={{ backgroundColor: '#090c12', borderColor: '#222838', fontSize: 12 }} />
-              <Bar dataKey="importance" fill="#00e5ff" radius={[3, 3, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 }

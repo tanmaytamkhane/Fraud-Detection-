@@ -164,3 +164,16 @@ export async function getContract() {
   if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
   return res.json();
 }
+
+
+export async function getAttacks() {
+  const res = await fetch(`${API_BASE_URL}/attacks`);
+  if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+  return res.json();
+}
+
+export async function getStats() {
+  const res = await fetch(`${API_BASE_URL}/stats`);
+  if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+  return res.json();
+}

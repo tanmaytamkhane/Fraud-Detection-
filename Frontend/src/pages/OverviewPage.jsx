@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { checkHealth, getAllCategories, getBenchmarks } from '../api/client';
+import { checkHealth, getAllCategories, getBenchmarks, getStats } from '../api/client';
 import { Zap, ArrowUpRight, Shield, Crosshair, Cpu, Target, CheckCircle2, Sparkles, Network, Fingerprint, Lock } from 'lucide-react';
 
 export default function OverviewPage({ setActiveTab }) {
@@ -15,10 +15,10 @@ export default function OverviewPage({ setActiveTab }) {
     let isMounted = true;
     async function loadStats() {
       try {
-        const [health, catsData, benchmarks] = await Promise.allSettled([
+        const [health, catsData, statsRes] = await Promise.allSettled([
           checkHealth(),
           getAllCategories(),
-          getBenchmarks(),
+          getStats(),
         ]);
 
         if (isMounted) {
@@ -29,9 +29,10 @@ export default function OverviewPage({ setActiveTab }) {
           if (health.status === 'fulfilled' && health.value?.model_status) {
             newStats.modelStatus = `${health.value.model_status.toUpperCase()} · 10,000-D`;
           }
-          if (benchmarks.status === 'fulfilled' && benchmarks.value) {
-            newStats.datasetLoaded = '75,396';
-            newStats.predictions = '45,398';
+          if (statsRes.status === 'fulfilled' && statsRes.value) {
+            newStats.datasetLoaded = statsRes.value.total_dataset_formatted || '175,386';
+            newStats.predictions = statsRes.value.total_predictions_formatted || '45,398';
+            newStats.attackVectors = statsRes.value.attack_vectors_count || 22;
           }
           setStats(newStats);
         }

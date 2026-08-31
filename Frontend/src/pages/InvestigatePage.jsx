@@ -110,6 +110,7 @@ export default function InvestigatePage({ selectedTx, setSelectedTx, liveTransac
               { name: 'velocity', value: 0.40, contribution: 2.15 },
             ],
             explanation: scan?.action_message || 'Model scan evaluated.',
+            analystSummary: scan?.analyst_summary || scan?.action_message || '',
           };
         });
 

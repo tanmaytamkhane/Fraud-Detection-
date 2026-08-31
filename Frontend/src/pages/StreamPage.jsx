@@ -90,6 +90,7 @@ async function generateLiveTransaction(index = 1, attackRatio = 25, evasion = 20
           { name: 'synthetic_face_embedding_dist', value: 0.90, contribution: 3.4 },
         ],
         explanation: scan.action_message,
+          analystSummary: scan.analyst_summary || scan.action_message,
       };
     } catch {
       return generateRandomTransaction(index, attackRatio, evasion);
@@ -131,6 +132,7 @@ async function generateLiveTransaction(index = 1, attackRatio = 25, evasion = 20
           { name: 'shared_device_cluster', value: 1.0, contribution: 3.5 },
         ],
         explanation: scan.action_message,
+          analystSummary: scan.analyst_summary || scan.action_message,
       };
     } catch {
       return generateRandomTransaction(index, attackRatio, evasion);
@@ -177,6 +179,7 @@ async function generateLiveTransaction(index = 1, attackRatio = 25, evasion = 20
         { name: 'amount_deviation', value: 0.85, contribution: 2.8 },
       ],
       explanation: scan.action_message,
+          analystSummary: scan.analyst_summary || scan.action_message,
     };
   } catch {
     return generateRandomTransaction(index, attackRatio, evasion);
