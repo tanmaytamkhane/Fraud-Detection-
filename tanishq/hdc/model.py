@@ -113,6 +113,42 @@ class HDCClassifier:
         # Sigmoid scaling around threshold
         return 1.0 / (1.0 + np.exp(-15.0 * (diff - self.threshold)))
 
+    def explain_signals(self, encoder, signal_values, signal_names=None):
+        """Compute exact algebraic feature attribution for an individual transaction.
+        
+        Using HDC feature binding properties:
+        h_i = signal_hv_i * level_hv(x_i)
+        The contribution of signal i to the prototype difference (Fraud - Legit)
+        is the dot product of h_i with normalized (P_fraud - P_legit).
+        """
+        proto_norms = np.linalg.norm(self.prototypes, axis=1, keepdims=True)
+        proto_norms = np.maximum(proto_norms, 1e-10)
+        norm_protos = self.prototypes / proto_norms  # [2, dim]
+        diff_proto = norm_protos[1] - norm_protos[0]  # [dim]
+        
+        num_sigs = len(signal_values)
+        if signal_names is None:
+            signal_names = [f"signal_{i}" for i in range(num_sigs)]
+            
+        contributions = {}
+        raw_diffs = []
+        for i in range(num_sigs):
+            lvl = encoder._quantize(signal_values[i])
+            lvl_hv = encoder.level_hvs[lvl]
+            sig_hv = encoder.signal_hvs[i]
+            bound_hv = sig_hv * lvl_hv
+            # Dot product with difference prototype
+            dot_diff = float(np.dot(bound_hv, diff_proto))
+            raw_diffs.append(dot_diff)
+            
+        total_mag = sum(abs(d) for d in raw_diffs) or 1.0
+        for i, name in enumerate(signal_names):
+            # Scale to [-5.0, +5.0] range for intuitive UI display
+            scaled_attr = round((raw_diffs[i] / total_mag) * 5.0, 2)
+            contributions[name] = scaled_attr
+            
+        return contributions
+
 if __name__ == '__main__':
     print("Testing HDC Classifier...")
     model = HDCClassifier(dim=1000, num_classes=2)

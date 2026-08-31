@@ -44,7 +44,7 @@ class HDCTrainer:
         shuffle_idx = rng.permutation(len(y_oversampled))
         return X_oversampled[shuffle_idx], y_oversampled[shuffle_idx]
     
-    def train(self, signal_matrix, labels, val_signals=None, val_labels=None, retrain_epochs=HDC_RETRAIN_EPOCHS):
+    def train(self, signal_matrix, labels, val_signals=None, val_labels=None, retrain_epochs=None, epochs=None, **kwargs):
         """Full training pipeline with strict validation-based threshold calibration.
         
         Args:
@@ -54,6 +54,9 @@ class HDCTrainer:
             val_labels: optional shape (n_val,) — validation labels
             retrain_epochs: number of retraining iterations
         """
+        if retrain_epochs is None:
+            retrain_epochs = epochs if epochs is not None else HDC_RETRAIN_EPOCHS
+            
         print(f'  Encoding {len(labels):,} training transactions into hypervectors...')
         encoded_train = self.encoder.encode_batch(signal_matrix)
         

@@ -43,12 +43,14 @@ async function generateLiveTransaction(index = 1, attackRatio = 25, evasion = 20
         matrixTag: scan.action === 'BLOCK' || scan.action === 'HOLD' ? 'FP' : 'TN',
         timestamp: scan.timestamp || new Date().toISOString(),
         displayDate: new Date().toLocaleTimeString(),
-        features: [
+        features: scan.signals ? Object.entries(scan.signals).map(([k, v]) => ({
+          name: k,
+          value: Number(v),
+          contribution: scan.signal_attributions?.[k] !== undefined ? scan.signal_attributions[k] : -0.5,
+        })) : [
           { name: 'device_risk', value: signals.device_risk, contribution: -1.2 },
           { name: 'amount_deviation', value: signals.amount_deviation, contribution: -0.8 },
           { name: 'velocity', value: signals.velocity, contribution: -0.4 },
-          { name: 'address_mismatch', value: signals.address_mismatch, contribution: -0.3 },
-          { name: 'channel_risk', value: signals.channel_risk, contribution: -0.5 },
         ],
         explanation: scan.action_message || 'Transaction exhibits normal baseline behavior. Cardholder telemetry is verified.',
       };
@@ -190,6 +192,7 @@ export default function StreamPage({ onSelectTransaction, isStreaming, setIsStre
   const [count, setCount] = useState(150);
   const [attackRatio, setAttackRatio] = useState(25);
   const [evasion, setEvasion] = useState(20);
+  const [streamSpeedMs, setStreamSpeedMs] = useState(500);
   const [currentIndex, setCurrentIndex] = useState(1);
 
   const totalCount = transactions.length;
@@ -197,7 +200,8 @@ export default function StreamPage({ onSelectTransaction, isStreaming, setIsStre
   const missedCount = transactions.filter((t) => t.matrixTag === 'FN').length;
   const falsePosCount = transactions.filter((t) => t.matrixTag === 'FP').length;
 
-  const intervalRef = useRef(null);
+  const isStreamingRef = useRef(isStreaming);
+  isStreamingRef.current = isStreaming;
 
   useEffect(() => {
     if (transactions.length === 0) {
@@ -237,10 +241,18 @@ export default function StreamPage({ onSelectTransaction, isStreaming, setIsStre
     }
   }, [transactions.length, setTransactions]);
 
+  // Robust recursive streaming loop: prevents overlapping async calls
   useEffect(() => {
-    if (isStreaming) {
-      intervalRef.current = setInterval(async () => {
+    let timeoutId = null;
+    let isActive = true;
+
+    async function streamLoop() {
+      if (!isActive || !isStreamingRef.current) return;
+
+      try {
         const nextTx = await generateLiveTransaction(currentIndex, attackRatio, evasion);
+        if (!isActive) return;
+
         setTransactions((prev) => {
           if (prev.length >= count) {
             setIsStreaming(false);
@@ -249,14 +261,24 @@ export default function StreamPage({ onSelectTransaction, isStreaming, setIsStre
           return [nextTx, ...prev];
         });
         setCurrentIndex((i) => i + 1);
-      }, 500);
-    } else {
-      if (intervalRef.current) clearInterval(intervalRef.current);
+      } catch (err) {
+        console.warn('[StreamPage] Live txn generation error:', err.message);
+      }
+
+      if (isActive && isStreamingRef.current) {
+        timeoutId = setTimeout(streamLoop, streamSpeedMs);
+      }
     }
+
+    if (isStreaming) {
+      timeoutId = setTimeout(streamLoop, 50);
+    }
+
     return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
+      isActive = false;
+      if (timeoutId) clearTimeout(timeoutId);
     };
-  }, [isStreaming, count, attackRatio, evasion, currentIndex, setIsStreaming, setTransactions]);
+  }, [isStreaming, count, attackRatio, evasion, streamSpeedMs, currentIndex, setIsStreaming, setTransactions]);
 
   const toggleStreaming = () => {
     if (!isStreaming) {
@@ -339,6 +361,43 @@ export default function StreamPage({ onSelectTransaction, isStreaming, setIsStre
                 onChange={(e) => setEvasion(Number(e.target.value))}
                 className="w-full"
               />
+            </div>
+
+            {/* Stream Velocity / Latency Speed Control */}
+            <div className="space-y-2 pt-1 border-t border-border/40">
+              <div className="flex justify-between text-xs font-mono">
+                <span className="text-zinc-300">Inference Interval:</span>
+                <span className="text-emerald-400 font-bold">{streamSpeedMs}ms ({+(1000 / streamSpeedMs).toFixed(1)} TPS)</span>
+              </div>
+              <input
+                type="range"
+                min="100"
+                max="1500"
+                step="50"
+                value={streamSpeedMs}
+                onChange={(e) => setStreamSpeedMs(Number(e.target.value))}
+                className="w-full h-1.5 bg-secondary rounded-lg appearance-none cursor-pointer accent-emerald-400"
+              />
+              <div className="grid grid-cols-4 gap-1 pt-1">
+                {[
+                  { label: '0.5x', ms: 1000 },
+                  { label: '1.0x', ms: 500 },
+                  { label: '2.0x', ms: 250 },
+                  { label: '5.0x', ms: 100 },
+                ].map((s) => (
+                  <button
+                    key={s.label}
+                    onClick={() => setStreamSpeedMs(s.ms)}
+                    className={`py-1 text-[10px] font-mono rounded transition ${
+                      streamSpeedMs === s.ms
+                        ? 'bg-emerald-500 text-black font-bold'
+                        : 'bg-secondary/60 text-zinc-400 hover:text-white'
+                    }`}
+                  >
+                    {s.label}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <button

@@ -1,3 +1,4 @@
+from datetime import datetime
 """defend/soc_detector.py — HDC & Baseline Detector for SOC-001 (Social Engineering & Impersonation)"""
 import json
 import numpy as np
@@ -27,9 +28,6 @@ class SOCDetector:
         self.encoder = HDCEncoder(dim=dim, num_levels=100, seed=42)
         self.classifier = HDCClassifier(dim=dim)
         self.xgb_model = None
-        if "SOC" == "MM":
-            from response.graph_engine import NetworkRiskGraph
-            self.graph_engine = NetworkRiskGraph()
 
     def _evaluate_on_test_split(self, csv_path: str = None) -> Dict[str, Any]:
         path = Path(csv_path) if csv_path else Path(__file__).parent.parent / "simulate" / "soc_dataset.csv"
@@ -157,7 +155,25 @@ class SOCDetector:
         else:
             action, msg, sev = "APPROVE", "CLEAR: Authentic communications patterns verified.", 0
 
+        try:
+
+
+            sig_list = [float(signals.get(k, 0.0)) for k in self.SIGNAL_NAMES]
+
+
+            attributions = self.classifier.explain_signals(self.encoder, sig_list, self.SIGNAL_NAMES)
+
+
+        except Exception:
+
+
+            attributions = {k: round(float(signals.get(k, 0.0)) * 4.0, 2) for k in self.SIGNAL_NAMES}
+
+
+
         return {
+
+
             "is_fraud": is_fraud,
             "risk_score": round(risk, 4),
             "risk_percent": f"{risk*100:.1f}%",
@@ -168,5 +184,6 @@ class SOCDetector:
             "matched_variant": matched_v,
             "variant_name": v_name,
             "signals": {k: float(signals.get(k, 0.0)) for k in self.SIGNAL_NAMES},
-            "timestamp": "2026-08-31T12:00:00Z"
+            "signal_attributions": attributions,
+            "timestamp": datetime.utcnow().isoformat() + "Z"
         }

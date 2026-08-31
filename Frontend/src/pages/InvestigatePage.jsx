@@ -11,6 +11,7 @@ import {
   getMuleGraph
 } from '../api/client';
 import { Search, AlertTriangle, ShieldCheck, Sparkles, ChevronDown, Network, Radio } from 'lucide-react';
+import NetworkGraph from '../components/NetworkGraph';
 
 export default function InvestigatePage({ selectedTx, setSelectedTx, liveTransactions = [] }) {
   const [viewMode, setViewMode] = useState('ALL'); // 'ALL', 'LIVE_STREAM', or 'TAXONOMY'
@@ -100,11 +101,15 @@ export default function InvestigatePage({ selectedTx, setSelectedTx, liveTransac
             matrixTag: isAtk ? (act.includes('BLOCK') || act.includes('HOLD') ? 'TP' : 'FN') : (act.includes('BLOCK') || act.includes('HOLD') ? 'FP' : 'TN'),
             timestamp: scan?.timestamp || new Date().toISOString(),
             displayDate: new Date().toLocaleTimeString(),
-            features: scan?.signals ? Object.entries(scan.signals).map(([k, v]) => ({
-              name: k,
-              value: Number(v),
-              contribution: isAtk ? (Number(v) > 0.4 ? 3.5 : 1.2) : -1.0
-            })) : [
+            features: scan?.signals ? Object.entries(scan.signals).map(([k, v]) => {
+              const attr = scan?.signal_attributions?.[k];
+              const contrib = attr !== undefined ? attr : (isAtk ? (Number(v) > 0.4 ? 3.5 : 1.2) : -1.0);
+              return {
+                name: k,
+                value: Number(v),
+                contribution: contrib
+              };
+            }) : [
               { name: 'device_risk', value: 0.85, contribution: 3.85 },
               { name: 'amount_deviation', value: 0.90, contribution: 2.89 },
               { name: 'velocity', value: 0.40, contribution: 2.15 },
@@ -365,49 +370,10 @@ export default function InvestigatePage({ selectedTx, setSelectedTx, liveTransac
             </div>
           </div>
 
-          {/* Mule Network Graph Visualizer (If MM) */}
-          {graphData && (activeTx.attackVector?.startsWith('MM') || activeTx.category?.includes('mule') || activeTx.category?.includes('cashout')) && (
-            <div className="space-y-3 pt-2 border-t border-[#1a1f2c]">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-[10px] font-mono text-emerald-400 tracking-widest uppercase font-semibold">
-                  <Network className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>CONNECTED MULE NETWORK GRAPH</span>
-                </div>
-                <span className="text-[10px] font-mono text-zinc-400">
-                  {graphData.nodes?.length || 0} NODES · {graphData.edges?.length || 0} TRANSFERS
-                </span>
-              </div>
-
-              <div className="bg-[#07090e] border border-[#1a1f2c] p-4 rounded-lg space-y-3 font-mono text-xs">
-                <div className="flex flex-wrap gap-2 items-center">
-                  {graphData.nodes?.map((node, i) => (
-                    <div
-                      key={node.id}
-                      className={`px-3 py-1.5 rounded border flex items-center gap-2 ${
-                        node.risk === 'CRITICAL' || node.risk === 'HIGH'
-                          ? 'bg-red-500/10 border-red-500/40 text-red-400 font-bold'
-                          : 'bg-[#121622] border-[#222b3d] text-zinc-300'
-                      }`}
-                    >
-                      <span className={`w-2 h-2 rounded-full ${node.risk === 'CRITICAL' ? 'bg-red-500 animate-pulse' : 'bg-cyan-400'}`} />
-                      <span>{node.id}</span>
-                      <span className="text-[9px] px-1 bg-black/40 rounded text-zinc-400 uppercase">{node.type}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="space-y-1.5 pt-2 border-t border-[#161a26]">
-                  {graphData.edges?.map((edge, i) => (
-                    <div key={i} className="flex items-center justify-between text-[11px] text-zinc-400 bg-[#090d14] px-3 py-1.5 rounded">
-                      <span className="text-zinc-300 font-semibold">{edge.source}</span>
-                      <span className="text-cyan-400">─── ${edge.amount} ({edge.status}) ──►</span>
-                      <span className="text-zinc-300 font-semibold">{edge.target}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
+          {/* Interactive NetworkX Mule Graph Visualizer */}
+          <div className="pt-2 border-t border-[#1a1f2c]">
+            <NetworkGraph graphData={graphData} />
+          </div>
 
           {/* Feature Contributions */}
           <div className="space-y-3">

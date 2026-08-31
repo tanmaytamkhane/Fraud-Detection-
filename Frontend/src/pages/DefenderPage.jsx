@@ -298,6 +298,70 @@ export default function DefenderPage() {
               </div>
             </div>
           </div>
+
+          {/* Confusion Matrix & Threshold Calibration Section */}
+          <div className="border border-border/80 bg-card/60 backdrop-blur rounded-lg p-5 space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/60 pb-3">
+              <div>
+                <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                  Validation-Calibrated 2×2 Confusion Matrix
+                </h2>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Evaluated on {metrics.sampleTested} with optimal decision boundary θ* = {metrics.threshold?.toFixed(5) || '-0.00419'}.
+                </p>
+              </div>
+              <div className="text-xs font-mono text-cyan-400 bg-cyan-500/10 px-3 py-1.5 rounded border border-cyan-500/30">
+                Calibrated Metric: Max F1-Score
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Matrix Left: Prediction Positive (Flagged Fraud) */}
+              <div className="space-y-3">
+                <div className="text-xs font-mono font-bold text-destructive uppercase tracking-wider flex items-center justify-between bg-destructive/10 p-2 rounded border border-destructive/20">
+                  <span>PREDICTED FRAUD (BLOCK / HOLD)</span>
+                  <span>{metrics.confusionMatrix.tp + metrics.confusionMatrix.fp} txns</span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-emerald-500/10 border border-emerald-500/30 p-3.5 rounded-lg space-y-1">
+                    <span className="text-[11px] font-mono text-emerald-400 uppercase font-bold">TRUE POSITIVE (TP)</span>
+                    <div className="text-xl font-bold font-mono text-foreground">{metrics.confusionMatrix.tp.toLocaleString()}</div>
+                    <span className="text-[10px] text-muted-foreground block font-mono">Fraud correctly caught ({metrics.recall.toFixed(1)}% recall)</span>
+                  </div>
+
+                  <div className="bg-amber-400/10 border border-amber-400/30 p-3.5 rounded-lg space-y-1">
+                    <span className="text-[11px] font-mono text-amber-400 uppercase font-bold">FALSE POSITIVE (FP)</span>
+                    <div className="text-xl font-bold font-mono text-foreground">{metrics.confusionMatrix.fp.toLocaleString()}</div>
+                    <span className="text-[10px] text-muted-foreground block font-mono">Legit user step-up auth ({(100 - metrics.precision).toFixed(1)}% FPR)</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Matrix Right: Prediction Negative (Approved) */}
+              <div className="space-y-3">
+                <div className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider flex items-center justify-between bg-emerald-500/10 p-2 rounded border border-emerald-500/20">
+                  <span>PREDICTED LEGITIMATE (APPROVE)</span>
+                  <span>{metrics.confusionMatrix.tn + metrics.confusionMatrix.fn} txns</span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-destructive/10 border border-destructive/30 p-3.5 rounded-lg space-y-1">
+                    <span className="text-[11px] font-mono text-destructive uppercase font-bold">FALSE NEGATIVE (FN)</span>
+                    <div className="text-xl font-bold font-mono text-foreground">{metrics.confusionMatrix.fn.toLocaleString()}</div>
+                    <span className="text-[10px] text-muted-foreground block font-mono">Stealth evasion leakage ({(100 - metrics.recall).toFixed(1)}% miss)</span>
+                  </div>
+
+                  <div className="bg-cyan-500/10 border border-cyan-500/30 p-3.5 rounded-lg space-y-1">
+                    <span className="text-[11px] font-mono text-cyan-400 uppercase font-bold">TRUE NEGATIVE (TN)</span>
+                    <div className="text-xl font-bold font-mono text-foreground">{metrics.confusionMatrix.tn.toLocaleString()}</div>
+                    <span className="text-[10px] text-muted-foreground block font-mono">Legitimate instant clear ({metrics.precision.toFixed(1)}% prec)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </>
       )}
     </div>

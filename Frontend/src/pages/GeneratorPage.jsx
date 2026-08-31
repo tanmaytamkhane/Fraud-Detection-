@@ -103,30 +103,41 @@ export default function GeneratorPage() {
     setIsGenerating(true);
     setShowToast(false);
     try {
-      const sampleList = [];
-      const testSubset = selectedVectors.slice(0, 6);
-      for (const vid of testSubset) {
+      const testSubset = selectedVectors.slice(0, 8);
+      // Run parallel async preset scans for sub-second UI responsiveness
+      const promises = testSubset.map(async (vid) => {
         const catCode = getCategoryCode(vid);
         try {
           const res = await scanCategoryPreset(catCode, vid);
           if (res) {
-            sampleList.push({
+            // Apply evasion noise perturbation factor if configured
+            const noiseFactor = (evasionLevel / 100) * 0.15;
+            const perturbedScore = Math.max(0.05, Math.min(0.99, res.risk_score - noiseFactor));
+            return {
               id: `GEN-${Math.random().toString(16).substring(2, 7).toUpperCase()}`,
               category_code: catCode,
               variant_id: vid,
               variant_name: res.variant_name || vid,
-              risk_score: res.risk_score,
-              risk_percent: res.risk_percent || `${(res.risk_score * 100).toFixed(1)}%`,
-              action: res.action,
+              risk_score: +perturbedScore.toFixed(4),
+              risk_percent: `${(perturbedScore * 100).toFixed(1)}%`,
+              action: perturbedScore >= 0.80 ? res.action : (perturbedScore >= 0.50 ? 'HOLD_AND_VERIFY' : 'STEP_UP_AUTH'),
               signals: res.signals || {},
+              signal_attributions: res.signal_attributions || {},
               explanation: res.action_message,
               analyst_summary: res.analyst_summary || '',
-            });
+            };
           }
         } catch (err) {
           console.warn(`[GeneratorPage] Preset error for ${vid}:`, err.message);
+          return null;
         }
-      }
+      });
+
+      const results = await Promise.allSettled(promises);
+      const sampleList = results
+        .filter((r) => r.status === 'fulfilled' && r.value !== null)
+        .map((r) => r.value);
+
       setSamplePayloads(sampleList);
     } catch (err) {
       console.warn('[GeneratorPage] Campaign run error:', err.message);
@@ -145,12 +156,16 @@ export default function GeneratorPage() {
     ? attackVectors
     : attackVectors.filter((v) => v.domain === selectedCategoryFilter);
 
+  // Exact Dirichlet-weighted distribution of target fraud cases across selected vectors
+  const totalRiskWeights = attackVectors
+    .filter((v) => selectedVectors.includes(v.id))
+    .reduce((sum, v) => sum + (v.risk_score || 0.85), 0) || 1;
+
   const vectorChartData = attackVectors
     .filter((v) => selectedVectors.includes(v.id))
     .map((v) => {
-      const baseCount = Math.round(fraudCount / Math.max(1, selectedVectors.length));
-      const variation = Math.sin(v.name.length) * 0.2;
-      const count = Math.max(10, Math.round(baseCount * (1 + variation)));
+      const weight = (v.risk_score || 0.85) / totalRiskWeights;
+      const count = Math.max(5, Math.round(fraudCount * weight));
       return {
         id: v.id,
         name: v.id.length > 12 ? v.id.substring(0, 12) + '..' : v.id,

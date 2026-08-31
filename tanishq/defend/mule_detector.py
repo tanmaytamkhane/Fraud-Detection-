@@ -1,3 +1,4 @@
+from datetime import datetime
 """defend/mm_detector.py — HDC & Baseline Detector for MM-001 (Money Movement & Mule Networks)"""
 import json
 import numpy as np
@@ -31,13 +32,17 @@ class MMDetector:
             sigs = {}
         res = self.scan(sigs, variant_hint=variant_hint)
         try:
-            self.graph_engine.add_transfer(
-                transfer_id="TX-1001",
-                sender_id=sender_account,
-                receiver_id=receiver_account,
-                amount=float(amount),
-                decision_action=res["action"]
-            )
+            import uuid
+            tx_id = f"TXN-{uuid.uuid4().hex[:6].upper()}"
+            if hasattr(self, "graph_engine") and self.graph_engine is not None:
+                self.graph_engine.add_transfer(
+                    transfer_id=tx_id,
+                    sender_account=sender_account,
+                    receiver_account=receiver_account,
+                    amount=float(amount),
+                    device_id=device_id,
+                    decision=res.get("action", "APPROVE")
+                )
         except Exception:
             pass
         return res
@@ -177,7 +182,25 @@ class MMDetector:
         else:
             action, msg, sev = "APPROVE", "LOW RISK: Transfer cleared within normal graph parameters.", 0
 
+        try:
+
+
+            sig_list = [float(signals.get(k, 0.0)) for k in self.SIGNAL_NAMES]
+
+
+            attributions = self.classifier.explain_signals(self.encoder, sig_list, self.SIGNAL_NAMES)
+
+
+        except Exception:
+
+
+            attributions = {k: round(float(signals.get(k, 0.0)) * 4.0, 2) for k in self.SIGNAL_NAMES}
+
+
+
         return {
+
+
             "is_fraud": is_fraud,
             "risk_score": round(risk, 4),
             "risk_percent": f"{risk*100:.1f}%",
@@ -188,7 +211,8 @@ class MMDetector:
             "matched_variant": matched_v,
             "variant_name": v_name,
             "signals": {k: float(signals.get(k, 0.0)) for k in self.SIGNAL_NAMES},
-            "timestamp": "2026-08-31T12:00:00Z"
+            "signal_attributions": attributions,
+            "timestamp": datetime.utcnow().isoformat() + "Z"
         }
 
 

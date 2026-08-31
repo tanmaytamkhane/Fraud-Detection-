@@ -61,7 +61,7 @@ export default function App() {
             <Shield className="w-4 h-4 text-red-500" />
             <span className="text-zinc-300 font-semibold">REDTEAM-PAY</span>
             <span>·</span>
-            <span>Mastercard Tri-Domain AI Fraud Intelligence System</span>
+            <span>Mastercard 7-Category AI Fraud Intelligence System</span>
           </div>
 
           <div className="flex items-center gap-6">
