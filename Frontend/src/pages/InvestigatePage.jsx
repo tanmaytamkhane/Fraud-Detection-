@@ -442,15 +442,34 @@ export default function InvestigatePage({ selectedTx, setSelectedTx, liveTransac
             </div>
           </div>
 
-          {/* Narrative Explanation */}
-          <div className="space-y-2 pt-2 border-t border-[#1a1f2c]">
-            <div className="flex items-center gap-2 text-[10px] font-mono text-cyan-400 tracking-widest uppercase">
-              <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-              <span>NARRATIVE FRAUD EXPLANATION</span>
+          {/* Comprehensive Forensic Narrative Briefing */}
+          <div className="space-y-3 pt-4 border-t border-[#1a1f2c]">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs font-mono text-cyan-400 tracking-wider uppercase font-semibold">
+                <Sparkles className="w-4 h-4 text-cyan-400" />
+                <span>AI FORENSIC ANALYST BRIEFING &amp; NARRATIVE</span>
+              </div>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-400/10 text-cyan-400 border border-cyan-400/20">
+                10,000-D Closed-Loop Intelligence
+              </span>
             </div>
-            <p className="text-xs font-mono text-zinc-300 leading-relaxed bg-[#07090e] p-4 rounded border border-[#1a1f2c]">
-              {activeTx.explanation}
-            </p>
+
+            <div className="bg-[#07090e] border border-[#1a1f2c] rounded-xl p-5 space-y-4">
+              <div className="text-xs font-sans leading-relaxed text-zinc-200 whitespace-pre-line bg-[#0d111a] p-4 rounded-lg border border-[#1d2436]">
+                {activeTx.analystSummary || activeTx.explanation}
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-[#141926] text-xs font-mono">
+                <div className="flex items-center gap-2 p-2.5 rounded bg-[#0b0e14] border border-[#171c2a]">
+                  <span className="text-zinc-500 uppercase text-[10px]">Decision:</span>
+                  <span className="text-cyan-400 font-bold">{activeTx.decision}</span>
+                </div>
+                <div className="flex items-center gap-2 p-2.5 rounded bg-[#0b0e14] border border-[#171c2a]">
+                  <span className="text-zinc-500 uppercase text-[10px]">Mitigation Tier:</span>
+                  <span className="text-zinc-300 font-semibold">{activeTx.explanation}</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
