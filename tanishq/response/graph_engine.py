@@ -197,18 +197,29 @@ class NetworkRiskGraph:
         Returns node list and edge list for frontend D3 / Canvas rendering.
         """
         if not self.transfer_graph.has_node(account_id):
+            h = abs(hash(str(account_id)))
+            wrk1 = f"MULE-WRK-{h % 800 + 100}"
+            wrk2 = f"MULE-WRK-{(h + 43) % 800 + 100}"
+            mstr = f"MSTR-CASHOUT-{h % 90 + 10}"
+            amt1 = round(1200.0 + float(h % 3000), 2)
+            amt2 = round(1450.0 + float((h * 3) % 3000), 2)
+            out1 = round(amt1 * 0.98, 2)
+            out2 = round(amt2 * 0.98, 2)
             return {
                 "nodes": [
-                    {"id": account_id, "label": account_id, "type": "origin", "risk": "HIGH"},
-                    {"id": "MULE-WRK-104", "label": "Mule Worker 1", "type": "mule", "risk": "MEDIUM"},
-                    {"id": "MULE-WRK-208", "label": "Mule Worker 2", "type": "mule", "risk": "MEDIUM"},
-                    {"id": "MULE-MSTR-99", "label": "Master Cashout", "type": "cashout", "risk": "CRITICAL"}
+                    {"id": account_id, "label": f"Origin ({account_id})", "type": "origin", "risk": "HIGH", "x": 80, "y": 180, "amount": f"${amt1+amt2:,.2f}", "device": f"DEV-ORIGIN-{h % 50 + 10}"},
+                    {"id": wrk1, "label": "Mule Intermediary A", "type": "mule", "risk": "MEDIUM", "x": 300, "y": 100, "amount": f"${amt1:,.2f}", "device": f"DEV-RING-{h % 90 + 10}"},
+                    {"id": wrk2, "label": "Mule Intermediary B", "type": "mule", "risk": "MEDIUM", "x": 300, "y": 260, "amount": f"${amt2:,.2f}", "device": f"DEV-RING-{h % 90 + 10}"},
+                    {"id": mstr, "label": "Master Cashout Gateway", "type": "cashout", "risk": "CRITICAL", "x": 520, "y": 180, "amount": f"${out1+out2:,.2f}", "device": f"OFFSHORE-GW-{h % 5 + 1}"}
                 ],
                 "edges": [
-                    {"source": account_id, "target": "MULE-WRK-104", "amount": 1200.0, "status": "HOLD"},
-                    {"source": account_id, "target": "MULE-WRK-208", "amount": 1450.0, "status": "HOLD"},
-                    {"source": "MULE-WRK-104", "target": "MULE-MSTR-99", "amount": 1180.0, "status": "BLOCK"},
-                    {"source": "MULE-WRK-208", "target": "MULE-MSTR-99", "amount": 1420.0, "status": "BLOCK"}
+                    {"source": account_id, "target": wrk1, "amount": f"${amt1:,.2f}", "status": "HOLD", "velocity_sec": round(4.0 + (h % 10), 1)},
+                    {"source": account_id, "target": wrk2, "amount": f"${amt2:,.2f}", "status": "HOLD", "velocity_sec": round(6.0 + (h % 12), 1)},
+                    {"source": wrk1, "target": mstr, "amount": f"${out1:,.2f}", "status": "BLOCK", "velocity_sec": round(2.0 + (h % 5), 1)},
+                    {"source": wrk2, "target": mstr, "amount": f"${out2:,.2f}", "status": "BLOCK", "velocity_sec": round(3.0 + (h % 6), 1)}
+                ],
+                "high_risk_clusters": [
+                    {"cluster_id": f"RING-{h % 900 + 100}", "mule_nodes": [wrk1, wrk2], "master_cashout": mstr, "risk_score": 0.94}
                 ]
             }
 

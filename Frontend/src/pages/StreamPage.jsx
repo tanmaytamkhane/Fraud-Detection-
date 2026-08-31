@@ -207,29 +207,38 @@ export default function StreamPage({ onSelectTransaction, isStreaming, setIsStre
     if (transactions.length === 0) {
       let isMounted = true;
       async function loadInitial() {
-        const presets = ['ATO-V1', 'SOC-V1', 'PM-V1', 'TB-V1', 'MRF-V1', 'MM-V1', 'GENAI-V2', 'LEGIT', 'LEGIT', 'LEGIT'];
+        const presets = [
+          { vid: 'ATO-V1', name: 'Loud Takeover & New Device Transfer', cat: 'wire_transfer', amt: 8450.00, sigs: [{ name: 'device_risk', value: 0.95, contribution: 3.85 }, { name: 'address_mismatch', value: 0.90, contribution: 2.92 }, { name: 'amount_deviation', value: 0.85, contribution: 2.45 }] },
+          { vid: 'SOC-V1', name: 'Urgent Voice / Executive Impersonation', cat: 'wire_transfer', amt: 14200.00, sigs: [{ name: 'social_urgency_score', value: 0.98, contribution: 4.10 }, { name: 'voice_jitter_anomaly', value: 0.92, contribution: 3.45 }, { name: 'beneficiary_account_mismatch', value: 0.88, contribution: 2.80 }] },
+          { vid: 'PM-V1', name: 'Static QR Overlay & Tampering', cat: 'qr_merchant_payment', amt: 320.00, sigs: [{ name: 'qr_signature_mismatch', value: 0.96, contribution: 3.90 }, { name: 'payload_tampering_score', value: 0.90, contribution: 3.20 }, { name: 'merchant_geo_mismatch', value: 0.84, contribution: 2.60 }] },
+          { vid: 'TB-V1', name: 'High-Frequency Carding Micro-Auth', cat: 'carding_micro_auth', amt: 1.45, sigs: [{ name: 'inter_arrival_velocity', value: 0.99, contribution: 4.30 }, { name: 'micro_amount_clustering', value: 0.95, contribution: 3.70 }, { name: 'bot_subnet_entropy', value: 0.90, contribution: 3.10 }] },
+          { vid: 'MRF-V1', name: 'LLM Prompt Injection Goodwill Credit', cat: 'refund_credit', amt: 480.00, sigs: [{ name: 'prompt_injection_score', value: 0.98, contribution: 4.25 }, { name: 'unverified_refund_ratio', value: 0.92, contribution: 3.50 }, { name: 'merchant_dispute_anomaly', value: 0.86, contribution: 2.90 }] },
+          { vid: 'MM-V1', name: 'Rapid Cash-Out Burst to Layer 2 Mules', cat: 'mule_transfer', amt: 14500.00, sigs: [{ name: 'transit_velocity_sec', value: 0.98, contribution: 4.40 }, { name: 'amount_layering_ratio', value: 0.95, contribution: 3.80 }, { name: 'shared_device_cluster', value: 0.90, contribution: 3.20 }] },
+          { vid: 'GENAI-V2', name: 'Acoustic Voice Clone Wire Authorization', cat: 'deepfake_voice_wire', amt: 75000.00, sigs: [{ name: 'voice_biometric_jitter', value: 0.98, contribution: 4.35 }, { name: 'llm_semantic_intent_score', value: 0.94, contribution: 3.65 }, { name: 'synthetic_face_embedding_dist', value: 0.90, contribution: 3.15 }] },
+          { vid: 'LEGIT', name: 'Normal Supermarket Checkout', cat: 'grocery', amt: 42.50, sigs: [{ name: 'device_risk', value: 0.08, contribution: -1.20 }, { name: 'amount_deviation', value: 0.12, contribution: -0.80 }, { name: 'velocity', value: 0.10, contribution: -0.60 }] },
+          { vid: 'LEGIT', name: 'Regular Online Retail Order', cat: 'online_retail', amt: 89.99, sigs: [{ name: 'device_risk', value: 0.05, contribution: -1.40 }, { name: 'amount_deviation', value: 0.08, contribution: -0.90 }, { name: 'channel_risk', value: 0.06, contribution: -0.50 }] },
+          { vid: 'LEGIT', name: 'Recurring Utility Bill Settlement', cat: 'utility', amt: 115.00, sigs: [{ name: 'device_risk', value: 0.02, contribution: -1.60 }, { name: 'amount_deviation', value: 0.04, contribution: -1.10 }, { name: 'velocity', value: 0.05, contribution: -0.80 }] },
+        ];
         const batch = [];
         for (let i = 0; i < presets.length; i++) {
           const p = presets[i];
-          const isAtk = p !== 'LEGIT';
+          const isAtk = p.vid !== 'LEGIT';
+          const catCode = p.vid.split('-')[0];
           batch.push({
-            id: isAtk ? `${p.split('-')[0]}-${Math.random().toString(16).substring(2, 6).toUpperCase()}` : `TXN-${Math.random().toString(16).substring(2, 6).toUpperCase()}`,
+            id: isAtk ? `${catCode}-${Math.random().toString(16).substring(2, 6).toUpperCase()}` : `TXN-${Math.random().toString(16).substring(2, 6).toUpperCase()}`,
             index: i + 1,
-            amount: isAtk ? +(Math.random() * 4500 + 800).toFixed(2) : +(Math.random() * 65 + 15).toFixed(2),
-            category: isAtk ? 'wire_transfer' : 'online_retail',
+            amount: p.amt,
+            category: p.cat,
             isAttack: isAtk,
-            attackVector: p,
-            attackName: isAtk ? p : 'Normal Activity',
-            fraudProb: isAtk ? 95.4 : 4.8,
+            attackVector: p.vid,
+            attackName: p.name,
+            fraudProb: isAtk ? +(92.0 + Math.random() * 6.5).toFixed(1) : +(1.5 + Math.random() * 3.5).toFixed(1),
             decision: isAtk ? 'BLOCK' : 'APPROVE',
             matrixTag: isAtk ? 'TP' : 'TN',
-            timestamp: new Date().toISOString(),
-            displayDate: new Date().toLocaleTimeString(),
-            features: [
-              { name: 'primary_risk_signal', value: isAtk ? 0.92 : 0.10, contribution: isAtk ? 3.5 : -1.2 },
-              { name: 'anomaly_deviation', value: isAtk ? 0.88 : 0.12, contribution: isAtk ? 2.8 : -0.8 },
-            ],
-            explanation: isAtk ? `CRITICAL: ${p} signature detected by 7-Category HDC engine.` : 'Normal cardholder behavior verified.',
+            timestamp: new Date(Date.now() - (presets.length - i) * 60000).toISOString(),
+            displayDate: new Date(Date.now() - (presets.length - i) * 60000).toLocaleTimeString(),
+            features: p.sigs,
+            explanation: isAtk ? `CRITICAL: ${p.name} (${p.vid}) flagged by 10,000-D ${catCode} HDC prototype.` : 'Normal verified cardholder behavior.',
           });
         }
         if (isMounted) setTransactions(batch);

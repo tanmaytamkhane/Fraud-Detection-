@@ -1,132 +1,113 @@
-// mockTransactions.js — Transaction Stream & Simulation Engine
+// mockTransactions.js — Master 7-Category Transaction Generator & Stream Engine
 
 import { ATTACK_VECTORS } from "./attacksData";
 
 const CATEGORIES = [
   "grocery", "restaurant", "utility", "online_retail", "digital_goods", 
-  "wire_transfer", "bnpl", "p2p", "gas", "donation"
+  "wire_transfer", "bnpl", "p2p", "gas", "donation", "deepfake_voice_wire", 
+  "qr_merchant_payment", "carding_micro_auth", "refund_credit"
 ];
 
 const LEGIT_AMOUNTS = [
-  8.50, 13.58, 15.85, 17.25, 19.48, 22.05, 23.60, 27.43, 30.92, 
-  31.56, 40.93, 41.86, 61.53, 65.81, 66.64, 94.74, 104.11
+  12.50, 18.25, 24.50, 32.80, 45.00, 68.20, 89.99, 112.50, 145.00, 
+  180.75, 220.00, 310.50, 450.00, 520.00, 750.00
 ];
 
-export function generateRandomTransaction(index = 1, attackRatio = 20, evasion = 30) {
+const CATEGORY_SIGNALS = {
+  ATO: ["device_risk", "address_mismatch", "amount_deviation", "velocity", "time_anomaly", "channel_risk"],
+  SOC: ["social_urgency_score", "voice_jitter_anomaly", "beneficiary_account_mismatch", "amount_deviation", "channel_risk", "device_risk"],
+  PM: ["qr_signature_mismatch", "payload_tampering_score", "merchant_geo_mismatch", "amount_deviation", "channel_risk", "device_risk"],
+  TB: ["inter_arrival_velocity", "micro_amount_clustering", "bot_subnet_entropy", "amount_deviation", "channel_risk", "device_risk"],
+  MRF: ["prompt_injection_score", "unverified_refund_ratio", "merchant_dispute_anomaly", "amount_deviation", "channel_risk", "device_risk"],
+  MM: ["fan_out_degree", "fan_in_degree", "transit_velocity_sec", "amount_layering_ratio", "shared_device_cluster", "account_dormancy_score"],
+  GENAI: ["llm_semantic_intent_score", "voice_biometric_jitter", "synthetic_face_embedding_dist", "adversarial_perturbation_index", "device_risk", "amount_deviation"],
+};
+
+export function generateRandomTransaction(index = 1, attackRatio = 25, evasion = 20) {
   const isAttack = Math.random() * 100 < attackRatio;
-  const idPrefix = Math.random().toString(16).substring(2, 10);
-  const idSuffix = Math.random().toString(16).substring(2, 5);
-  const id = `${idPrefix}-${idSuffix}`;
+  const randHex = Math.random().toString(16).substring(2, 7).toUpperCase();
 
   if (!isAttack) {
-    // Legit transaction
-    const category = CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)];
+    const category = CATEGORIES[Math.floor(Math.random() * 6)];
     let amount = LEGIT_AMOUNTS[Math.floor(Math.random() * LEGIT_AMOUNTS.length)];
     if (category === "wire_transfer") {
-      amount = +(Math.random() * 5000 + 1000).toFixed(2);
+      amount = +(Math.random() * 3000 + 400).toFixed(2);
     }
 
-    // Legit scores are near 0%
-    const fraudProb = Math.random() < 0.98 ? 0.0 : +(Math.random() * 0.15).toFixed(2);
-    const isFlagged = fraudProb >= 0.50;
-
+    const fraudProb = +(Math.random() * 8.5 + 1.2).toFixed(1);
     return {
-      id,
+      id: `TXN-${randHex}`,
       index,
       amount,
       category,
       isAttack: false,
-      attackVector: "legit",
-      attackName: "Normal Activity",
-      fraudProb: +(fraudProb * 100).toFixed(1),
-      decision: isFlagged ? "REVIEW" : "PASS",
-      matrixTag: isFlagged ? "FP" : "TN",
+      attackVector: "LEGIT",
+      attackName: "Normal Verified Activity",
+      fraudProb: +fraudProb,
+      decision: "APPROVE",
+      matrixTag: "TN",
       timestamp: new Date().toISOString(),
       displayDate: new Date().toLocaleTimeString(),
       features: [
-        { name: "device_reuse_count", value: 1.0, contribution: -1.2 },
-        { name: "amount_deviation", value: 0.05, contribution: -0.8 },
-        { name: "new_device", value: 0.0, contribution: -0.5 },
-        { name: "velocity_24h", value: 1.0, contribution: -0.4 },
-        { name: "location_change", value: 0.0, contribution: -0.3 }
+        { name: "device_risk", value: 0.08, contribution: -1.2 },
+        { name: "amount_deviation", value: 0.10, contribution: -0.8 },
+        { name: "velocity", value: 0.12, contribution: -0.6 },
+        { name: "channel_risk", value: 0.05, contribution: -0.4 },
       ],
-      explanation: "Transaction exhibits standard user behavioral patterns. Cardholder device fingerprint, location, and velocity are strictly consistent with historic baseline parameters."
+      explanation: "Transaction exhibits standard legitimate behavioral patterns. Multi-modal biometrics and velocity are consistent with historical baseline."
     };
   }
 
-  // Attack transaction
-  const activeVectors = ATTACK_VECTORS;
-  const vector = activeVectors[Math.floor(Math.random() * activeVectors.length)];
-  
-  // High value for wire/BEC/Deepfake, moderate for others
+  // Attack transaction across 22 vectors
+  const vector = ATTACK_VECTORS[Math.floor(Math.random() * ATTACK_VECTORS.length)];
+  const catCode = vector.category || "ATO";
+  const sigNames = CATEGORY_SIGNALS[catCode] || CATEGORY_SIGNALS.ATO;
+
   let amount = 0;
-  if (vector.id === "deepfake_voice_socialeng" || vector.id === "bec_invoice_fraud") {
-    amount = +(Math.random() * 25000 + 15000).toFixed(2);
-  } else if (vector.id === "cnp_bot_carding") {
-    amount = +(Math.random() * 5 + 0.5).toFixed(2);
-  } else if (vector.id === "synthetic_identity" || vector.id === "prompt_injection_chatbot") {
-    amount = +(Math.random() * 800 + 100).toFixed(2);
+  if (catCode === "MM" || catCode === "SOC") {
+    amount = +(Math.random() * 25000 + 5000).toFixed(2);
+  } else if (catCode === "TB") {
+    amount = +(Math.random() * 2.50 + 0.50).toFixed(2);
+  } else if (catCode === "GENAI") {
+    amount = +(Math.random() * 15000 + 3500).toFixed(2);
   } else {
-    amount = +(Math.random() * 1500 + 200).toFixed(2);
+    amount = +(Math.random() * 4500 + 600).toFixed(2);
   }
 
-  const categoryMap = {
-    deepfake_voice_socialeng: "wire_transfer",
-    bec_invoice_fraud: "wire_transfer",
-    synthetic_identity: "bnpl",
-    prompt_injection_chatbot: "online_retail",
-    ai_phishing_smishing: "p2p",
-    adversarial_evasion: "digital_goods",
-    mule_network_coord: "p2p",
-    cnp_bot_carding: "digital_goods"
-  };
-  const category = categoryMap[vector.id] || "online_retail";
-
-  // Evasion factor affects fraud probability detection
   const evasionFactor = evasion / 100;
-  let fraudProb = 1.0;
-  if (Math.random() < evasionFactor * 0.35) {
-    // Evasive attack caught with lower confidence or stealth
-    fraudProb = +(0.35 + Math.random() * 0.40).toFixed(2);
-  }
+  let baseScore = 0.94 - (evasionFactor * 0.15);
+  const fraudProb = +(baseScore * 100).toFixed(1);
 
-  const isFlagged = fraudProb >= 0.50;
-  const decision = isFlagged ? "BLOCK" : "PASS";
-  const matrixTag = isFlagged ? "TP" : "FN";
-
-  const featurePool = [
-    { name: "device_reuse_count", value: 4.0, contribution: +3.85 },
-    { name: "face_embedding_dup", value: 0.62, contribution: +2.67 },
-    { name: "new_device", value: 1.0, contribution: +1.76 },
-    { name: "new_payee", value: 1.0, contribution: +1.42 },
-    { name: "graph_fanout", value: 4.0, contribution: +0.91 },
-    { name: "amt_zscore", value: 4.5, contribution: +2.89 },
-    { name: "velocity_burst", value: 0.95, contribution: +2.15 },
-    { name: "time_anomaly", value: 0.85, contribution: +1.64 }
-  ];
+  const action = fraudProb >= 80 ? "BLOCK" : (fraudProb >= 50 ? "HOLD_AND_VERIFY" : "STEP_UP_AUTH");
+  const matrixTag = fraudProb >= 50 ? "TP" : "FN";
 
   return {
-    id,
+    id: `${catCode}-${randHex}`,
     index,
     amount,
-    category,
+    category: catCode === "PM" ? "qr_merchant_payment" : (catCode === "TB" ? "carding_micro_auth" : (catCode === "MRF" ? "refund_credit" : (catCode === "MM" ? "mule_transfer" : "online_retail"))),
     isAttack: true,
     attackVector: vector.id,
     attackName: vector.name,
-    fraudProb: +(fraudProb * 100).toFixed(1),
-    decision,
+    fraudProb: +fraudProb,
+    decision: action,
     matrixTag,
     timestamp: new Date().toISOString(),
     displayDate: new Date().toLocaleTimeString(),
-    features: featurePool.slice(0, 5),
-    explanation: `CRITICAL ALERT: Transaction triggered high-confidence ${vector.name} signatures. Multiple anomalous telemetry signals detected including sudden payee deviation, elevated velocity spikes, and unrecognized device fingerprint.`
+    features: [
+      { name: sigNames[0], value: 0.95, contribution: 3.85 },
+      { name: sigNames[1], value: 0.90, contribution: 2.92 },
+      { name: sigNames[2], value: 0.85, contribution: 2.45 },
+      { name: sigNames[3], value: 0.70, contribution: 1.80 },
+    ],
+    explanation: `CRITICAL: ${vector.name} detected by 10,000-D ${catCode} HDC defense prototype.`
   };
 }
 
-export function generateInitialBatch(count = 50) {
+export function generateInitialBatch(size = 15) {
   const batch = [];
-  for (let i = 1; i <= count; i++) {
-    batch.push(generateRandomTransaction(i, 20, 30));
+  for (let i = 1; i <= size; i++) {
+    batch.push(generateRandomTransaction(i, 40, 20));
   }
   return batch;
 }

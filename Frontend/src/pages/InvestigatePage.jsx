@@ -372,7 +372,7 @@ export default function InvestigatePage({ selectedTx, setSelectedTx, liveTransac
 
           {/* Interactive NetworkX Mule Graph Visualizer */}
           <div className="pt-2 border-t border-[#1a1f2c]">
-            <NetworkGraph graphData={graphData} />
+            <NetworkGraph activeTx={activeTx} graphData={graphData} />
           </div>
 
           {/* Feature Contributions */}

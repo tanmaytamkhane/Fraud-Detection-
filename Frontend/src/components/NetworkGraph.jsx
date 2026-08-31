@@ -1,22 +1,36 @@
 import React, { useState } from 'react';
 import { Shield, AlertTriangle, ArrowRight, Activity, Layers, Server } from 'lucide-react';
 
-export default function NetworkGraph({ graphData, onSelectNode }) {
+export default function NetworkGraph({ activeTx, graphData, onSelectNode }) {
   const [selectedNodeId, setSelectedNodeId] = useState(null);
   const [hoveredNodeId, setHoveredNodeId] = useState(null);
 
-  const defaultNodes = [
-    { id: 'VICTIM-ORIGIN', label: 'Victim Account (Compromised)', type: 'origin', risk: 'HIGH', x: 80, y: 180, amount: '$14,500', out_deg: 2, in_deg: 0, device: 'DEV-ORIGIN-01' },
-    { id: 'MULE-WRK-104', label: 'Mule Intermediary A', type: 'mule', risk: 'MEDIUM', x: 300, y: 100, amount: '$7,200', out_deg: 1, in_deg: 1, device: 'DEV-RING-77' },
-    { id: 'MULE-WRK-208', label: 'Mule Intermediary B', type: 'mule', risk: 'MEDIUM', x: 300, y: 260, amount: '$7,300', out_deg: 1, in_deg: 1, device: 'DEV-RING-77' },
-    { id: 'MULE-MSTR-99', label: 'Master Cashout Node', type: 'cashout', risk: 'CRITICAL', x: 520, y: 180, amount: '$14,100', out_deg: 0, in_deg: 2, device: 'OFFSHORE-GATEWAY' },
+  // Generate dynamic transaction-specific topology based on the active transaction
+  const txId = activeTx?.id || 'TXN-1001';
+  const txAmt = typeof activeTx?.amount === 'number' ? activeTx.amount : 14500;
+  const hash = Math.abs(txId.split('').reduce((acc, char) => acc + char.charCodeAt(0) * 17, 0)) || 77;
+  
+  const m1Id = `MULE-WRK-${(hash % 800 + 100)}`;
+  const m2Id = `MULE-WRK-${((hash + 43) % 800 + 100)}`;
+  const cshId = `MSTR-CASHOUT-${(hash % 90 + 10)}`;
+  const originId = `ACC-${txId.replace(/^TXN-|^GENAI-|^SOC-|^PM-|^TB-|^MRF-|^MM-/, '')}`;
+
+  const m1Amt = +(txAmt * 0.49).toFixed(2);
+  const m2Amt = +(txAmt * 0.51).toFixed(2);
+  const cshAmt = +(txAmt * 0.98).toFixed(2);
+
+  const dynamicNodes = [
+    { id: originId, label: `Origin: ${txId}`, type: 'origin', risk: 'HIGH', x: 80, y: 180, amount: `$${txAmt.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, out_deg: 2, in_deg: 0, device: `DEV-ORIGIN-${hash % 50 + 10}` },
+    { id: m1Id, label: 'Mule Intermediary A', type: 'mule', risk: 'MEDIUM', x: 300, y: 100, amount: `$${m1Amt.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, out_deg: 1, in_deg: 1, device: `DEV-RING-${hash % 90 + 10}` },
+    { id: m2Id, label: 'Mule Intermediary B', type: 'mule', risk: 'MEDIUM', x: 300, y: 260, amount: `$${m2Amt.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, out_deg: 1, in_deg: 1, device: `DEV-RING-${hash % 90 + 10}` },
+    { id: cshId, label: 'Master Cashout Gateway', type: 'cashout', risk: 'CRITICAL', x: 520, y: 180, amount: `$${cshAmt.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, out_deg: 0, in_deg: 2, device: `OFFSHORE-GW-${(hash % 5 + 1)}` },
   ];
 
-  const defaultEdges = [
-    { source: 'VICTIM-ORIGIN', target: 'MULE-WRK-104', amount: '$7,200', status: 'HOLD', velocity: '12s' },
-    { source: 'VICTIM-ORIGIN', target: 'MULE-WRK-208', amount: '$7,300', status: 'HOLD', velocity: '18s' },
-    { source: 'MULE-WRK-104', target: 'MULE-MSTR-99', amount: '$7,050', status: 'BLOCK', velocity: '4s' },
-    { source: 'MULE-WRK-208', target: 'MULE-MSTR-99', amount: '$7,050', status: 'BLOCK', velocity: '6s' },
+  const dynamicEdges = [
+    { source: originId, target: m1Id, amount: `$${m1Amt.toLocaleString()}`, status: 'HOLD', velocity: `${(hash % 8 + 4)}s` },
+    { source: originId, target: m2Id, amount: `$${m2Amt.toLocaleString()}`, status: 'HOLD', velocity: `${(hash % 10 + 6)}s` },
+    { source: m1Id, target: cshId, amount: `$${(m1Amt * 0.98).toFixed(2)}`, status: 'BLOCK', velocity: `${(hash % 4 + 2)}s` },
+    { source: m2Id, target: cshId, amount: `$${(m2Amt * 0.98).toFixed(2)}`, status: 'BLOCK', velocity: `${(hash % 5 + 3)}s` },
   ];
 
   const nodes = (graphData && graphData.nodes && graphData.nodes.length > 0)
@@ -24,20 +38,20 @@ export default function NetworkGraph({ graphData, onSelectNode }) {
         ...n,
         x: n.x || (n.type === 'origin' ? 80 : n.type === 'cashout' ? 520 : 300),
         y: n.y || (n.type === 'origin' ? 180 : n.type === 'cashout' ? 180 : i % 2 === 0 ? 100 : 260),
-        amount: n.amount || (n.type === 'origin' ? '$14,500' : n.type === 'cashout' ? '$14,100' : '$7,250'),
-        device: n.device || 'DEV-RING-77'
+        amount: n.amount || `$${txAmt.toLocaleString()}`,
+        device: n.device || `DEV-RING-${hash % 90 + 10}`
       }))
-    : defaultNodes;
+    : dynamicNodes;
 
   const edges = (graphData && (graphData.links || graphData.edges) && (graphData.links || graphData.edges).length > 0)
     ? (graphData.links || graphData.edges).map(e => ({
         ...e,
-        amount: typeof e.amount === 'number' ? `$${e.amount.toLocaleString()}` : e.amount || '$1,200',
-        velocity: e.velocity || `${e.velocity_sec || 8}s`
+        amount: typeof e.amount === 'number' ? `$${e.amount.toLocaleString()}` : e.amount || `$${(txAmt * 0.5).toFixed(2)}`,
+        velocity: e.velocity || `${e.velocity_sec || 6}s`
       }))
-    : defaultEdges;
+    : dynamicEdges;
 
-  const selectedNode = nodes.find(n => n.id === (selectedNodeId || 'MULE-MSTR-99')) || nodes[0];
+  const selectedNode = nodes.find(n => n.id === selectedNodeId) || nodes.find(n => n.type === 'cashout') || nodes[0];
 
   const getNodeColor = (type, risk) => {
     if (risk === 'CRITICAL' || type === 'cashout') return '#ff1744';

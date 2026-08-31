@@ -6,7 +6,7 @@ export default function OverviewPage({ setActiveTab }) {
   const [stats, setStats] = useState({
     categories: 7,
     attackVectors: 22,
-    datasetLoaded: '75,396',
+    datasetLoaded: '175,392',
     modelStatus: 'ACTIVE · 10,000-D',
     predictions: '45,398',
   });
