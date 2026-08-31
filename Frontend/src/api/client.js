@@ -1,4 +1,11 @@
-const API_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:8000').replace(/\/+$/, '');
+const CLOUD_BACKEND_URL = 'https://fraud-detection-tu4w.onrender.com';
+
+const API_BASE_URL = (
+  import.meta.env.VITE_API_URL ||
+  (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? 'http://localhost:8000'
+    : CLOUD_BACKEND_URL)
+).replace(/\/+$/, '');
 
 export async function checkHealth() {
   const res = await fetch(`${API_BASE_URL}/health`);
