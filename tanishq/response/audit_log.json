@@ -1,0 +1,127 @@
+{
+  "export_timestamp": "2026-08-30T00:17:05.232166",
+  "engine_version": "1.0.0",
+  "total_decisions": 5,
+  "statistics": {
+    "total_processed": 5,
+    "action_counts": {
+      "BLOCK": 1,
+      "HOLD": 1,
+      "STEP_UP_AUTH": 2,
+      "REVIEW": 1,
+      "APPROVE": 0
+    },
+    "avg_risk_score": 0.6199999999999999,
+    "highest_risk_seen": 0.95
+  },
+  "decisions": [
+    {
+      "action": "BLOCK",
+      "action_id": "block",
+      "mitigation_id": "MIT-004",
+      "name": "Account Block",
+      "severity": 4,
+      "severity_label": "critical",
+      "risk_score": 0.95,
+      "risk_percent": "95.0%",
+      "network_risk": 0.0,
+      "effective_risk": 0.95,
+      "message": "CRITICAL: Account frozen. All transactions blocked immediately.",
+      "icon": "🛑",
+      "notify": [
+        "fraud_team",
+        "cardholder",
+        "compliance"
+      ],
+      "customer_friction": "very_high",
+      "response_time": "real-time",
+      "variant_context": "ATO-V1",
+      "timestamp": "2026-08-30T00:17:05.232166"
+    },
+    {
+      "action": "HOLD",
+      "action_id": "hold",
+      "mitigation_id": "MIT-003",
+      "name": "Transaction Hold",
+      "severity": 3,
+      "severity_label": "high",
+      "risk_score": 0.8,
+      "risk_percent": "80.0%",
+      "network_risk": 0.0,
+      "effective_risk": 0.8,
+      "message": "HIGH RISK: Transaction held. Cardholder notified via SMS/push.",
+      "icon": "⚠️",
+      "notify": [
+        "cardholder",
+        "fraud_team"
+      ],
+      "customer_friction": "high",
+      "response_time": "near-real-time",
+      "variant_context": "ATO-V2",
+      "timestamp": "2026-08-30T00:17:05.232166"
+    },
+    {
+      "action": "STEP_UP_AUTH",
+      "action_id": "step_up_authentication",
+      "mitigation_id": "MIT-001",
+      "name": "Step-Up Authentication",
+      "severity": 2,
+      "severity_label": "medium",
+      "risk_score": 0.55,
+      "risk_percent": "55.0%",
+      "network_risk": 0.0,
+      "effective_risk": 0.55,
+      "message": "MEDIUM RISK: Additional verification required. OTP sent to registered device.",
+      "icon": "🔐",
+      "notify": [
+        "cardholder"
+      ],
+      "customer_friction": "medium",
+      "response_time": "within-minutes",
+      "variant_context": "ATO-V3",
+      "timestamp": "2026-08-30T00:17:05.232166"
+    },
+    {
+      "action": "REVIEW",
+      "action_id": "review",
+      "mitigation_id": "MIT-002",
+      "name": "Analyst Review",
+      "severity": 1,
+      "severity_label": "low",
+      "risk_score": 0.3,
+      "risk_percent": "30.0%",
+      "network_risk": 0.0,
+      "effective_risk": 0.3,
+      "message": "LOW RISK: Flagged for manual review by fraud analyst.",
+      "icon": "📋",
+      "notify": [
+        "fraud_analyst"
+      ],
+      "customer_friction": "low",
+      "response_time": "within-hours",
+      "variant_context": "ATO-V4",
+      "timestamp": "2026-08-30T00:17:05.232166"
+    },
+    {
+      "action": "STEP_UP_AUTH",
+      "action_id": "step_up_authentication",
+      "mitigation_id": "MIT-001",
+      "name": "Step-Up Authentication",
+      "severity": 2,
+      "severity_label": "medium",
+      "risk_score": 0.5,
+      "risk_percent": "50.0%",
+      "network_risk": 0.0,
+      "effective_risk": 0.5,
+      "message": "MEDIUM RISK: Additional verification required. OTP sent to registered device.",
+      "icon": "🔐",
+      "notify": [
+        "cardholder"
+      ],
+      "customer_friction": "medium",
+      "response_time": "within-minutes",
+      "variant_context": "ATO-V5",
+      "timestamp": "2026-08-30T00:17:05.232166"
+    }
+  ]
+}

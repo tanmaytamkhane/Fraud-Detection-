@@ -1,0 +1,62 @@
+{
+  "n_rows_total": 45398,
+  "n_train": 36318,
+  "n_val": 9080,
+  "legit_sample_n": 20000,
+  "fraud_rate_pct": 55.945195823604564,
+  "oversample_disabled": true,
+  "hdc_metrics": {
+    "accuracy": 0.8708149779735683,
+    "precision": 0.8646630576815382,
+    "recall": 0.9118110236220472,
+    "f1_score": 0.8876113825812014,
+    "auc_roc": 0.9380371062992126
+  },
+  "xgb_metrics": {
+    "accuracy": 0.9626651982378854,
+    "precision": 0.9844676067852034,
+    "recall": 0.948228346456693,
+    "f1_score": 0.9660082221999399,
+    "auc_roc": 0.9934811269685038
+  },
+  "variant_comparison": [
+    {
+      "Variant ID": "ATO-V1",
+      "Variant Description": "High-Value New Device (Loud)",
+      "Total Fraud Cases": 860,
+      "HDC Detection Rate": "99.5%",
+      "XGBoost Detection Rate": "99.9%"
+    },
+    {
+      "Variant ID": "ATO-V2",
+      "Variant Description": "Velocity Burst (Known Device)",
+      "Total Fraud Cases": 2742,
+      "HDC Detection Rate": "90.3%",
+      "XGBoost Detection Rate": "99.2%"
+    },
+    {
+      "Variant ID": "ATO-V3",
+      "Variant Description": "Off-Hours Location Shift",
+      "Total Fraud Cases": 306,
+      "HDC Detection Rate": "95.8%",
+      "XGBoost Detection Rate": "95.8%"
+    },
+    {
+      "Variant ID": "ATO-V4",
+      "Variant Description": "Subtle Deviation (The Ghost)",
+      "Total Fraud Cases": 288,
+      "HDC Detection Rate": "43.4%",
+      "XGBoost Detection Rate": "22.9%"
+    },
+    {
+      "Variant ID": "ATO-V5",
+      "Variant Description": "Multi-Signal (The Chameleon)",
+      "Total Fraud Cases": 884,
+      "HDC Detection Rate": "99.7%",
+      "XGBoost Detection Rate": "99.4%"
+    }
+  ],
+  "llm_summary": "[template fallback \u2014 set ANTHROPIC_API_KEY for an LLM-written version]\nHDC \u2014 Acc 0.871, Prec 0.865, Rec 0.912, F1 0.888, AUC 0.938. XGBoost \u2014 Acc 0.963, Prec 0.984, Rec 0.948, F1 0.966, AUC 0.993.\nXGBoost has the higher AUC-ROC on this run.",
+  "peak_rss_mb": 3069.9296875,
+  "elapsed_seconds": 153.35171961784363
+}

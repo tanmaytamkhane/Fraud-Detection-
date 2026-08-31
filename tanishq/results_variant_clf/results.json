@@ -1,0 +1,99 @@
+{
+  "n_rows": 25398,
+  "n_train": 20318,
+  "n_val": 5080,
+  "hdc_accuracy": 0.6600393700787401,
+  "xgb_accuracy": 0.9978346456692914,
+  "hdc_report": {
+    "ATO-V1": {
+      "precision": 0.3854435831180017,
+      "recall": 0.9977703455964325,
+      "f1-score": 0.5560733146940043,
+      "support": 897.0
+    },
+    "ATO-V2": {
+      "precision": 0.9473684210526315,
+      "recall": 0.6961695797694311,
+      "f1-score": 0.802572347266881,
+      "support": 2689.0
+    },
+    "ATO-V3": {
+      "precision": 0.47126436781609193,
+      "recall": 0.27424749163879597,
+      "f1-score": 0.346723044397463,
+      "support": 299.0
+    },
+    "ATO-V4": {
+      "precision": 0.9134615384615384,
+      "recall": 0.3177257525083612,
+      "f1-score": 0.47146401985111663,
+      "support": 299.0
+    },
+    "ATO-V5": {
+      "precision": 0.8115079365079365,
+      "recall": 0.4564732142857143,
+      "f1-score": 0.5842857142857143,
+      "support": 896.0
+    },
+    "accuracy": 0.6600393700787401,
+    "macro avg": {
+      "precision": 0.70580916939124,
+      "recall": 0.548477276759747,
+      "f1-score": 0.5522236880990359,
+      "support": 5080.0
+    },
+    "weighted avg": {
+      "precision": 0.7941654990857276,
+      "recall": 0.6600393700787401,
+      "f1-score": 0.6742269167896634,
+      "support": 5080.0
+    }
+  },
+  "xgb_report": {
+    "ATO-V1": {
+      "precision": 1.0,
+      "recall": 0.9955406911928651,
+      "f1-score": 0.9977653631284916,
+      "support": 897.0
+    },
+    "ATO-V2": {
+      "precision": 0.9996281145407214,
+      "recall": 0.9996281145407214,
+      "f1-score": 0.9996281145407214,
+      "support": 2689.0
+    },
+    "ATO-V3": {
+      "precision": 0.9835526315789473,
+      "recall": 1.0,
+      "f1-score": 0.9917081260364843,
+      "support": 299.0
+    },
+    "ATO-V4": {
+      "precision": 0.9965986394557823,
+      "recall": 0.979933110367893,
+      "f1-score": 0.9881956155143339,
+      "support": 299.0
+    },
+    "ATO-V5": {
+      "precision": 0.9955555555555555,
+      "recall": 1.0,
+      "f1-score": 0.9977728285077951,
+      "support": 896.0
+    },
+    "accuracy": 0.9978346456692914,
+    "macro avg": {
+      "precision": 0.9950669882262012,
+      "recall": 0.995020383220296,
+      "f1-score": 0.9950140095455652,
+      "support": 5080.0
+    },
+    "weighted avg": {
+      "precision": 0.9978509857907799,
+      "recall": 0.9978346456692914,
+      "f1-score": 0.9978329141324679,
+      "support": 5080.0
+    }
+  },
+  "llm_summary": "[template fallback \u2014 set ANTHROPIC_API_KEY for an LLM-written version]\nHDC overall accuracy 0.660. XGBoost overall accuracy 0.998. Per-class F1 \u2014 HDC: ATO-V1=0.56, ATO-V2=0.80, ATO-V3=0.35, ATO-V4=0.47, ATO-V5=0.58. XGBoost: ATO-V1=1.00, ATO-V2=1.00, ATO-V3=0.99, ATO-V4=0.99, ATO-V5=1.00.\nXGBoost wins on overall accuracy. Expect both models to struggle most on ATO-V4 (Subtle Deviation) since it's designed to be the hardest, low-signal variant, and to do best on ATO-V1/V3 since those are the 'loud' variants with strong signal separation from the others.",
+  "elapsed_seconds": 45.66184043884277
+}

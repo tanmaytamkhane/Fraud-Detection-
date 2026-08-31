@@ -1,0 +1,7 @@
+{
+  "dim": 10000,
+  "num_levels": 100,
+  "num_signals": 6,
+  "seed": 42,
+  "note": "HDCEncoder is deterministic given (dim, num_levels, num_signals, seed) via config.HDC_SEED \u2014 reconstruct with HDCEncoder(**these kwargs) rather than trying to serialize the random level/signal hypervectors."
+}

@@ -1,0 +1,145 @@
+{
+  "attack_id": "ATO-001",
+  "name": "Account Takeover",
+  "signals": [
+    "new_device",
+    "new_location",
+    "new_beneficiary",
+    "amount_deviation",
+    "velocity_deviation",
+    "time_deviation"
+  ],
+  "simulation_parameters": [
+    {
+      "param": "device_change",
+      "type": "boolean",
+      "description": "Whether the simulated transaction comes from a new device",
+      "default": false,
+      "range": null
+    },
+    {
+      "param": "location_change",
+      "type": "boolean",
+      "description": "Whether the simulated transaction comes from a new location",
+      "default": false,
+      "range": null
+    },
+    {
+      "param": "beneficiary_change",
+      "type": "boolean",
+      "description": "Whether the payment goes to a never-before-seen beneficiary",
+      "default": false,
+      "range": null
+    },
+    {
+      "param": "amount_change",
+      "type": "float",
+      "description": "How much the amount deviates from normal (0.0 = normal, 1.0 = max deviation)",
+      "default": 0.0,
+      "range": [
+        0.0,
+        1.0
+      ]
+    },
+    {
+      "param": "velocity_change",
+      "type": "float",
+      "description": "How much the transaction speed deviates from normal (0.0 = normal, 1.0 = max deviation)",
+      "default": 0.0,
+      "range": [
+        0.0,
+        1.0
+      ]
+    },
+    {
+      "param": "time_change",
+      "type": "boolean",
+      "description": "Whether the transaction occurs at an unusual time",
+      "default": false,
+      "range": null
+    }
+  ],
+  "mitigations": [
+    "step_up_authentication",
+    "review",
+    "hold",
+    "block"
+  ],
+  "variants_for_simulation": {
+    "ATO-V1": {
+      "name": "High-Value New Device Takeover",
+      "risk_level": "very_high",
+      "risk_score": 0.95,
+      "simulation_config": {
+        "device_change": true,
+        "location_change": true,
+        "beneficiary_change": true,
+        "amount_change": 0.9,
+        "velocity_change": 0.3,
+        "time_change": false
+      },
+      "detection_difficulty": "easy",
+      "notes": "This is the 'textbook' ATO. If the system cannot detect this, something is fundamentally wrong."
+    },
+    "ATO-V2": {
+      "name": "Velocity Burst from Known Device",
+      "risk_level": "high",
+      "risk_score": 0.8,
+      "simulation_config": {
+        "device_change": false,
+        "location_change": false,
+        "beneficiary_change": true,
+        "amount_change": 0.4,
+        "velocity_change": 0.9,
+        "time_change": false
+      },
+      "detection_difficulty": "moderate",
+      "notes": "The known device removes a major signal. Detection must rely on velocity + new beneficiary combination."
+    },
+    "ATO-V3": {
+      "name": "Off-Hours Location Shift",
+      "risk_level": "medium",
+      "risk_score": 0.55,
+      "simulation_config": {
+        "device_change": false,
+        "location_change": true,
+        "beneficiary_change": false,
+        "amount_change": 0.1,
+        "velocity_change": 0.1,
+        "time_change": true
+      },
+      "detection_difficulty": "moderate",
+      "notes": "Could be legitimate travel. The combination of new location + unusual time is the key signal here."
+    },
+    "ATO-V4": {
+      "name": "Subtle Amount Deviation (Stealth Mode)",
+      "risk_level": "low",
+      "risk_score": 0.3,
+      "simulation_config": {
+        "device_change": false,
+        "location_change": false,
+        "beneficiary_change": false,
+        "amount_change": 0.25,
+        "velocity_change": 0.1,
+        "time_change": false
+      },
+      "detection_difficulty": "very_hard",
+      "notes": "This is the hardest variant to detect. Only subtle amount deviation gives it away. Tests the system's sensitivity to small changes."
+    },
+    "ATO-V5": {
+      "name": "Multi-Signal Low-Intensity",
+      "risk_level": "medium",
+      "risk_score": 0.5,
+      "simulation_config": {
+        "device_change": false,
+        "location_change": true,
+        "beneficiary_change": false,
+        "amount_change": 0.2,
+        "velocity_change": 0.3,
+        "time_change": true
+      },
+      "detection_difficulty": "hard",
+      "notes": "The key test: can the system detect fraud when many small anomalies combine? No single red flag, but the pattern is suspicious."
+    }
+  }
+}

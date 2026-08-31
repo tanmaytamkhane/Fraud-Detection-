@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #050608;
+    color: #e4e4e7;
+    font-family: 'Inter', sans-serif;
+  }
+
+  h1, h2, h3, .font-display {
+    font-family: 'Syne', 'Inter', sans-serif;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #090a0f;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1f2430;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #2e3648;
+}
+
+/* Range input slider styling for the cyan sliders */
+input[type=range] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: #1f2533;
+  height: 6px;
+  border-radius: 3px;
+  outline: none;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #00e5ff;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+input[type=range]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 14px rgba(0, 229, 255, 0.9);
+}
+
+input[type=range]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #00e5ff;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
+  border: none;
+}
+
+/* Glow and animation helpers */
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

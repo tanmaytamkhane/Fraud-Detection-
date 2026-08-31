@@ -1,0 +1,6 @@
+Variant ID,Variant Description,Total Fraud Cases,HDC Detection Rate,XGBoost Detection Rate
+ATO-V1,High-Value New Device (Loud),860,99.5%,99.9%
+ATO-V2,Velocity Burst (Known Device),2742,90.3%,99.2%
+ATO-V3,Off-Hours Location Shift,306,95.8%,95.8%
+ATO-V4,Subtle Deviation (The Ghost),288,43.4%,22.9%
+ATO-V5,Multi-Signal (The Chameleon),884,99.7%,99.4%

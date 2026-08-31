@@ -1,0 +1,457 @@
+{
+  "generated_at": "2026-08-31T13:11:38.091083",
+  "architecture": "Mastercard 10,000-D HDC vs XGBoost Benchmark Across All 7 Categories",
+  "categories": {
+    "CAT-001": {
+      "category": "ATO",
+      "name": "Account Takeover",
+      "dataset": "Mastercard ATO Benchmark (45,398 txns)",
+      "sample_tested": "9,080 unseen test transactions",
+      "overall_metrics": {
+        "accuracy": 87.1,
+        "precision": 86.5,
+        "recall": 91.2,
+        "f1_score": 88.8,
+        "auc_roc": 93.8,
+        "threshold": -0.004187
+      },
+      "xgboost_comparison": {
+        "accuracy": 96.3,
+        "precision": 98.4,
+        "recall": 94.8,
+        "f1_score": 96.6,
+        "auc_roc": 99.3
+      }
+    },
+    "CAT-002": {
+      "category": "SOC",
+      "name": "Social Engineering & AI Impersonation",
+      "dataset": "SOC Benchmark (24,998 transactions)",
+      "sample_tested": "3,750 unseen test transactions",
+      "overall_metrics": {
+        "accuracy": 99.6,
+        "precision": 99.7,
+        "recall": 98.3,
+        "f1_score": 99.0,
+        "auc_roc": 100.0,
+        "threshold": 0.024025171995162964
+      },
+      "xgboost_comparison": {
+        "accuracy": 99.7,
+        "precision": 99.3,
+        "recall": 99.3,
+        "f1_score": 99.3,
+        "auc_roc": 100.0
+      },
+      "per_variant_detection": [
+        {
+          "variant": "SOC-V1",
+          "name": "AI Spear-Phishing Invoice Fraud",
+          "catch_rate": 98.0,
+          "cases": 305
+        },
+        {
+          "variant": "SOC-V2",
+          "name": "Deepfake Voice Pretexting",
+          "catch_rate": 100.0,
+          "cases": 262
+        },
+        {
+          "variant": "SOC-V3",
+          "name": "Smishing OTP Interception",
+          "catch_rate": 96.2,
+          "cases": 183
+        }
+      ],
+      "signal_importance": [
+        {
+          "signal": "social_urgency_score",
+          "correlation": 0.68
+        },
+        {
+          "signal": "voice_jitter_anomaly",
+          "correlation": 0.46
+        },
+        {
+          "signal": "beneficiary_account_mismatch",
+          "correlation": 0.81
+        },
+        {
+          "signal": "amount_deviation",
+          "correlation": 0.69
+        },
+        {
+          "signal": "channel_risk",
+          "correlation": 0.71
+        },
+        {
+          "signal": "device_risk",
+          "correlation": 0.77
+        }
+      ]
+    },
+    "CAT-003": {
+      "category": "PM",
+      "name": "Payment Manipulation & QR Tampering",
+      "dataset": "PM Benchmark (24,998 transactions)",
+      "sample_tested": "3,750 unseen test transactions",
+      "overall_metrics": {
+        "accuracy": 99.9,
+        "precision": 99.6,
+        "recall": 100.0,
+        "f1_score": 99.8,
+        "auc_roc": 100.0,
+        "threshold": 0.004806011915206909
+      },
+      "xgboost_comparison": {
+        "accuracy": 100.0,
+        "precision": 100.0,
+        "recall": 99.9,
+        "f1_score": 99.9,
+        "auc_roc": 100.0
+      },
+      "per_variant_detection": [
+        {
+          "variant": "PM-V1",
+          "name": "Dynamic QR Code Redirection",
+          "catch_rate": 100.0,
+          "cases": 413
+        },
+        {
+          "variant": "PM-V2",
+          "name": "API Amount & Currency Parameter Tampering",
+          "catch_rate": 100.0,
+          "cases": 337
+        }
+      ],
+      "signal_importance": [
+        {
+          "signal": "qr_signature_mismatch",
+          "correlation": 0.6
+        },
+        {
+          "signal": "payload_tampering_score",
+          "correlation": 0.86
+        },
+        {
+          "signal": "merchant_geo_mismatch",
+          "correlation": 0.55
+        },
+        {
+          "signal": "amount_deviation",
+          "correlation": 0.64
+        },
+        {
+          "signal": "channel_risk",
+          "correlation": 0.82
+        },
+        {
+          "signal": "device_risk",
+          "correlation": 0.69
+        }
+      ]
+    },
+    "CAT-004": {
+      "category": "TB",
+      "name": "Transaction Behaviour & Velocity Abuse",
+      "dataset": "TB Benchmark (24,998 transactions)",
+      "sample_tested": "3,750 unseen test transactions",
+      "overall_metrics": {
+        "accuracy": 100.0,
+        "precision": 99.9,
+        "recall": 100.0,
+        "f1_score": 99.9,
+        "auc_roc": 100.0,
+        "threshold": 0.03536766767501831
+      },
+      "xgboost_comparison": {
+        "accuracy": 100.0,
+        "precision": 100.0,
+        "recall": 100.0,
+        "f1_score": 100.0,
+        "auc_roc": 100.0
+      },
+      "per_variant_detection": [
+        {
+          "variant": "TB-V1",
+          "name": "High-Frequency Carding Botnet",
+          "catch_rate": 100.0,
+          "cases": 462
+        },
+        {
+          "variant": "TB-V2",
+          "name": "Coordinated Multi-Account Burst",
+          "catch_rate": 100.0,
+          "cases": 288
+        }
+      ],
+      "signal_importance": [
+        {
+          "signal": "inter_arrival_velocity",
+          "correlation": 0.74
+        },
+        {
+          "signal": "micro_amount_clustering",
+          "correlation": 0.69
+        },
+        {
+          "signal": "bot_subnet_entropy",
+          "correlation": 0.85
+        },
+        {
+          "signal": "amount_deviation",
+          "correlation": 0.38
+        },
+        {
+          "signal": "channel_risk",
+          "correlation": 0.82
+        },
+        {
+          "signal": "device_risk",
+          "correlation": 0.82
+        }
+      ]
+    },
+    "CAT-005": {
+      "category": "MRF",
+      "name": "Merchant & Refund Fraud",
+      "dataset": "MRF Benchmark (24,998 transactions)",
+      "sample_tested": "3,750 unseen test transactions",
+      "overall_metrics": {
+        "accuracy": 99.8,
+        "precision": 99.5,
+        "recall": 99.3,
+        "f1_score": 99.4,
+        "auc_roc": 100.0,
+        "threshold": 0.028348028659820557
+      },
+      "xgboost_comparison": {
+        "accuracy": 99.9,
+        "precision": 99.5,
+        "recall": 100.0,
+        "f1_score": 99.7,
+        "auc_roc": 100.0
+      },
+      "per_variant_detection": [
+        {
+          "variant": "MRF-V1",
+          "name": "Support Chatbot Refund Jailbreak",
+          "catch_rate": 100.0,
+          "cases": 375
+        },
+        {
+          "variant": "MRF-V2",
+          "name": "Ghost Merchant Transaction Laundering",
+          "catch_rate": 98.7,
+          "cases": 375
+        }
+      ],
+      "signal_importance": [
+        {
+          "signal": "prompt_injection_score",
+          "correlation": 0.64
+        },
+        {
+          "signal": "unverified_refund_ratio",
+          "correlation": 0.65
+        },
+        {
+          "signal": "merchant_dispute_anomaly",
+          "correlation": 0.7
+        },
+        {
+          "signal": "amount_deviation",
+          "correlation": 0.71
+        },
+        {
+          "signal": "channel_risk",
+          "correlation": 0.8
+        },
+        {
+          "signal": "device_risk",
+          "correlation": 0.81
+        }
+      ]
+    },
+    "CAT-006": {
+      "dataset": "Money Movement & Mule Graph Benchmark (25,000 synthetic transfers)",
+      "sample_tested": "3,751 unseen test transfers",
+      "overall_metrics": {
+        "auc_roc": 1.0,
+        "accuracy": 0.996,
+        "recall": 0.9982,
+        "precision": 0.9757,
+        "f1_score": 0.9868
+      },
+      "confusion_matrix": {
+        "tp": 562,
+        "fp": 14,
+        "fn": 1,
+        "tn": 3174,
+        "total": 3751
+      },
+      "per_variant_detection": [
+        {
+          "variant": "MM-V1",
+          "name": "Rapid Cash-Out Burst",
+          "catch_rate": 100.0,
+          "cases": 143,
+          "caught": 143,
+          "difficulty": "Easy"
+        },
+        {
+          "variant": "MM-V2",
+          "name": "Smurfing / Layered Fan-Out",
+          "catch_rate": 100.0,
+          "cases": 139,
+          "caught": 139,
+          "difficulty": "Moderate"
+        },
+        {
+          "variant": "MM-V3",
+          "name": "Fan-In Consolidation Ring",
+          "catch_rate": 100.0,
+          "cases": 139,
+          "caught": 139,
+          "difficulty": "Moderate"
+        },
+        {
+          "variant": "MM-V4",
+          "name": "Dormant Mule Ring Activation",
+          "catch_rate": 99.3,
+          "cases": 142,
+          "caught": 141,
+          "difficulty": "Hard"
+        }
+      ],
+      "signal_importance": [
+        {
+          "signal": "amount_layering_ratio",
+          "fraud_mean": 0.7905,
+          "legit_mean": 0.1848,
+          "correlation": 0.8821
+        },
+        {
+          "signal": "transit_velocity_sec",
+          "fraud_mean": 0.6632,
+          "legit_mean": 0.1781,
+          "correlation": 0.8408
+        },
+        {
+          "signal": "shared_device_cluster",
+          "fraud_mean": 0.5374,
+          "legit_mean": 0.0233,
+          "correlation": 0.6106
+        },
+        {
+          "signal": "account_dormancy_score",
+          "fraud_mean": 0.4043,
+          "legit_mean": 0.1639,
+          "correlation": 0.5583
+        },
+        {
+          "signal": "fan_out_degree",
+          "fraud_mean": 0.4444,
+          "legit_mean": 0.1939,
+          "correlation": 0.551
+        },
+        {
+          "signal": "fan_in_degree",
+          "fraud_mean": 0.4043,
+          "legit_mean": 0.1918,
+          "correlation": 0.4843
+        }
+      ]
+    },
+    "CAT-007": {
+      "dataset": "GenAI Multi-Modal Biometric Benchmark (25,000 synthetic interactions)",
+      "sample_tested": "3,751 unseen test interactions",
+      "overall_metrics": {
+        "auc_roc": 1.0,
+        "accuracy": 0.9971,
+        "recall": 1.0,
+        "precision": 0.9808,
+        "f1_score": 0.9903
+      },
+      "confusion_matrix": {
+        "tp": 563,
+        "fp": 11,
+        "fn": 0,
+        "tn": 3177,
+        "total": 3751
+      },
+      "per_variant_detection": [
+        {
+          "variant": "GENAI-V1",
+          "name": "Conversational Autonomous Fraud Agent",
+          "catch_rate": 100.0,
+          "cases": 143,
+          "caught": 143,
+          "difficulty": "Easy"
+        },
+        {
+          "variant": "GENAI-V2",
+          "name": "Deepfake Video & Voice Authorization Bypass",
+          "catch_rate": 100.0,
+          "cases": 139,
+          "caught": 139,
+          "difficulty": "Easy"
+        },
+        {
+          "variant": "GENAI-V3",
+          "name": "Generative AI Synthetic Identity (KYC Diffusion Bypass)",
+          "catch_rate": 100.0,
+          "cases": 139,
+          "caught": 139,
+          "difficulty": "Moderate"
+        },
+        {
+          "variant": "GENAI-V4",
+          "name": "Adaptive Adversarial Feature Evasion",
+          "catch_rate": 100.0,
+          "cases": 142,
+          "caught": 142,
+          "difficulty": "Very Hard"
+        }
+      ],
+      "signal_importance": [
+        {
+          "signal": "adversarial_perturbation_index",
+          "fraud_mean": 0.5939,
+          "legit_mean": 0.1405,
+          "correlation": 0.832
+        },
+        {
+          "signal": "amount_deviation",
+          "fraud_mean": 0.7178,
+          "legit_mean": 0.186,
+          "correlation": 0.8277
+        },
+        {
+          "signal": "device_risk",
+          "fraud_mean": 0.6632,
+          "legit_mean": 0.2158,
+          "correlation": 0.7747
+        },
+        {
+          "signal": "llm_semantic_intent_score",
+          "fraud_mean": 0.523,
+          "legit_mean": 0.163,
+          "correlation": 0.696
+        },
+        {
+          "signal": "synthetic_face_embedding_dist",
+          "fraud_mean": 0.4049,
+          "legit_mean": 0.1643,
+          "correlation": 0.532
+        },
+        {
+          "signal": "voice_biometric_jitter",
+          "fraud_mean": 0.3701,
+          "legit_mean": 0.1663,
+          "correlation": 0.4462
+        }
+      ]
+    }
+  }
+}

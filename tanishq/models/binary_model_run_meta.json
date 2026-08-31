@@ -1,0 +1,11 @@
+{
+  "legit_sample_n": 20000,
+  "sample_frac": null,
+  "n_rows_total": 45398,
+  "n_train": 36318,
+  "n_val": 9080,
+  "fraud_rate_pct": 55.945195823604564,
+  "oversample_disabled": true,
+  "hdc_epochs": 30,
+  "hdc_dimensions": 10000
+}

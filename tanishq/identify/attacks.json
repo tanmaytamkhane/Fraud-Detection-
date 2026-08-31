@@ -1,0 +1,1457 @@
+{
+  "_comment": "This is the MAIN ENCYCLOPEDIA \u2014 the full definition of Account Takeover (ATO) and all its variants.",
+  "_comment2": "Person 1 owns this file. Other team members READ from it but never modify it.",
+  "version": "1.0.0",
+  "last_updated": "2026-08-24",
+  "owner": "Person 1 \u2014 Attack Intelligence",
+  "attacks": [
+    {
+      "attack_id": "ATO-001",
+      "name": "Account Takeover",
+      "code": "ATO",
+      "category": "account_compromise",
+      "attack_objective": {
+        "_comment": "WHAT does the attacker want to achieve?",
+        "summary": "Gain unauthorized control of a legitimate user's payment account to perform fraudulent transactions",
+        "details": [
+          "Access the victim's account using stolen or compromised credentials",
+          "Modify account settings (email, phone, address) to maintain control",
+          "Initiate unauthorized fund transfers to attacker-controlled beneficiaries",
+          "Exploit stored payment methods for fraudulent purchases"
+        ]
+      },
+      "preconditions": {
+        "_comment": "WHAT must be true BEFORE this attack can happen?",
+        "summary": "The attacker must have obtained valid account credentials through an external method",
+        "required": [
+          "Attacker possesses valid login credentials (username + password)",
+          "Target account has active payment capability (linked bank account or card)",
+          "Target account is not currently locked or suspended"
+        ],
+        "common_credential_sources": [
+          "Phishing emails/websites that trick users into entering credentials",
+          "Data breaches where credentials were leaked from other services",
+          "Credential stuffing (trying leaked passwords from other sites)",
+          "Social engineering (calling the victim and tricking them)",
+          "Malware/keyloggers installed on the victim's device"
+        ]
+      },
+      "observable_behaviour": {
+        "_comment": "WHAT does this attack LOOK LIKE when it is happening? These are the patterns we watch for.",
+        "summary": "Post-compromise activity patterns that differ from the legitimate account holder's normal behaviour",
+        "indicators": [
+          {
+            "indicator": "Login from unrecognized device or browser fingerprint",
+            "signal": "new_device",
+            "confidence": "high"
+          },
+          {
+            "indicator": "Login from a geographic location inconsistent with account history",
+            "signal": "new_location",
+            "confidence": "high"
+          },
+          {
+            "indicator": "Immediate payment to a never-before-seen beneficiary after login",
+            "signal": "new_beneficiary",
+            "confidence": "high"
+          },
+          {
+            "indicator": "Transaction amount significantly outside normal spending pattern",
+            "signal": "amount_deviation",
+            "confidence": "medium"
+          },
+          {
+            "indicator": "Rapid sequence of transactions in short time window",
+            "signal": "velocity_deviation",
+            "confidence": "medium"
+          },
+          {
+            "indicator": "Activity at unusual hours for this account holder",
+            "signal": "time_deviation",
+            "confidence": "low"
+          }
+        ]
+      },
+      "payment_consequences": {
+        "_comment": "WHAT happens to the money?",
+        "summary": "Unauthorized fund transfers leading to direct financial loss for the account holder",
+        "consequences": [
+          "Funds transferred to attacker-controlled bank accounts",
+          "Unauthorized purchases using stored payment cards",
+          "Account balance drained through multiple smaller transactions",
+          "Chargeback costs and dispute resolution expenses for the institution"
+        ],
+        "typical_loss_range": {
+          "min_usd": 500,
+          "max_usd": 50000,
+          "median_usd": 5000
+        }
+      },
+      "genai_enhancement": {
+        "_comment": "HOW does Generative AI make this attack MORE dangerous?",
+        "summary": "GenAI enables attackers to scale and improve the quality of ATO attacks",
+        "enhancements": [
+          {
+            "technique": "AI-generated phishing",
+            "description": "GenAI creates highly convincing, personalized phishing emails that bypass spam filters and fool users",
+            "impact": "Increases credential theft success rate by 3-5x"
+          },
+          {
+            "technique": "Deepfake voice for social engineering",
+            "description": "AI clones the victim's voice to bypass phone-based verification or trick bank support staff",
+            "impact": "Defeats voice-based authentication and social verification"
+          },
+          {
+            "technique": "Automated credential testing",
+            "description": "AI optimizes credential stuffing by learning which password variations are most likely to work",
+            "impact": "Reduces time to compromise from hours to minutes"
+          },
+          {
+            "technique": "Behaviour mimicry",
+            "description": "AI studies the legitimate user's transaction patterns and mimics them to avoid detection",
+            "impact": "Makes post-compromise activity harder to distinguish from legitimate use"
+          }
+        ]
+      },
+      "signals": [
+        "new_device",
+        "new_location",
+        "new_beneficiary",
+        "amount_deviation",
+        "velocity_deviation",
+        "time_deviation"
+      ],
+      "simulation_parameters": [
+        {
+          "param": "device_change",
+          "type": "boolean",
+          "description": "Whether the simulated transaction comes from a new device",
+          "default": false
+        },
+        {
+          "param": "location_change",
+          "type": "boolean",
+          "description": "Whether the simulated transaction comes from a new location",
+          "default": false
+        },
+        {
+          "param": "beneficiary_change",
+          "type": "boolean",
+          "description": "Whether the payment goes to a never-before-seen beneficiary",
+          "default": false
+        },
+        {
+          "param": "amount_change",
+          "type": "float",
+          "description": "How much the amount deviates from normal (0.0 = normal, 1.0 = max deviation)",
+          "default": 0.0,
+          "range": [
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "param": "velocity_change",
+          "type": "float",
+          "description": "How much the transaction speed deviates from normal (0.0 = normal, 1.0 = max deviation)",
+          "default": 0.0,
+          "range": [
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "param": "time_change",
+          "type": "boolean",
+          "description": "Whether the transaction occurs at an unusual time",
+          "default": false
+        }
+      ],
+      "mitigations": [
+        "step_up_authentication",
+        "review",
+        "hold",
+        "block"
+      ],
+      "detection_signals": {
+        "_comment": "These are the specific red flags the detection system should watch for",
+        "primary_signals": [
+          {
+            "signal": "new_device",
+            "weight": 0.85,
+            "description": "High-confidence indicator \u2014 most ATO attacks come from a device the account never used before"
+          },
+          {
+            "signal": "new_beneficiary",
+            "weight": 0.8,
+            "description": "High-confidence indicator \u2014 attackers send money to accounts they control"
+          }
+        ],
+        "secondary_signals": [
+          {
+            "signal": "new_location",
+            "weight": 0.6,
+            "description": "Medium-confidence \u2014 could be legitimate travel"
+          },
+          {
+            "signal": "amount_deviation",
+            "weight": 0.5,
+            "description": "Medium-confidence \u2014 depends on how far from normal"
+          },
+          {
+            "signal": "velocity_deviation",
+            "weight": 0.55,
+            "description": "Medium-confidence \u2014 rapid transactions are suspicious but not conclusive"
+          }
+        ],
+        "weak_signals": [
+          {
+            "signal": "time_deviation",
+            "weight": 0.3,
+            "description": "Low-confidence alone \u2014 people sometimes transact at odd hours"
+          }
+        ]
+      },
+      "variants": [
+        {
+          "variant_id": "ATO-V1",
+          "name": "High-Value New Device Takeover",
+          "description": "Classic high-risk ATO: attacker logs in from an unknown device, sends a large payment to a new beneficiary. Easiest to detect but also the most damaging if missed.",
+          "risk_level": "very_high",
+          "risk_score": 0.95,
+          "active_signals": {
+            "new_device": true,
+            "new_location": true,
+            "new_beneficiary": true,
+            "amount_deviation": 0.9,
+            "velocity_deviation": 0.3,
+            "time_deviation": false
+          },
+          "simulation_config": {
+            "device_change": true,
+            "location_change": true,
+            "beneficiary_change": true,
+            "amount_change": 0.9,
+            "velocity_change": 0.3,
+            "time_change": false
+          },
+          "expected_mitigation": "block",
+          "detection_difficulty": "easy",
+          "notes": "This is the 'textbook' ATO. If the system cannot detect this, something is fundamentally wrong."
+        },
+        {
+          "variant_id": "ATO-V2",
+          "name": "Velocity Burst from Known Device",
+          "description": "Attacker uses a device the victim has used before (e.g., compromised via malware). Sends multiple rapid payments to new beneficiaries. The known device makes it trickier.",
+          "risk_level": "high",
+          "risk_score": 0.8,
+          "active_signals": {
+            "new_device": false,
+            "new_location": false,
+            "new_beneficiary": true,
+            "amount_deviation": 0.4,
+            "velocity_deviation": 0.9,
+            "time_deviation": false
+          },
+          "simulation_config": {
+            "device_change": false,
+            "location_change": false,
+            "beneficiary_change": true,
+            "amount_change": 0.4,
+            "velocity_change": 0.9,
+            "time_change": false
+          },
+          "expected_mitigation": "hold",
+          "detection_difficulty": "moderate",
+          "notes": "The known device removes a major signal. Detection must rely on velocity + new beneficiary combination."
+        },
+        {
+          "variant_id": "ATO-V3",
+          "name": "Off-Hours Location Shift",
+          "description": "Attacker logs in from a new location at an unusual time but keeps transaction amounts normal. Tries to fly under the radar by not being greedy.",
+          "risk_level": "medium",
+          "risk_score": 0.55,
+          "active_signals": {
+            "new_device": false,
+            "new_location": true,
+            "new_beneficiary": false,
+            "amount_deviation": 0.1,
+            "velocity_deviation": 0.1,
+            "time_deviation": true
+          },
+          "simulation_config": {
+            "device_change": false,
+            "location_change": true,
+            "beneficiary_change": false,
+            "amount_change": 0.1,
+            "velocity_change": 0.1,
+            "time_change": true
+          },
+          "expected_mitigation": "step_up_authentication",
+          "detection_difficulty": "moderate",
+          "notes": "Could be legitimate travel. The combination of new location + unusual time is the key signal here."
+        },
+        {
+          "variant_id": "ATO-V4",
+          "name": "Subtle Amount Deviation (Stealth Mode)",
+          "description": "The sneakiest variant. Attacker uses a known device, pays a known beneficiary, but slightly increases the amount. Almost indistinguishable from legitimate activity.",
+          "risk_level": "low",
+          "risk_score": 0.3,
+          "active_signals": {
+            "new_device": false,
+            "new_location": false,
+            "new_beneficiary": false,
+            "amount_deviation": 0.25,
+            "velocity_deviation": 0.1,
+            "time_deviation": false
+          },
+          "simulation_config": {
+            "device_change": false,
+            "location_change": false,
+            "beneficiary_change": false,
+            "amount_change": 0.25,
+            "velocity_change": 0.1,
+            "time_change": false
+          },
+          "expected_mitigation": "review",
+          "detection_difficulty": "very_hard",
+          "notes": "This is the hardest variant to detect. Only subtle amount deviation gives it away. Tests the system's sensitivity to small changes."
+        },
+        {
+          "variant_id": "ATO-V5",
+          "name": "Multi-Signal Low-Intensity",
+          "description": "Multiple signals fire but all at low intensity. No single signal is alarming on its own, but the combination should raise suspicion. Tests the system's ability to correlate weak signals.",
+          "risk_level": "medium",
+          "risk_score": 0.5,
+          "active_signals": {
+            "new_device": false,
+            "new_location": true,
+            "new_beneficiary": false,
+            "amount_deviation": 0.2,
+            "velocity_deviation": 0.3,
+            "time_deviation": true
+          },
+          "simulation_config": {
+            "device_change": false,
+            "location_change": true,
+            "beneficiary_change": false,
+            "amount_change": 0.2,
+            "velocity_change": 0.3,
+            "time_change": true
+          },
+          "expected_mitigation": "step_up_authentication",
+          "detection_difficulty": "hard",
+          "notes": "The key test: can the system detect fraud when many small anomalies combine? No single red flag, but the pattern is suspicious."
+        }
+      ]
+    },
+    {
+      "attack_id": "MM-001",
+      "name": "Money Movement & Mule Networks",
+      "code": "MM",
+      "category": "money_movement",
+      "attack_objective": {
+        "summary": "Rapidly exfiltrate, layer, and cash out stolen or illicit funds through multi-hop mule account rings",
+        "details": [
+          "Launder funds across multiple intermediary accounts to obscure transaction origin",
+          "Structure transactions into micro-transfers to evade CTR / AML reporting thresholds",
+          "Consolidate multiple mule accounts into a single master cash-out wallet or crypto off-ramp",
+          "Exploit dormant aged accounts as high-trust intermediaries"
+        ]
+      },
+      "preconditions": {
+        "summary": "Attacker controls compromised source funds or mule network accounts",
+        "required": [
+          "Access to compromised accounts (via ATO) or mule recruits",
+          "Active P2P, ACH, or wire payment rails",
+          "Mule accounts prepared with cash-out channels"
+        ],
+        "common_credential_sources": [
+          "Compromised accounts from ATO operations",
+          "Mule recruitment schemes (work-from-home, romance scams)",
+          "Synthetic identities created for credit/mule exploitation",
+          "Bought credentials on dark web forums"
+        ]
+      },
+      "observable_behaviour": {
+        "summary": "High-velocity multi-hop graph flows with minimal account balance retention",
+        "indicators": [
+          {
+            "indicator": "Rapid outflow of funds within minutes of receipt",
+            "signal": "transit_velocity_sec",
+            "confidence": "high"
+          },
+          {
+            "indicator": "One account sending to 10+ distinct receivers in short window",
+            "signal": "fan_out_degree",
+            "confidence": "high"
+          },
+          {
+            "indicator": "Multiple accounts sending to 1 central consolidation account",
+            "signal": "fan_in_degree",
+            "confidence": "high"
+          },
+          {
+            "indicator": "Transfers structured just below $10,000 threshold",
+            "signal": "amount_layering_ratio",
+            "confidence": "medium"
+          },
+          {
+            "indicator": "Multiple sender/receiver accounts sharing identical device or IP subnet",
+            "signal": "shared_device_cluster",
+            "confidence": "high"
+          },
+          {
+            "indicator": "Zero-history dormant account suddenly routing large volumes",
+            "signal": "account_dormancy_score",
+            "confidence": "medium"
+          }
+        ]
+      },
+      "payment_consequences": {
+        "summary": "Irreversible fund loss as money is funneled to unrecoverable cash-out endpoints",
+        "consequences": [
+          "Permanent loss of victim funds through crypto/cash off-ramps",
+          "Regulatory fines for financial institutions failing to detect AML smurfing",
+          "Secondary account compromise across innocent mule victims"
+        ],
+        "typical_loss_range": {
+          "min_usd": 1000,
+          "max_usd": 100000,
+          "median_usd": 15000
+        }
+      },
+      "genai_enhancement": {
+        "summary": "Autonomous GenAI agents orchestrating adaptive money movement networks",
+        "enhancements": [
+          {
+            "technique": "Autonomous Mule Agent Routing",
+            "description": "GenAI dynamically selects mule accounts with the lowest risk scores to route funds",
+            "impact": "Decreases mule cluster detection by 4x"
+          },
+          {
+            "technique": "Adaptive Smurfing Timing",
+            "description": "AI models legitimate cardholder habits and spreads micro-transfers across days to evade time-window alerts",
+            "impact": "Blends illicit transfers with natural commerce"
+          }
+        ]
+      },
+      "signals": [
+        "fan_out_degree",
+        "fan_in_degree",
+        "transit_velocity_sec",
+        "amount_layering_ratio",
+        "shared_device_cluster",
+        "account_dormancy_score"
+      ],
+      "simulation_parameters": [
+        {
+          "param": "fan_out_change",
+          "type": "float",
+          "description": "Degree of fan-out smurfing (0.0=normal, 1.0=extreme)",
+          "default": 0.0,
+          "range": [
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "param": "fan_in_change",
+          "type": "float",
+          "description": "Degree of fan-in consolidation (0.0=normal, 1.0=extreme)",
+          "default": 0.0,
+          "range": [
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "param": "transit_velocity_change",
+          "type": "float",
+          "description": "How fast funds are forwarded (0.0=slow, 1.0=instant transit)",
+          "default": 0.0,
+          "range": [
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "param": "layering_ratio_change",
+          "type": "float",
+          "description": "Passthrough ratio (0.0=holds balance, 1.0=100% forwarded)",
+          "default": 0.0,
+          "range": [
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "param": "shared_device_change",
+          "type": "boolean",
+          "description": "Whether mule nodes share device/IP hardware",
+          "default": false
+        },
+        {
+          "param": "dormancy_change",
+          "type": "float",
+          "description": "Account dormancy activation anomaly",
+          "default": 0.0,
+          "range": [
+            0.0,
+            1.0
+          ]
+        }
+      ],
+      "mitigations": [
+        "step_up_authentication",
+        "review",
+        "hold",
+        "block"
+      ],
+      "detection_signals": {
+        "primary_signals": [
+          {
+            "signal": "transit_velocity_sec",
+            "weight": 0.9,
+            "description": "Near-zero transit time between in-flow and out-flow"
+          },
+          {
+            "signal": "shared_device_cluster",
+            "weight": 0.85,
+            "description": "Hardware or IP sharing across multi-account transfers"
+          }
+        ],
+        "secondary_signals": [
+          {
+            "signal": "fan_out_degree",
+            "weight": 0.75,
+            "description": "Rapid smurfing split across multiple destination nodes"
+          },
+          {
+            "signal": "fan_in_degree",
+            "weight": 0.75,
+            "description": "Funneling of multiple transfers into single aggregator"
+          },
+          {
+            "signal": "amount_layering_ratio",
+            "weight": 0.7,
+            "description": "High passthrough ratio with minimal account balance retention"
+          }
+        ],
+        "weak_signals": [
+          {
+            "signal": "account_dormancy_score",
+            "weight": 0.4,
+            "description": "Sudden activity after long dormancy period"
+          }
+        ]
+      },
+      "variants": [
+        {
+          "variant_id": "MM-V1",
+          "name": "Rapid Cash-Out Burst",
+          "description": "Immediate high-velocity outflow: stolen funds are wired or cashed out within seconds of arriving at destination.",
+          "risk_level": "very_high",
+          "risk_score": 0.96,
+          "active_signals": {
+            "fan_out_degree": 0.4,
+            "fan_in_degree": 0.2,
+            "transit_velocity_sec": 0.95,
+            "amount_layering_ratio": 0.98,
+            "shared_device_cluster": true,
+            "account_dormancy_score": 0.3
+          },
+          "simulation_config": {
+            "fan_out_change": 0.4,
+            "fan_in_change": 0.2,
+            "transit_velocity_change": 0.95,
+            "layering_ratio_change": 0.98,
+            "shared_device_change": true,
+            "dormancy_change": 0.3
+          },
+          "expected_mitigation": "block",
+          "detection_difficulty": "easy",
+          "notes": "Classic rapid drain. Velocity and shared device make it an immediate critical block."
+        },
+        {
+          "variant_id": "MM-V2",
+          "name": "Smurfing / Layered Fan-Out",
+          "description": "Attacker splits $10,000+ stolen lump sums into 10-15 micro-transfers to distinct mule accounts to bypass single-transaction AML limits.",
+          "risk_level": "high",
+          "risk_score": 0.85,
+          "active_signals": {
+            "fan_out_degree": 0.95,
+            "fan_in_degree": 0.2,
+            "transit_velocity_sec": 0.75,
+            "amount_layering_ratio": 0.9,
+            "shared_device_cluster": false,
+            "account_dormancy_score": 0.2
+          },
+          "simulation_config": {
+            "fan_out_change": 0.95,
+            "fan_in_change": 0.2,
+            "transit_velocity_change": 0.75,
+            "layering_ratio_change": 0.9,
+            "shared_device_change": false,
+            "dormancy_change": 0.2
+          },
+          "expected_mitigation": "hold",
+          "detection_difficulty": "moderate",
+          "notes": "Smurfing relies on graph fan-out anomaly detection to catch the dispersal phase."
+        },
+        {
+          "variant_id": "MM-V3",
+          "name": "Fan-In Consolidation Ring",
+          "description": "Multiple intermediate mule accounts funnel their micro-balances into a single aggregator wallet or crypto off-ramp.",
+          "risk_level": "high",
+          "risk_score": 0.88,
+          "active_signals": {
+            "fan_out_degree": 0.2,
+            "fan_in_degree": 0.95,
+            "transit_velocity_sec": 0.8,
+            "amount_layering_ratio": 0.95,
+            "shared_device_cluster": true,
+            "account_dormancy_score": 0.25
+          },
+          "simulation_config": {
+            "fan_out_change": 0.2,
+            "fan_in_change": 0.95,
+            "transit_velocity_change": 0.8,
+            "layering_ratio_change": 0.95,
+            "shared_device_change": true,
+            "dormancy_change": 0.25
+          },
+          "expected_mitigation": "block",
+          "detection_difficulty": "moderate",
+          "notes": "Aggregation endpoint detection using in-degree centrality and shared IP/device clusters."
+        },
+        {
+          "variant_id": "MM-V4",
+          "name": "Dormant Mule Ring Activation",
+          "description": "Aged bank accounts that sat dormant for 6+ months suddenly wake up and route high-value layered transfers.",
+          "risk_level": "medium",
+          "risk_score": 0.65,
+          "active_signals": {
+            "fan_out_degree": 0.35,
+            "fan_in_degree": 0.35,
+            "transit_velocity_sec": 0.5,
+            "amount_layering_ratio": 0.85,
+            "shared_device_cluster": false,
+            "account_dormancy_score": 0.95
+          },
+          "simulation_config": {
+            "fan_out_change": 0.35,
+            "fan_in_change": 0.35,
+            "transit_velocity_change": 0.5,
+            "layering_ratio_change": 0.85,
+            "shared_device_change": false,
+            "dormancy_change": 0.95
+          },
+          "expected_mitigation": "hold",
+          "detection_difficulty": "hard",
+          "notes": "High trust history makes detection difficult; dormancy anomaly + passthrough ratio triggers Step-Up."
+        }
+      ]
+    },
+    {
+      "attack_id": "GENAI-001",
+      "name": "GenAI-Native & Emerging Fraud",
+      "code": "GENAI",
+      "category": "genai_emerging",
+      "attack_objective": {
+        "summary": "Deploy autonomous Generative AI agents, synthetic biometrics, and adversarial evasion to bypass payment defenses",
+        "details": [
+          "Automate hyper-personalized spear phishing and conversational social engineering via LLM agents",
+          "Synthesize realistic voice/video deepfakes to authorize high-value executive wire transfers",
+          "Generate synthetic identities with valid MRZ checksums and AI portraits to bypass KYC onboarding",
+          "Apply gradient-free adversarial perturbations to transaction attributes to evade fraud classifiers"
+        ]
+      },
+      "preconditions": {
+        "summary": "Attacker possesses LLM API access, voice synthesis models, or diffusion-based ID generators",
+        "required": [
+          "Access to generative voice/image/text AI models",
+          "Target organizational hierarchy / vendor relationship data",
+          "Target payment gateway API or customer support interaction channel"
+        ],
+        "common_credential_sources": [
+          "Public executive audio (podcasts, earnings calls, conferences)",
+          "OSINT data from LinkedIn and company directories",
+          "Stolen SSN fragments combined with diffusion-generated faces"
+        ]
+      },
+      "observable_behaviour": {
+        "summary": "Anomalous linguistic urgency, synthetic biometric acoustic flatness, and near-threshold amount clustering",
+        "indicators": [
+          {
+            "indicator": "High semantic urgency score in communication channel",
+            "signal": "llm_semantic_intent_score",
+            "confidence": "high"
+          },
+          {
+            "indicator": "Lack of natural acoustic micro-tremors in voice verification",
+            "signal": "voice_biometric_jitter",
+            "confidence": "high"
+          },
+          {
+            "indicator": "Synthetic facial embedding lack of sub-surface skin scattering",
+            "signal": "synthetic_face_embedding_dist",
+            "confidence": "high"
+          },
+          {
+            "indicator": "Transactions repeatedly clustering just below risk boundary ($1,999 vs $2,000)",
+            "signal": "adversarial_perturbation_index",
+            "confidence": "medium"
+          }
+        ]
+      },
+      "payment_consequences": {
+        "summary": "Direct unauthorized high-value wires and maxed-out synthetic credit lines",
+        "consequences": [
+          "Multi-million dollar corporate wire loss via executive deepfake authorization",
+          "Credit line write-offs on synthetic identity accounts",
+          "Chatbot authorized unauthorized refund payouts"
+        ],
+        "typical_loss_range": {
+          "min_usd": 5000,
+          "max_usd": 2500000,
+          "median_usd": 50000
+        }
+      },
+      "genai_enhancement": {
+        "summary": "AI is the core engine of the attack itself rather than just a helper tool",
+        "enhancements": [
+          {
+            "technique": "Real-time Deepfake Voice Cloning",
+            "description": "Clones CFO voice with under 5s of audio to authorize same-day wires",
+            "impact": "Defeats traditional voice callbacks"
+          },
+          {
+            "technique": "Black-Box Adversarial Search",
+            "description": "Optimizes payment features to minimize classifier score while maximizing extracted cash",
+            "impact": "Bypasses static threshold rules"
+          }
+        ]
+      },
+      "signals": [
+        "llm_semantic_intent_score",
+        "voice_biometric_jitter",
+        "synthetic_face_embedding_dist",
+        "adversarial_perturbation_index",
+        "device_risk",
+        "amount_deviation"
+      ],
+      "simulation_parameters": [
+        {
+          "param": "semantic_urgency_change",
+          "type": "float",
+          "description": "LLM conversational urgency score",
+          "default": 0.0,
+          "range": [
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "param": "voice_jitter_change",
+          "type": "float",
+          "description": "Deepfake voice acoustic anomaly score",
+          "default": 0.0,
+          "range": [
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "param": "synthetic_id_change",
+          "type": "float",
+          "description": "Synthetic KYC embedding anomaly",
+          "default": 0.0,
+          "range": [
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "param": "adversarial_evasion_change",
+          "type": "float",
+          "description": "Adversarial parameter perturbation index",
+          "default": 0.0,
+          "range": [
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "param": "device_change",
+          "type": "boolean",
+          "description": "New unrecognized device",
+          "default": false
+        },
+        {
+          "param": "amount_change",
+          "type": "float",
+          "description": "Amount deviation score",
+          "default": 0.0,
+          "range": [
+            0.0,
+            1.0
+          ]
+        }
+      ],
+      "mitigations": [
+        "step_up_authentication",
+        "review",
+        "hold",
+        "block"
+      ],
+      "detection_signals": {
+        "primary_signals": [
+          {
+            "signal": "voice_biometric_jitter",
+            "weight": 0.95,
+            "description": "Lack of natural acoustic jitter in voice authorization"
+          },
+          {
+            "signal": "synthetic_face_embedding_dist",
+            "weight": 0.9,
+            "description": "Diffusion artifact detection in KYC facial scan"
+          }
+        ],
+        "secondary_signals": [
+          {
+            "signal": "llm_semantic_intent_score",
+            "weight": 0.8,
+            "description": "High semantic pressure and urgency Framing"
+          },
+          {
+            "signal": "adversarial_perturbation_index",
+            "weight": 0.75,
+            "description": "Near-threshold clustering and systematic evasion patterns"
+          }
+        ]
+      },
+      "variants": [
+        {
+          "variant_id": "GENAI-V1",
+          "name": "Conversational Fraud Agent",
+          "description": "Autonomous LLM bot ingesting victim social feeds to execute real-time conversational social engineering on support channels.",
+          "risk_level": "very_high",
+          "risk_score": 0.94,
+          "active_signals": {
+            "llm_semantic_intent_score": 0.95,
+            "voice_biometric_jitter": 0.2,
+            "synthetic_face_embedding_dist": 0.15,
+            "adversarial_perturbation_index": 0.6,
+            "device_risk": 0.85,
+            "amount_deviation": 0.7
+          },
+          "simulation_config": {
+            "semantic_urgency_change": 0.95,
+            "voice_jitter_change": 0.2,
+            "synthetic_id_change": 0.15,
+            "adversarial_evasion_change": 0.6,
+            "device_change": true,
+            "amount_change": 0.7
+          },
+          "expected_mitigation": "block",
+          "detection_difficulty": "easy",
+          "notes": "NLP intent modeling detects prompt injection and coercion heuristics."
+        },
+        {
+          "variant_id": "GENAI-V2",
+          "name": "Deepfake Voice / Video Authorization",
+          "description": "Attacker clones CFO/vendor voice to call treasury and push an urgent high-value wire authorization.",
+          "risk_level": "very_high",
+          "risk_score": 0.98,
+          "active_signals": {
+            "llm_semantic_intent_score": 0.8,
+            "voice_biometric_jitter": 0.98,
+            "synthetic_face_embedding_dist": 0.3,
+            "adversarial_perturbation_index": 0.4,
+            "device_risk": 0.9,
+            "amount_deviation": 0.95
+          },
+          "simulation_config": {
+            "semantic_urgency_change": 0.8,
+            "voice_jitter_change": 0.98,
+            "synthetic_id_change": 0.3,
+            "adversarial_evasion_change": 0.4,
+            "device_change": true,
+            "amount_change": 0.95
+          },
+          "expected_mitigation": "block",
+          "detection_difficulty": "moderate",
+          "notes": "Acoustic micro-tremor and acoustic environment jitter reveal synthetic speech generation."
+        },
+        {
+          "variant_id": "GENAI-V3",
+          "name": "Synthetic Identity (GenAI KYC Bypass)",
+          "description": "AI combines real SSN fragments with diffusion-generated portraits and synthetic credit histories.",
+          "risk_level": "high",
+          "risk_score": 0.88,
+          "active_signals": {
+            "llm_semantic_intent_score": 0.2,
+            "voice_biometric_jitter": 0.1,
+            "synthetic_face_embedding_dist": 0.96,
+            "adversarial_perturbation_index": 0.5,
+            "device_risk": 0.75,
+            "amount_deviation": 0.8
+          },
+          "simulation_config": {
+            "semantic_urgency_change": 0.2,
+            "voice_jitter_change": 0.1,
+            "synthetic_id_change": 0.96,
+            "adversarial_evasion_change": 0.5,
+            "device_change": true,
+            "amount_change": 0.8
+          },
+          "expected_mitigation": "hold",
+          "detection_difficulty": "hard",
+          "notes": "Sub-surface skin scattering and synthetic embedding distance flags fabricated profiles."
+        },
+        {
+          "variant_id": "GENAI-V4",
+          "name": "Adaptive Adversarial Feature Evasion",
+          "description": "Black-box optimizer tweaks payment features (amounts just below threshold, off-hour timing) to evade fraud detectors.",
+          "risk_level": "medium",
+          "risk_score": 0.7,
+          "active_signals": {
+            "llm_semantic_intent_score": 0.3,
+            "voice_biometric_jitter": 0.15,
+            "synthetic_face_embedding_dist": 0.2,
+            "adversarial_perturbation_index": 0.95,
+            "device_risk": 0.35,
+            "amount_deviation": 0.4
+          },
+          "simulation_config": {
+            "semantic_urgency_change": 0.3,
+            "voice_jitter_change": 0.15,
+            "synthetic_id_change": 0.2,
+            "adversarial_evasion_change": 0.95,
+            "device_change": false,
+            "amount_change": 0.4
+          },
+          "expected_mitigation": "step_up_authentication",
+          "detection_difficulty": "very_hard",
+          "notes": "Adversarial boundary entropy tracking catches deliberate score perturbation."
+        }
+      ]
+    },
+    {
+      "attack_id": "SOC-001",
+      "name": "Social Engineering & AI Impersonation",
+      "code": "SOC",
+      "category": "social_engineering",
+      "attack_objective": {
+        "summary": "Manipulate authorized victims into voluntary authorized push payments (APP)",
+        "details": [
+          "AI spear phishing",
+          "CEO/vendor voice cloning",
+          "Urgent payment pretexting"
+        ]
+      },
+      "preconditions": {
+        "summary": "OSINT reconnaissance on target organizational relationships",
+        "required": [
+          "Target contact info",
+          "Executive audio samples",
+          "Familiarity with vendor invoice flows"
+        ]
+      },
+      "observable_behaviour": {
+        "summary": "High conversational urgency, new destination accounts with familiar beneficiary names",
+        "indicators": [
+          {
+            "indicator": "Urgent language NLP score",
+            "signal": "social_urgency_score",
+            "confidence": "high"
+          },
+          {
+            "indicator": "Voice acoustic jitter anomaly",
+            "signal": "voice_jitter_anomaly",
+            "confidence": "high"
+          },
+          {
+            "indicator": "New payee account for regular vendor name",
+            "signal": "beneficiary_account_mismatch",
+            "confidence": "high"
+          }
+        ]
+      },
+      "payment_consequences": {
+        "summary": "Irreversible real-time authorized push payment losses",
+        "typical_loss_range": {
+          "min_usd": 2500,
+          "max_usd": 500000,
+          "median_usd": 35000
+        }
+      },
+      "genai_enhancement": {
+        "summary": "LLMs generate personalized phishing emails and real-time voice clones"
+      },
+      "signals": [
+        "social_urgency_score",
+        "voice_jitter_anomaly",
+        "beneficiary_account_mismatch",
+        "amount_deviation",
+        "channel_risk",
+        "device_risk"
+      ],
+      "simulation_parameters": [],
+      "mitigations": [
+        "step_up_authentication",
+        "hold",
+        "block"
+      ],
+      "detection_signals": {
+        "primary_signals": [
+          {
+            "signal": "social_urgency_score",
+            "weight": 0.9
+          },
+          {
+            "signal": "voice_jitter_anomaly",
+            "weight": 0.95
+          }
+        ]
+      },
+      "variants": [
+        {
+          "variant_id": "SOC-V1",
+          "name": "AI Spear-Phishing Invoice Fraud",
+          "description": "Hyper-personalized email matching vendor templates urging immediate wire payment.",
+          "risk_level": "high",
+          "risk_score": 0.88,
+          "active_signals": {
+            "social_urgency_score": 0.92,
+            "voice_jitter_anomaly": 0.1,
+            "beneficiary_account_mismatch": 0.95,
+            "amount_deviation": 0.75,
+            "channel_risk": 0.8,
+            "device_risk": 0.6
+          },
+          "simulation_config": {
+            "urgency": 0.92,
+            "beneficiary_mismatch": 0.95
+          },
+          "expected_mitigation": "hold",
+          "detection_difficulty": "moderate",
+          "notes": "Semantic NLP analysis detects urgency phrasing combined with modified IBAN."
+        },
+        {
+          "variant_id": "SOC-V2",
+          "name": "Deepfake Voice Pretexting (Vishing)",
+          "description": "Cloned executive voice calling accountant to authorize emergency supplier payment.",
+          "risk_level": "very_high",
+          "risk_score": 0.96,
+          "active_signals": {
+            "social_urgency_score": 0.85,
+            "voice_jitter_anomaly": 0.98,
+            "beneficiary_account_mismatch": 0.9,
+            "amount_deviation": 0.9,
+            "channel_risk": 0.9,
+            "device_risk": 0.7
+          },
+          "simulation_config": {
+            "voice_jitter": 0.98,
+            "urgency": 0.85
+          },
+          "expected_mitigation": "block",
+          "detection_difficulty": "easy",
+          "notes": "Voice acoustic micro-jitter absence confirms synthetic voice generation."
+        },
+        {
+          "variant_id": "SOC-V3",
+          "name": "Smishing / OTP Interception Pretexting",
+          "description": "SMS alert claiming card compromised, tricking user into providing one-time passcode.",
+          "risk_level": "high",
+          "risk_score": 0.82,
+          "active_signals": {
+            "social_urgency_score": 0.9,
+            "voice_jitter_anomaly": 0.05,
+            "beneficiary_account_mismatch": 0.6,
+            "amount_deviation": 0.65,
+            "channel_risk": 0.85,
+            "device_risk": 0.85
+          },
+          "simulation_config": {
+            "urgency": 0.9,
+            "device_risk": 0.85
+          },
+          "expected_mitigation": "step_up_authentication",
+          "detection_difficulty": "moderate",
+          "notes": "Fast OTP consumption from foreign device IP immediately after SMS trigger."
+        }
+      ]
+    },
+    {
+      "attack_id": "PM-001",
+      "name": "Payment Manipulation & QR Tampering",
+      "code": "PM",
+      "category": "payment_manipulation",
+      "attack_objective": {
+        "summary": "Tamper with dynamic QR codes, API request payloads, or payment checkout parameters",
+        "details": [
+          "Swap destination merchant ID in QR code",
+          "Manipulate currency/amount fields in API payloads"
+        ]
+      },
+      "preconditions": {
+        "summary": "Physical access to merchant QR or MITM proxy on mobile application traffic",
+        "required": [
+          "Altered QR sticker",
+          "Proxy payload tampering capability"
+        ]
+      },
+      "observable_behaviour": {
+        "summary": "Merchant ID mismatch, checksum failure, or unexpected currency conversion rates",
+        "indicators": [
+          {
+            "indicator": "QR payload signature mismatch",
+            "signal": "qr_signature_mismatch",
+            "confidence": "high"
+          },
+          {
+            "indicator": "API parameter mutation",
+            "signal": "payload_tampering_score",
+            "confidence": "high"
+          },
+          {
+            "indicator": "Merchant geo-location mismatch",
+            "signal": "merchant_geo_mismatch",
+            "confidence": "high"
+          }
+        ]
+      },
+      "payment_consequences": {
+        "summary": "Customer funds redirected to attacker wallet instead of intended merchant",
+        "typical_loss_range": {
+          "min_usd": 50,
+          "max_usd": 15000,
+          "median_usd": 850
+        }
+      },
+      "genai_enhancement": {
+        "summary": "AI generates dynamically disguised malicious QR codes and automated payload injection"
+      },
+      "signals": [
+        "qr_signature_mismatch",
+        "payload_tampering_score",
+        "merchant_geo_mismatch",
+        "amount_deviation",
+        "channel_risk",
+        "device_risk"
+      ],
+      "simulation_parameters": [],
+      "mitigations": [
+        "step_up_authentication",
+        "hold",
+        "block"
+      ],
+      "detection_signals": {
+        "primary_signals": [
+          {
+            "signal": "qr_signature_mismatch",
+            "weight": 0.95
+          },
+          {
+            "signal": "payload_tampering_score",
+            "weight": 0.9
+          }
+        ]
+      },
+      "variants": [
+        {
+          "variant_id": "PM-V1",
+          "name": "Dynamic QR Code Redirection",
+          "description": "Overlaid malicious QR code pointing to attacker crypto/P2P account instead of merchant.",
+          "risk_level": "very_high",
+          "risk_score": 0.92,
+          "active_signals": {
+            "qr_signature_mismatch": 0.98,
+            "payload_tampering_score": 0.85,
+            "merchant_geo_mismatch": 0.9,
+            "amount_deviation": 0.4,
+            "channel_risk": 0.9,
+            "device_risk": 0.3
+          },
+          "simulation_config": {
+            "qr_mismatch": 0.98,
+            "geo_mismatch": 0.9
+          },
+          "expected_mitigation": "block",
+          "detection_difficulty": "easy",
+          "notes": "Cryptographic payload signature validation fails instantly."
+        },
+        {
+          "variant_id": "PM-V2",
+          "name": "API Amount & Currency Parameter Tampering",
+          "description": "Manipulating client-side HTTP request to change currency from USD to JPY while keeping amount number.",
+          "risk_level": "high",
+          "risk_score": 0.86,
+          "active_signals": {
+            "qr_signature_mismatch": 0.05,
+            "payload_tampering_score": 0.96,
+            "merchant_geo_mismatch": 0.3,
+            "amount_deviation": 0.95,
+            "channel_risk": 0.85,
+            "device_risk": 0.7
+          },
+          "simulation_config": {
+            "payload_tampering": 0.96,
+            "amount_deviation": 0.95
+          },
+          "expected_mitigation": "block",
+          "detection_difficulty": "moderate",
+          "notes": "Gateway payload hashing detects mismatched HMAC digest."
+        }
+      ]
+    },
+    {
+      "attack_id": "TB-001",
+      "name": "Transaction Behaviour & Velocity Abuse",
+      "code": "TB",
+      "category": "transaction_behaviour",
+      "attack_objective": {
+        "summary": "Execute automated card testing scripts and rapid distributed micro-transactions",
+        "details": [
+          "Test stolen card numbers via botnets",
+          "Rapid micro-charges across hundreds of merchant gates"
+        ]
+      },
+      "preconditions": {
+        "summary": "Large dumps of stolen card PANs and proxy infrastructure",
+        "required": [
+          "Carding scripts",
+          "Rotating residential proxy network"
+        ]
+      },
+      "observable_behaviour": {
+        "summary": "Sub-second inter-arrival times, identical small amounts ($0.50-$2.00), high decline rates",
+        "indicators": [
+          {
+            "indicator": "Sub-second transaction frequency",
+            "signal": "inter_arrival_velocity",
+            "confidence": "high"
+          },
+          {
+            "indicator": "Card testing amount clustering",
+            "signal": "micro_amount_clustering",
+            "confidence": "high"
+          },
+          {
+            "indicator": "Distributed IP subnet cluster",
+            "signal": "bot_subnet_entropy",
+            "confidence": "high"
+          }
+        ]
+      },
+      "payment_consequences": {
+        "summary": "Merchant authorization fees, gateway overload, and subsequent major fraud charges",
+        "typical_loss_range": {
+          "min_usd": 1000,
+          "max_usd": 50000,
+          "median_usd": 12000
+        }
+      },
+      "genai_enhancement": {
+        "summary": "AI agents dynamically mimic human mouse jitter and vary timing to evade rate limiters"
+      },
+      "signals": [
+        "inter_arrival_velocity",
+        "micro_amount_clustering",
+        "bot_subnet_entropy",
+        "amount_deviation",
+        "channel_risk",
+        "device_risk"
+      ],
+      "simulation_parameters": [],
+      "mitigations": [
+        "block",
+        "step_up_authentication"
+      ],
+      "detection_signals": {
+        "primary_signals": [
+          {
+            "signal": "inter_arrival_velocity",
+            "weight": 0.95
+          },
+          {
+            "signal": "micro_amount_clustering",
+            "weight": 0.9
+          }
+        ]
+      },
+      "variants": [
+        {
+          "variant_id": "TB-V1",
+          "name": "High-Frequency Carding Botnet",
+          "description": "Automated script running 500 card validations per minute with $1.00 donation charges.",
+          "risk_level": "very_high",
+          "risk_score": 0.95,
+          "active_signals": {
+            "inter_arrival_velocity": 0.98,
+            "micro_amount_clustering": 0.95,
+            "bot_subnet_entropy": 0.88,
+            "amount_deviation": 0.1,
+            "channel_risk": 0.95,
+            "device_risk": 0.9
+          },
+          "simulation_config": {
+            "velocity": 0.98,
+            "micro_amt": 0.95
+          },
+          "expected_mitigation": "block",
+          "detection_difficulty": "easy",
+          "notes": "Statistical entropy and velocity thresholds trigger global IP block."
+        },
+        {
+          "variant_id": "TB-V2",
+          "name": "Coordinated Multi-Account Burst",
+          "description": "Simultaneous withdrawals across 20 accounts from the same ATM geolocation cluster.",
+          "risk_level": "high",
+          "risk_score": 0.89,
+          "active_signals": {
+            "inter_arrival_velocity": 0.85,
+            "micro_amount_clustering": 0.3,
+            "bot_subnet_entropy": 0.92,
+            "amount_deviation": 0.85,
+            "channel_risk": 0.8,
+            "device_risk": 0.85
+          },
+          "simulation_config": {
+            "velocity": 0.85,
+            "device_risk": 0.85
+          },
+          "expected_mitigation": "block",
+          "detection_difficulty": "moderate",
+          "notes": "Spatial-temporal clustering links disparate accounts."
+        }
+      ]
+    },
+    {
+      "attack_id": "MRF-001",
+      "name": "Merchant & Refund Manipulation",
+      "code": "MRF",
+      "category": "merchant_refund",
+      "attack_objective": {
+        "summary": "Exploit merchant refund policies and customer support chatbots to extract cash credits",
+        "details": [
+          "Coerce AI chatbot into issuing refund without item return",
+          "Transaction laundering via ghost stores"
+        ]
+      },
+      "preconditions": {
+        "summary": "Active merchant account or support interaction session",
+        "required": [
+          "Prompt injection payloads",
+          "Dispute portal access"
+        ]
+      },
+      "observable_behaviour": {
+        "summary": "Prompt injection tokens in support chat, immediate refund request following high-value purchase",
+        "indicators": [
+          {
+            "indicator": "Support chatbot prompt injection",
+            "signal": "prompt_injection_score",
+            "confidence": "high"
+          },
+          {
+            "indicator": "Refund velocity without return scan",
+            "signal": "unverified_refund_ratio",
+            "confidence": "high"
+          },
+          {
+            "indicator": "Dispute rate anomaly",
+            "signal": "merchant_dispute_anomaly",
+            "confidence": "high"
+          }
+        ]
+      },
+      "payment_consequences": {
+        "summary": "Direct merchant revenue drain and chargeback processing penalties",
+        "typical_loss_range": {
+          "min_usd": 500,
+          "max_usd": 45000,
+          "median_usd": 4200
+        }
+      },
+      "genai_enhancement": {
+        "summary": "LLMs test multiple adversarial jailbreaks to convince support bots to issue store credits"
+      },
+      "signals": [
+        "prompt_injection_score",
+        "unverified_refund_ratio",
+        "merchant_dispute_anomaly",
+        "amount_deviation",
+        "channel_risk",
+        "device_risk"
+      ],
+      "simulation_parameters": [],
+      "mitigations": [
+        "review",
+        "hold",
+        "block"
+      ],
+      "detection_signals": {
+        "primary_signals": [
+          {
+            "signal": "prompt_injection_score",
+            "weight": 0.95
+          },
+          {
+            "signal": "unverified_refund_ratio",
+            "weight": 0.9
+          }
+        ]
+      },
+      "variants": [
+        {
+          "variant_id": "MRF-V1",
+          "name": "Support Chatbot Refund Jailbreak",
+          "description": "Injecting prompt overrides into e-commerce chat agent to trigger automatic $500 refund credit.",
+          "risk_level": "very_high",
+          "risk_score": 0.93,
+          "active_signals": {
+            "prompt_injection_score": 0.98,
+            "unverified_refund_ratio": 0.95,
+            "merchant_dispute_anomaly": 0.6,
+            "amount_deviation": 0.7,
+            "channel_risk": 0.9,
+            "device_risk": 0.8
+          },
+          "simulation_config": {
+            "prompt_injection": 0.98,
+            "refund_ratio": 0.95
+          },
+          "expected_mitigation": "block",
+          "detection_difficulty": "easy",
+          "notes": "NLP guardrails identify prompt injection and disable automated refund dispatch."
+        },
+        {
+          "variant_id": "MRF-V2",
+          "name": "Ghost Merchant Transaction Laundering",
+          "description": "Setting up fake online storefront to process stolen card payments under guise of retail sales.",
+          "risk_level": "high",
+          "risk_score": 0.87,
+          "active_signals": {
+            "prompt_injection_score": 0.1,
+            "unverified_refund_ratio": 0.4,
+            "merchant_dispute_anomaly": 0.96,
+            "amount_deviation": 0.85,
+            "channel_risk": 0.85,
+            "device_risk": 0.75
+          },
+          "simulation_config": {
+            "dispute_anomaly": 0.96,
+            "amount_deviation": 0.85
+          },
+          "expected_mitigation": "hold",
+          "detection_difficulty": "moderate",
+          "notes": "High chargeback-to-transaction ratio flags merchant account for forensic audit."
+        }
+      ]
+    }
+  ]
+}

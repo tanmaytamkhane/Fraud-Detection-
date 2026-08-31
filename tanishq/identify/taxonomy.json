@@ -1,0 +1,352 @@
+{
+  "_comment": "This file is the TABLE OF CONTENTS for all attack types we track.",
+  "_comment2": "Think of it like a library catalog \u2014 it tells you WHAT attacks exist and HOW they're classified.",
+  "version": "1.0.0",
+  "last_updated": "2026-08-24",
+  "owner": "Person 1 \u2014 Attack Intelligence",
+  "categories": [
+    {
+      "category_id": "CAT-001",
+      "name": "Identity & Account Attacks",
+      "description": "Attacks where the attacker compromises accounts or fabricates identities (Account Takeover, Synthetic Identity, Credential Abuse)",
+      "severity": "critical",
+      "attack_types": [
+        {
+          "type_id": "AT-001",
+          "name": "Account Takeover",
+          "code": "ATO",
+          "description": "Attacker takes full control of a legitimate user's account",
+          "attack_definition_ref": "ATO-001",
+          "variant_count": 5,
+          "risk_level": "critical",
+          "tags": [
+            "credentials",
+            "identity",
+            "unauthorized_access",
+            "payment_fraud"
+          ]
+        },
+        {
+          "type_id": "AT-002",
+          "name": "Synthetic Identity",
+          "code": "SYN",
+          "description": "Stitching real SSN fragments with AI-generated identities for credit line exploitation",
+          "attack_definition_ref": "GENAI-001",
+          "variant_count": 1,
+          "risk_level": "high",
+          "tags": [
+            "synthetic_id",
+            "kyc_bypass",
+            "identity"
+          ]
+        }
+      ]
+    },
+    {
+      "category_id": "CAT-002",
+      "name": "Social Engineering",
+      "description": "Manipulating individuals into voluntary payments via AI-driven impersonation and phishing",
+      "severity": "critical",
+      "attack_types": [
+        {
+          "type_id": "AT-003",
+          "name": "AI Impersonation & Deepfake Social Engineering",
+          "code": "SOC",
+          "description": "Cloned executive/vendor voice and AI phishing emails forcing unauthorized wire approvals",
+          "attack_definition_ref": "GENAI-001",
+          "variant_count": 2,
+          "risk_level": "critical",
+          "tags": [
+            "phishing",
+            "vishing",
+            "deepfake",
+            "voice_cloning",
+            "social_engineering"
+          ]
+        }
+      ]
+    },
+    {
+      "category_id": "CAT-003",
+      "name": "Payment Manipulation",
+      "description": "Tampering with payment payloads, QR codes, and transaction authorizations",
+      "severity": "high",
+      "attack_types": [
+        {
+          "type_id": "AT-004",
+          "name": "Payment Redirection & QR Manipulation",
+          "code": "PM",
+          "description": "Redirecting payment destinations via altered QR codes and API payload tampering",
+          "attack_definition_ref": "PM-001",
+          "variant_count": 1,
+          "risk_level": "high",
+          "tags": [
+            "qr_manipulation",
+            "payload_tampering",
+            "redirection"
+          ]
+        }
+      ]
+    },
+    {
+      "category_id": "CAT-004",
+      "name": "Transaction Behaviour",
+      "description": "Anomalous velocity abuse, rapid fund movement, and multi-account coordination",
+      "severity": "high",
+      "attack_types": [
+        {
+          "type_id": "AT-005",
+          "name": "Velocity & Pattern Abuse",
+          "code": "TB",
+          "description": "Rapid multi-account bursts and automated card-testing scripts",
+          "attack_definition_ref": "TB-001",
+          "variant_count": 1,
+          "risk_level": "high",
+          "tags": [
+            "velocity",
+            "bursts",
+            "carding_bots"
+          ]
+        }
+      ]
+    },
+    {
+      "category_id": "CAT-005",
+      "name": "Merchant & Refund Fraud",
+      "description": "Exploiting merchant refund policies, dispute abuse, and transaction laundering",
+      "severity": "medium",
+      "attack_types": [
+        {
+          "type_id": "AT-006",
+          "name": "Refund & Merchant Manipulation",
+          "code": "MRF",
+          "description": "Coercing chatbot agents into issuing unauthorized refund credits and dispute payouts",
+          "attack_definition_ref": "GENAI-001",
+          "variant_count": 1,
+          "risk_level": "medium",
+          "tags": [
+            "refund_abuse",
+            "prompt_injection",
+            "disputes"
+          ]
+        }
+      ]
+    },
+    {
+      "category_id": "CAT-006",
+      "name": "Money Movement & Mule Networks",
+      "description": "Multi-hop fund laundering through smurfing, dormant mule accounts, and rapid cash-out bursts",
+      "severity": "critical",
+      "attack_types": [
+        {
+          "type_id": "AT-007",
+          "name": "Money Movement",
+          "code": "MM",
+          "description": "Multi-hop fund routing through mule rings and rapid layering cash-outs",
+          "attack_definition_ref": "MM-001",
+          "variant_count": 4,
+          "risk_level": "critical",
+          "tags": [
+            "money_laundering",
+            "mule_networks",
+            "graph_fraud",
+            "cash_out",
+            "smurfing"
+          ]
+        }
+      ]
+    },
+    {
+      "category_id": "CAT-007",
+      "name": "GenAI-Native & Emerging",
+      "description": "Autonomous GenAI agents, real-time voice/video deepfakes, synthetic identity generation, and adversarial evasion",
+      "severity": "critical",
+      "attack_types": [
+        {
+          "type_id": "AT-008",
+          "name": "GenAI-Native Attacks",
+          "code": "GENAI",
+          "description": "AI-orchestrated social engineering, synthetic biometrics, and adaptive evasion against fraud detectors",
+          "attack_definition_ref": "GENAI-001",
+          "variant_count": 4,
+          "risk_level": "critical",
+          "tags": [
+            "genai",
+            "deepfake",
+            "conversational_agents",
+            "adversarial_evasion",
+            "synthetic_id"
+          ]
+        }
+      ]
+    }
+  ],
+  "severity_levels": {
+    "_comment": "These define how serious each severity level is",
+    "critical": {
+      "level": 4,
+      "description": "Immediate financial loss and account compromise",
+      "response_time": "real-time"
+    },
+    "high": {
+      "level": 3,
+      "description": "Significant risk of financial loss",
+      "response_time": "near-real-time"
+    },
+    "medium": {
+      "level": 2,
+      "description": "Moderate risk, may require investigation",
+      "response_time": "within-minutes"
+    },
+    "low": {
+      "level": 1,
+      "description": "Minor anomaly, monitor for escalation",
+      "response_time": "within-hours"
+    }
+  },
+  "signal_catalog": {
+    "_comment": "Master list of ALL detection signals used across all attacks. Each signal is a 'red flag' the system watches for.",
+    "signals": [
+      {
+        "signal_id": "SIG-001",
+        "name": "new_device",
+        "description": "Transaction originates from a device not previously associated with this account",
+        "data_type": "boolean"
+      },
+      {
+        "signal_id": "SIG-002",
+        "name": "new_location",
+        "description": "Transaction originates from a geographic location not seen before for this account",
+        "data_type": "boolean"
+      },
+      {
+        "signal_id": "SIG-003",
+        "name": "new_beneficiary",
+        "description": "Payment is being sent to a recipient the account holder has never paid before",
+        "data_type": "boolean"
+      },
+      {
+        "signal_id": "SIG-004",
+        "name": "amount_deviation",
+        "description": "Transaction amount is significantly different from the account's normal spending pattern",
+        "data_type": "float",
+        "unit": "standard_deviations"
+      },
+      {
+        "signal_id": "SIG-005",
+        "name": "velocity_deviation",
+        "description": "Number of transactions in a time window is higher than the account's normal rate",
+        "data_type": "float",
+        "unit": "transactions_per_hour"
+      },
+      {
+        "signal_id": "SIG-006",
+        "name": "time_deviation",
+        "description": "Transaction happens at an unusual time compared to the account holder's normal activity hours",
+        "data_type": "boolean"
+      },
+      {
+        "signal_id": "SIG-007",
+        "name": "fan_out_degree",
+        "description": "Ratio/count of outbound transfers split from a single funding source within a short time window",
+        "data_type": "float",
+        "unit": "dest_accounts_per_hour"
+      },
+      {
+        "signal_id": "SIG-008",
+        "name": "fan_in_degree",
+        "description": "Ratio/count of incoming transfers converging into a single master accumulator account",
+        "data_type": "float",
+        "unit": "source_accounts_per_hour"
+      },
+      {
+        "signal_id": "SIG-009",
+        "name": "transit_velocity_sec",
+        "description": "Transit latency between incoming funds and outbound forwarding (near-zero transit indicates mule behavior)",
+        "data_type": "float",
+        "unit": "transit_latency_index"
+      },
+      {
+        "signal_id": "SIG-010",
+        "name": "amount_layering_ratio",
+        "description": "Percentage of received funds immediately forwarded to downstream nodes (zero retention)",
+        "data_type": "float",
+        "unit": "ratio"
+      },
+      {
+        "signal_id": "SIG-011",
+        "name": "shared_device_cluster",
+        "description": "Origin, intermediary mules, or destination accounts sharing common device fingerprint or IP subnet",
+        "data_type": "boolean"
+      },
+      {
+        "signal_id": "SIG-012",
+        "name": "account_dormancy_score",
+        "description": "Dormant/aged account suddenly exhibiting high-velocity high-volume fund movement",
+        "data_type": "float",
+        "unit": "dormancy_anomaly_score"
+      },
+      {
+        "signal_id": "SIG-013",
+        "name": "llm_semantic_intent_score",
+        "description": "NLP semantic urgency and prompt injection coercion score detected in interaction transcripts",
+        "data_type": "float",
+        "unit": "urgency_intent_index"
+      },
+      {
+        "signal_id": "SIG-014",
+        "name": "voice_biometric_jitter",
+        "description": "Acoustic micro-tremor and sub-band jitter absence indicating AI voice cloning",
+        "data_type": "float",
+        "unit": "jitter_anomaly_score"
+      },
+      {
+        "signal_id": "SIG-015",
+        "name": "synthetic_face_embedding_dist",
+        "description": "Sub-surface optical skin scattering and facial feature vector duplicate distance",
+        "data_type": "float",
+        "unit": "synthetic_embedding_score"
+      },
+      {
+        "signal_id": "SIG-016",
+        "name": "adversarial_perturbation_index",
+        "description": "Statistical entropy shift indicating black-box gradient perturbation to evade risk thresholds",
+        "data_type": "float",
+        "unit": "perturbation_index"
+      }
+    ]
+  },
+  "mitigation_catalog": {
+    "_comment": "Master list of ALL possible responses when fraud is suspected. Ordered from least to most aggressive.",
+    "mitigations": [
+      {
+        "mitigation_id": "MIT-001",
+        "name": "step_up_authentication",
+        "description": "Ask the user to verify their identity (e.g., OTP, biometric, security question)",
+        "severity_impact": "low",
+        "customer_friction": "medium"
+      },
+      {
+        "mitigation_id": "MIT-002",
+        "name": "review",
+        "description": "Flag the transaction for manual review by a fraud analyst",
+        "severity_impact": "medium",
+        "customer_friction": "low"
+      },
+      {
+        "mitigation_id": "MIT-003",
+        "name": "hold",
+        "description": "Temporarily hold the transaction and notify the account holder",
+        "severity_impact": "high",
+        "customer_friction": "high"
+      },
+      {
+        "mitigation_id": "MIT-004",
+        "name": "block",
+        "description": "Immediately block the transaction and freeze the account",
+        "severity_impact": "critical",
+        "customer_friction": "very_high"
+      }
+    ]
+  }
+}

@@ -1,0 +1,165 @@
+{
+  "_note": "Normal-sample rows here are drawn from the SAME transactions used to build the account profiles (not held out). This means normal-sample deviation metrics are trivially near-zero by construction \u2014 that's expected, not a bug. A true held-out comparison happens in the Defend pillar's train/test split, not here. This validation step exists to confirm the synthetic generator is producing the INTENDED deviation direction and magnitude, not to simulate the classifier's real task.",
+  "normal": {
+    "new_device_rate": 0.0,
+    "new_device_n_evaluated": 369,
+    "new_location_rate": 0.0,
+    "new_location_n_evaluated": 1815,
+    "new_beneficiary_rate_SUBSTITUTE": 0.0,
+    "amount_deviation": {
+      "count": 2000.0,
+      "mean": 0.007190076569168489,
+      "std": 1.7325614022969749,
+      "min": -0.970034663473218,
+      "25%": -0.6192241301514381,
+      "50%": -0.36673669087704674,
+      "75%": 0.07943696324698865,
+      "max": 45.988038186972894
+    },
+    "time_deviation_hours": {
+      "count": 2000.0,
+      "mean": 0.0,
+      "std": 0.0,
+      "min": 0.0,
+      "25%": 0.0,
+      "50%": 0.0,
+      "75%": 0.0,
+      "max": 0.0
+    }
+  },
+  "ATO-V1": {
+    "new_device_rate": 1.0,
+    "new_device_n_evaluated": 4482,
+    "new_location_rate": 1.0,
+    "new_location_n_evaluated": 4482,
+    "new_beneficiary_rate_SUBSTITUTE": 0.9799196787148594,
+    "amount_deviation": {
+      "count": 4482.0,
+      "mean": 4.5,
+      "std": 4.3055330811233233e-16,
+      "min": 4.499999999999998,
+      "25%": 4.5,
+      "50%": 4.5,
+      "75%": 4.5,
+      "max": 4.500000000000002
+    },
+    "time_deviation_hours": {
+      "count": 4482.0,
+      "mean": 0.055109326193663544,
+      "std": 0.22821899361116485,
+      "min": 0.0,
+      "25%": 0.0,
+      "50%": 0.0,
+      "75%": 0.0,
+      "max": 1.0
+    }
+  },
+  "ATO-V2": {
+    "new_device_rate": 0.0,
+    "new_device_n_evaluated": 3222,
+    "new_location_rate": 0.0,
+    "new_location_n_evaluated": 11817,
+    "new_beneficiary_rate_SUBSTITUTE": 0.9725568942436412,
+    "amount_deviation": {
+      "count": 13446.0,
+      "mean": 2.0,
+      "std": 3.1695922840392437e-16,
+      "min": 1.9999999999999991,
+      "25%": 1.9999999999999998,
+      "50%": 2.0,
+      "75%": 2.0000000000000004,
+      "max": 2.0000000000000013
+    },
+    "time_deviation_hours": {
+      "count": 13446.0,
+      "mean": 0.062100252863305075,
+      "std": 0.2413465215472008,
+      "min": 0.0,
+      "25%": 0.0,
+      "50%": 0.0,
+      "75%": 0.0,
+      "max": 1.0
+    }
+  },
+  "ATO-V3": {
+    "new_device_rate": 0.0,
+    "new_device_n_evaluated": 401,
+    "new_location_rate": 1.0,
+    "new_location_n_evaluated": 1494,
+    "new_beneficiary_rate_SUBSTITUTE": 0.0,
+    "amount_deviation": {
+      "count": 1494.0,
+      "mean": 0.5,
+      "std": 1.071723897050279e-16,
+      "min": 0.4999999999999995,
+      "25%": 0.49999999999999994,
+      "50%": 0.5,
+      "75%": 0.5000000000000001,
+      "max": 0.5000000000000003
+    },
+    "time_deviation_hours": {
+      "count": 1494.0,
+      "mean": 2.179384203480589,
+      "std": 2.591904165394667,
+      "min": 0.0,
+      "25%": 0.0,
+      "50%": 1.0,
+      "75%": 3.0,
+      "max": 12.0
+    }
+  },
+  "ATO-V4": {
+    "new_device_rate": 0.0,
+    "new_device_n_evaluated": 390,
+    "new_location_rate": 0.0,
+    "new_location_n_evaluated": 1305,
+    "new_beneficiary_rate_SUBSTITUTE": 0.0,
+    "amount_deviation": {
+      "count": 1494.0,
+      "mean": 1.25,
+      "std": 1.6744190899834087e-16,
+      "min": 1.2499999999999991,
+      "25%": 1.25,
+      "50%": 1.25,
+      "75%": 1.25,
+      "max": 1.2500000000000007
+    },
+    "time_deviation_hours": {
+      "count": 1494.0,
+      "mean": 0.0,
+      "std": 0.0,
+      "min": 0.0,
+      "25%": 0.0,
+      "50%": 0.0,
+      "75%": 0.0,
+      "max": 0.0
+    }
+  },
+  "ATO-V5": {
+    "new_device_rate": 0.0,
+    "new_device_n_evaluated": 1104,
+    "new_location_rate": 1.0,
+    "new_location_n_evaluated": 4482,
+    "new_beneficiary_rate_SUBSTITUTE": 0.0,
+    "amount_deviation": {
+      "count": 4482.0,
+      "mean": 1.0,
+      "std": 1.0144172178695607e-16,
+      "min": 0.9999999999999994,
+      "25%": 1.0,
+      "50%": 1.0,
+      "75%": 1.0,
+      "max": 1.0000000000000004
+    },
+    "time_deviation_hours": {
+      "count": 4482.0,
+      "mean": 2.287817938420348,
+      "std": 2.7145172821070394,
+      "min": 0.0,
+      "25%": 0.0,
+      "50%": 1.0,
+      "75%": 4.0,
+      "max": 12.0
+    }
+  }
+}
