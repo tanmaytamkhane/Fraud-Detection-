@@ -1,0 +1,13 @@
+{
+  "dim": 2048,
+  "num_levels": 100,
+  "seed": 42,
+  "signals": [
+    "fan_out_degree",
+    "fan_in_degree",
+    "transit_velocity_sec",
+    "amount_layering_ratio",
+    "shared_device_cluster",
+    "account_dormancy_score"
+  ]
+}

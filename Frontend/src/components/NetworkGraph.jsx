@@ -4,6 +4,19 @@ import { Shield, AlertTriangle, ArrowRight, Activity, Layers, Server } from 'luc
 export default function NetworkGraph({ activeTx, graphData, onSelectNode }) {
   const [selectedNodeId, setSelectedNodeId] = useState(null);
   const [hoveredNodeId, setHoveredNodeId] = useState(null);
+  const isMM = String(activeTx?.attackVector || '').startsWith('MM') || String(activeTx?.id || '').startsWith('MM-');
+  if (isMM) {
+    if (!graphData?.found || !graphData?.nodes?.length) {
+      return <div className="border border-border/80 bg-card/60 rounded-lg p-6 text-sm text-zinc-400">No observed transfer network for this account yet.</div>;
+    }
+    return <div className="border border-border/80 bg-card/60 rounded-lg p-5 space-y-4">
+      <h2 className="text-sm font-semibold uppercase tracking-wider">Observed MM transfer network</h2>
+      <p className="text-xs text-zinc-400">Edges below come from scored transfers in the dataset sample. An observed connection alone does not establish a mule relationship.</p>
+      <div className="text-xs text-zinc-300">Accounts: {graphData.nodes.map(n => n.id).join(', ')}</div>
+      <div className="max-h-56 overflow-y-auto space-y-1">{(graphData.links || []).map((e, i) => <div key={`${e.source}-${e.target}-${i}`} className="text-xs font-mono border-b border-zinc-800 py-1">{e.source} → {e.target} · amount {Number(e.amount).toLocaleString()} · {e.decision || 'UNSCORED'}</div>)}</div>
+      {graphData.rings?.length > 0 && <p className="text-xs text-amber-300">Observed directed cycle components: {graphData.rings.length}. Analyst review required.</p>}
+    </div>;
+  }
 
   // Generate dynamic transaction-specific topology based on the active transaction
   const txId = activeTx?.id || 'TXN-1001';
@@ -38,18 +51,18 @@ export default function NetworkGraph({ activeTx, graphData, onSelectNode }) {
         ...n,
         x: n.x || (n.type === 'origin' ? 80 : n.type === 'cashout' ? 520 : 300),
         y: n.y || (n.type === 'origin' ? 180 : n.type === 'cashout' ? 180 : i % 2 === 0 ? 100 : 260),
-        amount: n.amount || `$${txAmt.toLocaleString()}`,
-        device: n.device || `DEV-RING-${hash % 90 + 10}`
+        amount: isMM ? (n.amount || '') : (n.amount || `$${txAmt.toLocaleString()}`),
+        device: isMM ? (n.device || '') : (n.device || `DEV-RING-${hash % 90 + 10}`)
       }))
-    : dynamicNodes;
+    : (isMM ? [] : dynamicNodes);
 
   const edges = (graphData && (graphData.links || graphData.edges) && (graphData.links || graphData.edges).length > 0)
     ? (graphData.links || graphData.edges).map(e => ({
         ...e,
-        amount: typeof e.amount === 'number' ? `$${e.amount.toLocaleString()}` : e.amount || `$${(txAmt * 0.5).toFixed(2)}`,
-        velocity: e.velocity || `${e.velocity_sec || 6}s`
+        amount: typeof e.amount === 'number' ? `$${e.amount.toLocaleString()}` : e.amount || (isMM ? '' : `$${(txAmt * 0.5).toFixed(2)}`),
+        velocity: isMM ? (e.velocity || '') : (e.velocity || `${e.velocity_sec || 6}s`)
       }))
-    : dynamicEdges;
+    : (isMM ? [] : dynamicEdges);
 
   const selectedNode = nodes.find(n => n.id === selectedNodeId) || nodes.find(n => n.type === 'cashout') || nodes[0];
 

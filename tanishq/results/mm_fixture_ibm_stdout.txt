@@ -1,0 +1,99 @@
+{
+  "mode": "train",
+  "source": "tests/fixtures/ibm_like.csv",
+  "n_total": 4000,
+  "split": {
+    "train": 2800,
+    "validation": 600,
+    "test": 600,
+    "train_last_time": 1736191080.0,
+    "validation_last_time": 1736298540.0
+  },
+  "metrics": {
+    "hdc": {
+      "n": 600,
+      "fraud_n": 6,
+      "threshold": 0.5374822616577148,
+      "precision": 0.06521739130434782,
+      "recall": 0.5,
+      "f1": 0.11538461538461539,
+      "pr_auc": 0.04437462111736854,
+      "roc_auc": 0.7622053872053871,
+      "confusion_matrix": [
+        [
+          551,
+          43
+        ],
+        [
+          3,
+          3
+        ]
+      ],
+      "recall_at_90pct_precision": 0.0
+    },
+    "xgb": {
+      "n": 600,
+      "fraud_n": 6,
+      "threshold": 0.8635589480400085,
+      "precision": 0.061224489795918366,
+      "recall": 0.5,
+      "f1": 0.10909090909090909,
+      "pr_auc": 0.070578231292517,
+      "roc_auc": 0.9299943883277216,
+      "confusion_matrix": [
+        [
+          548,
+          46
+        ],
+        [
+          3,
+          3
+        ]
+      ],
+      "recall_at_90pct_precision": 0.0
+    },
+    "fused": {
+      "n": 600,
+      "fraud_n": 6,
+      "threshold": 0.45795291662216187,
+      "precision": 0.056179775280898875,
+      "recall": 0.8333333333333334,
+      "f1": 0.10526315789473684,
+      "pr_auc": 0.09372107387465076,
+      "roc_auc": 0.8932379349046016,
+      "confusion_matrix": [
+        [
+          510,
+          84
+        ],
+        [
+          1,
+          5
+        ]
+      ],
+      "recall_at_90pct_precision": 0.0
+    }
+  },
+  "latency_ms_per_transfer": 0.08778549999988172,
+  "notes": [
+    "Features are calculated from prior and current transfers only.",
+    "No device ID: shared_device_cluster is zero for every row.",
+    "No currency threshold: amount_layering_ratio uses pass-through only; structuring is unavailable."
+  ],
+  "feature_names": [
+    "fan_out_degree",
+    "fan_in_degree",
+    "transit_velocity_sec",
+    "amount_layering_ratio",
+    "shared_device_cluster",
+    "account_dormancy_score"
+  ],
+  "fusion_weights": {
+    "hdc": 0.5,
+    "xgb": 0.2,
+    "behaviour": 0.15,
+    "anomaly": 0.15
+  },
+  "runtime_sec": 0.77
+}
+Saved D:\Hackathon\Mastercard\tanishq\results\mm_fixture_ibm_results.json

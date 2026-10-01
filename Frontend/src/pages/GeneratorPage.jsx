@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ATTACK_VECTORS as FALLBACK_VECTORS } from '../data/attacksData';
-import { getAllCategories, scanCategoryPreset } from '../api/client';
+import { getAllCategories, scanCategoryPreset, generateMMCampaign } from '../api/client';
 import { Zap, CheckSquare, Square, CheckCircle2, Sliders, BarChart2, Shield, Eye, Info, RefreshCw } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
@@ -36,6 +36,23 @@ export default function GeneratorPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [showToast, setShowToast] = useState(true);
   const [samplePayloads, setSamplePayloads] = useState([]);
+  const [mmVariant, setMMVariant] = useState('MM-V1');
+  const [mmAttempts, setMMAttempts] = useState(1);
+  const [mmCampaign, setMMCampaign] = useState(null);
+  const [mmError, setMMError] = useState('');
+  const [mmGenerating, setMMGenerating] = useState(false);
+
+  const handleMMGenerate = async () => {
+    setMMGenerating(true);
+    setMMError('');
+    try {
+      setMMCampaign(await generateMMCampaign({ variant_id: mmVariant, attempts: mmAttempts }));
+    } catch (err) {
+      setMMError(err.message);
+    } finally {
+      setMMGenerating(false);
+    }
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -103,7 +120,7 @@ export default function GeneratorPage() {
     setIsGenerating(true);
     setShowToast(false);
     try {
-      const testSubset = selectedVectors.slice(0, 8);
+      const testSubset = selectedVectors.filter((id) => !id.startsWith('MM-')).slice(0, 8);
       // Run parallel async preset scans for sub-second UI responsiveness
       const promises = testSubset.map(async (vid) => {
         const catCode = getCategoryCode(vid);
@@ -177,6 +194,28 @@ export default function GeneratorPage() {
 
   return (
     <div className="space-y-6">
+      <div className="border border-primary/40 bg-card/60 rounded-lg p-5 space-y-4">
+        <div>
+          <h2 className="text-lg font-semibold text-foreground">Money Movement raw-event generator</h2>
+          <p className="text-sm text-muted-foreground">Inject a synthetic MM pattern into legitimate account activity. These are transfer events with accounts, amounts, and timestamps; results are simulator evidence only.</p>
+        </div>
+        <div className="flex flex-wrap items-end gap-3">
+          <label className="text-xs text-muted-foreground">Variant
+            <select aria-label="MM variant" value={mmVariant} onChange={(e) => setMMVariant(e.target.value)} className="block mt-1 bg-secondary text-foreground rounded px-3 py-2">
+              {['MM-V1', 'MM-V2', 'MM-V3', 'MM-V4'].map((id) => <option key={id} value={id}>{id}</option>)}
+            </select>
+          </label>
+          <label className="text-xs text-muted-foreground">Attempts
+            <input aria-label="MM attempts" type="number" min="1" max="50" value={mmAttempts} onChange={(e) => setMMAttempts(Math.max(1, Math.min(50, Number(e.target.value) || 1)))} className="block mt-1 w-24 bg-secondary text-foreground rounded px-3 py-2" />
+          </label>
+          <button type="button" onClick={handleMMGenerate} disabled={mmGenerating} className="bg-primary text-primary-foreground rounded px-4 py-2 disabled:opacity-50">{mmGenerating ? 'Generating…' : 'Generate raw MM events'}</button>
+        </div>
+        {mmError && <p role="alert" className="text-sm text-destructive">{mmError}</p>}
+        {mmCampaign && <div className="text-xs font-mono space-y-2">
+          <p>{mmCampaign.variant_id}: {mmCampaign.event_count} events, including legitimate activity. Simulation knobs and first 20 events:</p>
+          <pre className="overflow-auto max-h-56 p-3 bg-secondary/50 rounded">{JSON.stringify({ knobs: mmCampaign.knobs, events: mmCampaign.events?.slice(0, 20) }, null, 2)}</pre>
+        </div>}
+      </div>
       {/* Top Banner */}
       <div className="border border-border/80 bg-card/60 backdrop-blur rounded-lg p-6 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20"></div>

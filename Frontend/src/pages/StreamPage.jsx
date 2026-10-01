@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { generateRandomTransaction } from '../data/mockTransactions';
-import { scanTransaction, scanTransfer, scanGenAI, scanCategoryPreset, scanCategory } from '../api/client';
+import { scanTransaction, scanTransfer, scanGenAI, scanCategoryPreset, scanCategory, getMMStream, getMMResults } from '../api/client';
 import { Play, Square, Activity, AlertTriangle, CheckCircle2, ChevronRight, Zap } from 'lucide-react';
 
 const CATEGORIES = [
@@ -9,7 +9,7 @@ const CATEGORIES = [
   "qr_merchant_payment", "carding_micro_auth", "refund_credit"
 ];
 
-const ATTACK_DOMAINS = ['ATO', 'SOC', 'PM', 'TB', 'MRF', 'MM', 'GENAI'];
+const ATTACK_DOMAINS = ['ATO', 'SOC', 'PM', 'TB', 'MRF', 'GENAI'];
 
 async function generateLiveTransaction(index = 1, attackRatio = 25, evasion = 20) {
   const isAttack = Math.random() * 100 < attackRatio;
@@ -194,9 +194,10 @@ export default function StreamPage({ onSelectTransaction, isStreaming, setIsStre
   const [evasion, setEvasion] = useState(20);
   const [streamSpeedMs, setStreamSpeedMs] = useState(500);
   const [currentIndex, setCurrentIndex] = useState(1);
+  const [mmReplayError, setMMReplayError] = useState('');
 
   const totalCount = transactions.length;
-  const flaggedCount = transactions.filter((t) => t.decision?.includes('BLOCK') || t.decision?.includes('HOLD')).length;
+  const flaggedCount = transactions.filter((t) => t.decision?.includes('BLOCK') || t.decision?.includes('HOLD') || t.decision === 'MODEL_FLAG').length;
   const missedCount = transactions.filter((t) => t.matrixTag === 'FN').length;
   const falsePosCount = transactions.filter((t) => t.matrixTag === 'FP').length;
 
@@ -222,6 +223,7 @@ export default function StreamPage({ onSelectTransaction, isStreaming, setIsStre
         const batch = [];
         for (let i = 0; i < presets.length; i++) {
           const p = presets[i];
+          if (p.vid.startsWith('MM-')) continue;
           const isAtk = p.vid !== 'LEGIT';
           const catCode = p.vid.split('-')[0];
           batch.push({
@@ -297,6 +299,30 @@ export default function StreamPage({ onSelectTransaction, isStreaming, setIsStre
       setIsStreaming(true);
     } else {
       setIsStreaming(false);
+    }
+  };
+
+  const replayMM = async () => {
+    setIsStreaming(false);
+    setMMReplayError('');
+    try {
+      const [sample, result] = await Promise.all([getMMStream(), getMMResults()]);
+      const threshold = result.metrics?.fused?.threshold ?? 1;
+      setTransactions((sample.rows || []).map((r) => {
+        const flag = r.risk_score >= threshold;
+        return {
+          id: `MM-${r.transfer_id}`, amount: r.amount, sender_account: r.sender,
+          receiver_account: r.receiver, category: 'money_movement',
+          fraudProb: +(r.risk_score * 100).toFixed(1), attackVector: 'MM-OBSERVED',
+          decision: flag ? 'MODEL_FLAG' : 'MODEL_CLEAR',
+          isAttack: r.is_fraud, matrixTag: flag ? (r.is_fraud ? 'TP' : 'FP') : (r.is_fraud ? 'FN' : 'TN'),
+          timestamp: String(r.timestamp), displayDate: `Step ${r.timestamp}`,
+          features: Object.entries(r.signals || {}).map(([name, value]) => ({ name, value, contribution: 0 })),
+          explanation: 'Held-out transfer scored by the saved MM model. Graph appears only after observed transfers are ingested.'
+        };
+      }));
+    } catch (err) {
+      setMMReplayError(`MM scored replay unavailable: ${err.message}`);
     }
   };
 
@@ -429,6 +455,8 @@ export default function StreamPage({ onSelectTransaction, isStreaming, setIsStre
                 </>
               )}
             </button>
+            <button onClick={replayMM} className="w-full border border-cyan-500/40 rounded py-2 text-xs text-cyan-300 hover:bg-cyan-500/10">Replay scored MM held-out sample</button>
+            {mmReplayError && <p role="alert" className="text-xs text-red-300">{mmReplayError}</p>}
           </div>
 
           <div className="grid grid-cols-2 gap-3 pt-2">
@@ -468,7 +496,7 @@ export default function StreamPage({ onSelectTransaction, isStreaming, setIsStre
 
           <div className="space-y-2 max-h-[600px] overflow-y-auto pr-1">
             {transactions.map((tx) => {
-              const isBlock = tx.decision?.includes('BLOCK') || tx.decision?.includes('HOLD');
+              const isBlock = tx.decision?.includes('BLOCK') || tx.decision?.includes('HOLD') || tx.decision === 'MODEL_FLAG';
               return (
                 <div
                   key={tx.id}

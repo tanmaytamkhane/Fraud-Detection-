@@ -54,6 +54,8 @@ export default function DefenderPage() {
         const fp = Math.max(1, Math.round(tp * (1 / Math.max(0.01, precFrac) - 1)));
         const tn = Math.max(0, legitCount - fp);
 
+        const isMM = catCode === 'MM';
+        const realCM = om.confusion_matrix;
         const mapped = {
           categoryName: data.name || catCode,
           dataset: data.dataset || `${catCode} Dataset`,
@@ -63,14 +65,13 @@ export default function DefenderPage() {
           f1: om.f1_score,
           rocAuc: om.auc_roc,
           threshold: om.threshold,
+          prAuc: om.pr_auc,
+          isMM,
           xgbMetrics: data.xgboost_comparison || {},
-          confusionMatrix: {
-            tn: tn,
-            fp: fp,
-            fn: fn,
-            tp: tp,
-            total: totalSample,
-          },
+          confusionMatrix: isMM && realCM ? {
+            tn: realCM[0][0], fp: realCM[0][1], fn: realCM[1][0], tp: realCM[1][1],
+            total: realCM.flat().reduce((a, b) => a + b, 0),
+          } : { tn, fp, fn, tp, total: totalSample },
           recallPerVector: (data.per_variant_detection || []).map((v) => ({
             name: v.variant || v.name,
             fullName: v.name || v.variant,
@@ -334,7 +335,7 @@ export default function DefenderPage() {
                   <div className="bg-amber-400/10 border border-amber-400/30 p-3.5 rounded-lg space-y-1">
                     <span className="text-[11px] font-mono text-amber-400 uppercase font-bold">FALSE POSITIVE (FP)</span>
                     <div className="text-xl font-bold font-mono text-foreground">{metrics.confusionMatrix.fp.toLocaleString()}</div>
-                    <span className="text-[10px] text-muted-foreground block font-mono">Legit user step-up auth ({(100 - metrics.precision).toFixed(1)}% FPR)</span>
+                    <span className="text-[10px] text-muted-foreground block font-mono">{metrics.isMM ? 'Normal transfers flagged by the MM model' : `Legit user step-up auth (${(100 - metrics.precision).toFixed(1)}% FPR)`}</span>
                   </div>
                 </div>
               </div>

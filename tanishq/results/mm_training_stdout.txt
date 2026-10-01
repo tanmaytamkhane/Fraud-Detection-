@@ -1,0 +1,3514 @@
+WARNING: timestamp step duration unknown; windows and transit are in steps, not seconds.
+{
+  "mode": "train",
+  "source": "../dataset MM/transactions.csv",
+  "n_total": 1323234,
+  "split": {
+    "train": 930465,
+    "validation": 199488,
+    "test": 193281,
+    "train_last_time": 140.0,
+    "validation_last_time": 170.0
+  },
+  "metrics": {
+    "hdc": {
+      "n": 193281,
+      "fraud_n": 266,
+      "threshold": 0.7469602823257446,
+      "precision": 0.03115264797507788,
+      "recall": 0.15037593984962405,
+      "f1": 0.05161290322580645,
+      "pr_auc": 0.015260217110387792,
+      "roc_auc": 0.8463065611597838,
+      "confusion_matrix": [
+        [
+          191771,
+          1244
+        ],
+        [
+          226,
+          40
+        ]
+      ],
+      "recall_at_90pct_precision": 0.0
+    },
+    "xgb": {
+      "n": 193281,
+      "fraud_n": 266,
+      "threshold": 0.924993634223938,
+      "precision": 0.03524416135881104,
+      "recall": 0.31203007518796994,
+      "f1": 0.06333460511255246,
+      "pr_auc": 0.023321799735855513,
+      "roc_auc": 0.9346880886385588,
+      "confusion_matrix": [
+        [
+          190743,
+          2272
+        ],
+        [
+          183,
+          83
+        ]
+      ],
+      "recall_at_90pct_precision": 0.0
+    },
+    "fused": {
+      "n": 193281,
+      "fraud_n": 266,
+      "threshold": 0.6841937303543091,
+      "precision": 0.03713355048859935,
+      "recall": 0.21428571428571427,
+      "f1": 0.06329816768461966,
+      "pr_auc": 0.020502515967903326,
+      "roc_auc": 0.907883819851938,
+      "confusion_matrix": [
+        [
+          191537,
+          1478
+        ],
+        [
+          209,
+          57
+        ]
+      ],
+      "recall_at_90pct_precision": 0.0
+    }
+  },
+  "latency_ms_per_transfer": 0.07908080566635857,
+  "notes": [
+    "Features are calculated from prior and current transfers only.",
+    "No device ID: shared_device_cluster is zero for every row.",
+    "No currency threshold: amount_layering_ratio uses pass-through only; structuring is unavailable.",
+    "Unknown step duration: transit and dormancy use relative steps, not seconds/days.",
+    "Alert types are evaluation labels only; cycle and fan_in are the only supplied subtypes."
+  ],
+  "feature_names": [
+    "fan_out_degree",
+    "fan_in_degree",
+    "transit_velocity_sec",
+    "amount_layering_ratio",
+    "shared_device_cluster",
+    "account_dormancy_score"
+  ],
+  "fusion_weights": {
+    "hdc": 0.5,
+    "xgb": 0.2,
+    "behaviour": 0.15,
+    "anomaly": 0.15
+  },
+  "scored_sample": [
+    {
+      "transfer_id": "1188763",
+      "timestamp": 179.0,
+      "sender": "6843",
+      "receiver": "696",
+      "amount": 203.6300048828125,
+      "risk_score": 0.7390563488006592,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.62856525182724,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.20811043679714203
+      }
+    },
+    {
+      "transfer_id": "1197266",
+      "timestamp": 181.0,
+      "sender": "8837",
+      "receiver": "7176",
+      "amount": 283.1400146484375,
+      "risk_score": 0.7375839948654175,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.6453921794891357,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.18126924335956573
+      }
+    },
+    {
+      "transfer_id": "1234942",
+      "timestamp": 186.0,
+      "sender": "4191",
+      "receiver": "665",
+      "amount": 22.469999313354492,
+      "risk_score": 0.735024094581604,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.6122615933418274,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.15351827442646027
+      }
+    },
+    {
+      "transfer_id": "1265943",
+      "timestamp": 191.0,
+      "sender": "6937",
+      "receiver": "1216",
+      "amount": 271.7699890136719,
+      "risk_score": 0.7293683886528015,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.7671051025390625,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.15351827442646027
+      }
+    },
+    {
+      "transfer_id": "1286310",
+      "timestamp": 194.0,
+      "sender": "8356",
+      "receiver": "6784",
+      "amount": 16957742.0,
+      "risk_score": 0.7278467416763306,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.8150737881660461,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.25918176770210266
+      }
+    },
+    {
+      "transfer_id": "1249172",
+      "timestamp": 188.0,
+      "sender": "761",
+      "receiver": "2657",
+      "amount": 146.0500030517578,
+      "risk_score": 0.7274196147918701,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.7905277609825134,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.15351827442646027
+      }
+    },
+    {
+      "transfer_id": "1275111",
+      "timestamp": 192.0,
+      "sender": "3902",
+      "receiver": "374",
+      "amount": 371.6600036621094,
+      "risk_score": 0.7272238731384277,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.8307479023933411,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.20811043679714203
+      }
+    },
+    {
+      "transfer_id": "1266712",
+      "timestamp": 191.0,
+      "sender": "6876",
+      "receiver": "929",
+      "amount": 219.75,
+      "risk_score": 0.7258513569831848,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.6303424835205078,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.12482668459415436
+      }
+    },
+    {
+      "transfer_id": "1250735",
+      "timestamp": 189.0,
+      "sender": "1226",
+      "receiver": "4077",
+      "amount": 9013997.0,
+      "risk_score": 0.7252630591392517,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.48101606965065,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.23407165706157684
+      }
+    },
+    {
+      "transfer_id": "1227616",
+      "timestamp": 185.0,
+      "sender": "9837",
+      "receiver": "7045",
+      "amount": 389.1400146484375,
+      "risk_score": 0.7247142195701599,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.5942066311836243,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.12482668459415436
+      }
+    },
+    {
+      "transfer_id": "1160275",
+      "timestamp": 175.0,
+      "sender": "9691",
+      "receiver": "929",
+      "amount": 140.16000366210938,
+      "risk_score": 0.7196699380874634,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.7879026532173157,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.12482668459415436
+      }
+    },
+    {
+      "transfer_id": "1206302",
+      "timestamp": 182.0,
+      "sender": "8718",
+      "receiver": "2091",
+      "amount": 145.97000122070312,
+      "risk_score": 0.718161940574646,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.7484489679336548,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.25918176770210266
+      }
+    },
+    {
+      "transfer_id": "1276634",
+      "timestamp": 192.0,
+      "sender": "3799",
+      "receiver": "8055",
+      "amount": 133.10000610351562,
+      "risk_score": 0.7159823179244995,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.8185731768608093,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1202917",
+      "timestamp": 181.0,
+      "sender": "637",
+      "receiver": "8644",
+      "amount": 138.1300048828125,
+      "risk_score": 0.7152035236358643,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.8484643697738647,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1146205",
+      "timestamp": 173.0,
+      "sender": "3714",
+      "receiver": "7010",
+      "amount": 116.66000366210938,
+      "risk_score": 0.7147396802902222,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.6228510141372681,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1281459",
+      "timestamp": 193.0,
+      "sender": "3714",
+      "receiver": "7010",
+      "amount": 116.66000366210938,
+      "risk_score": 0.7147396802902222,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.6228510141372681,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1288862",
+      "timestamp": 194.0,
+      "sender": "8013",
+      "receiver": "4172",
+      "amount": 11.260000228881836,
+      "risk_score": 0.714591920375824,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.09863349795341492,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1221137",
+      "timestamp": 184.0,
+      "sender": "8107",
+      "receiver": "2080",
+      "amount": 9.470000267028809,
+      "risk_score": 0.7141395807266235,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.09630835056304932,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1245046",
+      "timestamp": 188.0,
+      "sender": "3032",
+      "receiver": "2645",
+      "amount": 22.31999969482422,
+      "risk_score": 0.7139729261398315,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.09519747644662857,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1251517",
+      "timestamp": 189.0,
+      "sender": "1788",
+      "receiver": "1777",
+      "amount": 176.9600067138672,
+      "risk_score": 0.7133389711380005,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.11092584580183029,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.12482668459415436
+      }
+    },
+    {
+      "transfer_id": "1317472",
+      "timestamp": 199.0,
+      "sender": "1788",
+      "receiver": "1777",
+      "amount": 176.9600067138672,
+      "risk_score": 0.7133389711380005,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.11092584580183029,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.12482668459415436
+      }
+    },
+    {
+      "transfer_id": "1161981",
+      "timestamp": 175.0,
+      "sender": "7019",
+      "receiver": "8220",
+      "amount": 16.700000762939453,
+      "risk_score": 0.7133352756500244,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.1312686651945114,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.12482668459415436
+      }
+    },
+    {
+      "transfer_id": "1213849",
+      "timestamp": 183.0,
+      "sender": "2120",
+      "receiver": "6817",
+      "amount": 22.190000534057617,
+      "risk_score": 0.712953507900238,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.1295842081308365,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.12482668459415436
+      }
+    },
+    {
+      "transfer_id": "1168144",
+      "timestamp": 176.0,
+      "sender": "1161",
+      "receiver": "8853",
+      "amount": 27.040000915527344,
+      "risk_score": 0.7122204303741455,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.08705450594425201,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1294570",
+      "timestamp": 195.0,
+      "sender": "1612",
+      "receiver": "4163",
+      "amount": 196.8800048828125,
+      "risk_score": 0.7122142910957336,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.10352515429258347,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.12482668459415436
+      }
+    },
+    {
+      "transfer_id": "1227642",
+      "timestamp": 185.0,
+      "sender": "1612",
+      "receiver": "4163",
+      "amount": 196.8800048828125,
+      "risk_score": 0.7122142910957336,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.10352515429258347,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.12482668459415436
+      }
+    },
+    {
+      "transfer_id": "1215750",
+      "timestamp": 183.0,
+      "sender": "5055",
+      "receiver": "8851",
+      "amount": 17.610000610351562,
+      "risk_score": 0.7118781805038452,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.11095009744167328,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1228670",
+      "timestamp": 185.0,
+      "sender": "9672",
+      "receiver": "5384",
+      "amount": 179.36000061035156,
+      "risk_score": 0.7117037177085876,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.0836099162697792,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1259714",
+      "timestamp": 190.0,
+      "sender": "4762",
+      "receiver": "7285",
+      "amount": 140.91000366210938,
+      "risk_score": 0.7114576101303101,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.9542222619056702,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.12482668459415436
+      }
+    },
+    {
+      "transfer_id": "1316150",
+      "timestamp": 198.0,
+      "sender": "1192",
+      "receiver": "1332",
+      "amount": 20.610000610351562,
+      "risk_score": 0.7114077806472778,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.11700920015573502,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.15351827442646027
+      }
+    },
+    {
+      "transfer_id": "1291726",
+      "timestamp": 195.0,
+      "sender": "5653",
+      "receiver": "794",
+      "amount": 160.0800018310547,
+      "risk_score": 0.711313784122467,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.9525736570358276,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.12482668459415436
+      }
+    },
+    {
+      "transfer_id": "1252502",
+      "timestamp": 189.0,
+      "sender": "6074",
+      "receiver": "2777",
+      "amount": 15.390000343322754,
+      "risk_score": 0.7111839056015015,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.10632124543190002,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1245017",
+      "timestamp": 188.0,
+      "sender": "2711",
+      "receiver": "3290",
+      "amount": 106.41000366210938,
+      "risk_score": 0.7109267711639404,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.10567450523376465,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1265316",
+      "timestamp": 191.0,
+      "sender": "4190",
+      "receiver": "8809",
+      "amount": 18.6200008392334,
+      "risk_score": 0.7101989388465881,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.13255499303340912,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.15351827442646027
+      }
+    },
+    {
+      "transfer_id": "1313096",
+      "timestamp": 198.0,
+      "sender": "718",
+      "receiver": "4150",
+      "amount": 170.41000366210938,
+      "risk_score": 0.7101345658302307,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.51418137550354,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.12482668459415436
+      }
+    },
+    {
+      "transfer_id": "1188767",
+      "timestamp": 179.0,
+      "sender": "9901",
+      "receiver": "1660",
+      "amount": 202.19000244140625,
+      "risk_score": 0.7095216512680054,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.2916131913661957,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.20811043679714203
+      }
+    },
+    {
+      "transfer_id": "1271178",
+      "timestamp": 192.0,
+      "sender": "6674",
+      "receiver": "1138",
+      "amount": 184.6300048828125,
+      "risk_score": 0.7091448307037354,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.159897118806839,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.15351827442646027
+      }
+    },
+    {
+      "transfer_id": "1158206",
+      "timestamp": 175.0,
+      "sender": "1612",
+      "receiver": "4163",
+      "amount": 196.8800048828125,
+      "risk_score": 0.7088419198989868,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.1331106722354889,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.12482668459415436
+      }
+    },
+    {
+      "transfer_id": "1322245",
+      "timestamp": 199.0,
+      "sender": "3072",
+      "receiver": "2777",
+      "amount": 15.670000076293945,
+      "risk_score": 0.7086692452430725,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.11952707916498184,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1188027",
+      "timestamp": 179.0,
+      "sender": "1788",
+      "receiver": "1777",
+      "amount": 176.9600067138672,
+      "risk_score": 0.7085131406784058,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.08550857752561569,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.12482668459415436
+      }
+    },
+    {
+      "transfer_id": "1131567",
+      "timestamp": 171.0,
+      "sender": "1946",
+      "receiver": "8124",
+      "amount": 10.510000228881836,
+      "risk_score": 0.7083984613418579,
+      "is_fraud": true,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.06945087015628815,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1281991",
+      "timestamp": 193.0,
+      "sender": "3033",
+      "receiver": "2889",
+      "amount": 17.360000610351562,
+      "risk_score": 0.7083454132080078,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.06909728050231934,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1305089",
+      "timestamp": 197.0,
+      "sender": "4708",
+      "receiver": "2218",
+      "amount": 146.19000244140625,
+      "risk_score": 0.70809406042099,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.08271472156047821,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.12482668459415436
+      }
+    },
+    {
+      "transfer_id": "1311946",
+      "timestamp": 198.0,
+      "sender": "761",
+      "receiver": "2657",
+      "amount": 146.0500030517578,
+      "risk_score": 0.7079510688781738,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.7905277609825134,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1304699",
+      "timestamp": 197.0,
+      "sender": "5107",
+      "receiver": "7299",
+      "amount": 18.8799991607666,
+      "risk_score": 0.7079311013221741,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.11176888644695282,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1320925",
+      "timestamp": 199.0,
+      "sender": "61",
+      "receiver": "12",
+      "amount": 51.34000015258789,
+      "risk_score": 0.707730770111084,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.46011829376220703,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.12482668459415436
+      }
+    },
+    {
+      "transfer_id": "1226121",
+      "timestamp": 185.0,
+      "sender": "7174",
+      "receiver": "2831",
+      "amount": 8.710000038146973,
+      "risk_score": 0.7068313956260681,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.06079430505633354,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1228949",
+      "timestamp": 185.0,
+      "sender": "4250",
+      "receiver": "3301",
+      "amount": 7426193.5,
+      "risk_score": 0.7052854299545288,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.706359326839447,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1247386",
+      "timestamp": 188.0,
+      "sender": "5298",
+      "receiver": "7920",
+      "amount": 14747918.0,
+      "risk_score": 0.7051607370376587,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.6867141127586365,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1292677",
+      "timestamp": 195.0,
+      "sender": "9691",
+      "receiver": "929",
+      "amount": 140.16000366210938,
+      "risk_score": 0.7051390409469604,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.4443458020687103,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.12482668459415436
+      }
+    },
+    {
+      "transfer_id": "1226000",
+      "timestamp": 185.0,
+      "sender": "4120",
+      "receiver": "8341",
+      "amount": 13.9399995803833,
+      "risk_score": 0.7046316862106323,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.07022669911384583,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1180123",
+      "timestamp": 178.0,
+      "sender": "9889",
+      "receiver": "4051",
+      "amount": 3.299999952316284,
+      "risk_score": 0.7044750452041626,
+      "is_fraud": true,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.069182388484478,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1213574",
+      "timestamp": 183.0,
+      "sender": "7954",
+      "receiver": "6683",
+      "amount": 337.2699890136719,
+      "risk_score": 0.7044212818145752,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.29205164313316345,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.15351827442646027
+      }
+    },
+    {
+      "transfer_id": "1316051",
+      "timestamp": 198.0,
+      "sender": "661",
+      "receiver": "6761",
+      "amount": 174.19000244140625,
+      "risk_score": 0.7042059898376465,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.16608504951000214,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.15351827442646027
+      }
+    },
+    {
+      "transfer_id": "1295502",
+      "timestamp": 195.0,
+      "sender": "8126",
+      "receiver": "5250",
+      "amount": 11.079999923706055,
+      "risk_score": 0.7041565775871277,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.04347143694758415,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1306483",
+      "timestamp": 197.0,
+      "sender": "3179",
+      "receiver": "1623",
+      "amount": 21.34000015258789,
+      "risk_score": 0.7040160894393921,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.39346933364868164,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.23407165706157684
+      }
+    },
+    {
+      "transfer_id": "1255585",
+      "timestamp": 189.0,
+      "sender": "8656",
+      "receiver": "7035",
+      "amount": 176.10000610351562,
+      "risk_score": 0.7040160894393921,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.39346933364868164,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.23407165706157684
+      }
+    },
+    {
+      "transfer_id": "1133014",
+      "timestamp": 171.0,
+      "sender": "7761",
+      "receiver": "7287",
+      "amount": 112.9800033569336,
+      "risk_score": 0.7039650082588196,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.067470483481884,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1289322",
+      "timestamp": 194.0,
+      "sender": "1125",
+      "receiver": "9128",
+      "amount": 31.709999084472656,
+      "risk_score": 0.7037367820739746,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.06151309236884117,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1302543",
+      "timestamp": 196.0,
+      "sender": "2060",
+      "receiver": "6267",
+      "amount": 17.90999984741211,
+      "risk_score": 0.7037142515182495,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.06136293709278107,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1237212",
+      "timestamp": 187.0,
+      "sender": "4708",
+      "receiver": "2218",
+      "amount": 146.19000244140625,
+      "risk_score": 0.7035931348800659,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.06424663215875626,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1194507",
+      "timestamp": 180.0,
+      "sender": "8725",
+      "receiver": "4040",
+      "amount": 185.8000030517578,
+      "risk_score": 0.7034734487533569,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.6539260149002075,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1293231",
+      "timestamp": 195.0,
+      "sender": "9884",
+      "receiver": "5065",
+      "amount": 243.5,
+      "risk_score": 0.7034075856208801,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.0597100555896759,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1188655",
+      "timestamp": 179.0,
+      "sender": "7125",
+      "receiver": "6809",
+      "amount": 9.649999618530273,
+      "risk_score": 0.7033928632736206,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.0336565300822258,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1160971",
+      "timestamp": 175.0,
+      "sender": "9672",
+      "receiver": "5384",
+      "amount": 179.36000061035156,
+      "risk_score": 0.7032247185707092,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.06538301706314087,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1309232",
+      "timestamp": 197.0,
+      "sender": "4978",
+      "receiver": "4041",
+      "amount": 309.8500061035156,
+      "risk_score": 0.7032177448272705,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.9681602120399475,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.20811043679714203
+      }
+    },
+    {
+      "transfer_id": "1143075",
+      "timestamp": 172.0,
+      "sender": "2124",
+      "receiver": "5079",
+      "amount": 21.920000076293945,
+      "risk_score": 0.7031952142715454,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 0.3678794503211975,
+        "amount_layering_ratio": 0.10452529788017273,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.15351827442646027
+      }
+    },
+    {
+      "transfer_id": "1199836",
+      "timestamp": 181.0,
+      "sender": "9993",
+      "receiver": "5141",
+      "amount": 225.91000366210938,
+      "risk_score": 0.7031642198562622,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.027064716443419456,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1197715",
+      "timestamp": 181.0,
+      "sender": "8740",
+      "receiver": "4770",
+      "amount": 104.12000274658203,
+      "risk_score": 0.7030731439590454,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.057480402290821075,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1135458",
+      "timestamp": 171.0,
+      "sender": "4583",
+      "receiver": "1755",
+      "amount": 507.57000732421875,
+      "risk_score": 0.7029816508293152,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.6506473422050476,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1149658",
+      "timestamp": 173.0,
+      "sender": "5137",
+      "receiver": "3692",
+      "amount": 16.059999465942383,
+      "risk_score": 0.7029739618301392,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.05681938678026199,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1239054",
+      "timestamp": 187.0,
+      "sender": "3527",
+      "receiver": "6120",
+      "amount": 527.530029296875,
+      "risk_score": 0.7029523849487305,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.6504524946212769,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1307220",
+      "timestamp": 197.0,
+      "sender": "3527",
+      "receiver": "6120",
+      "amount": 527.530029296875,
+      "risk_score": 0.7029523849487305,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.6504524946212769,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1218173",
+      "timestamp": 184.0,
+      "sender": "4706",
+      "receiver": "8215",
+      "amount": 105.83999633789062,
+      "risk_score": 0.7029463052749634,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.05663466826081276,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1304425",
+      "timestamp": 197.0,
+      "sender": "8138",
+      "receiver": "4196",
+      "amount": 14.010000228881836,
+      "risk_score": 0.7027223110198975,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.07513675838708878,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1239214",
+      "timestamp": 187.0,
+      "sender": "7015",
+      "receiver": "5905",
+      "amount": 16.920000076293945,
+      "risk_score": 0.7025052309036255,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.12011926621198654,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.18126924335956573
+      }
+    },
+    {
+      "transfer_id": "1302434",
+      "timestamp": 196.0,
+      "sender": "4020",
+      "receiver": "6075",
+      "amount": 22.1299991607666,
+      "risk_score": 0.7024707794189453,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.053464438766241074,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1279280",
+      "timestamp": 193.0,
+      "sender": "2907",
+      "receiver": "5063",
+      "amount": 206.0,
+      "risk_score": 0.7024543881416321,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.7205820679664612,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1228801",
+      "timestamp": 185.0,
+      "sender": "5099",
+      "receiver": "2899",
+      "amount": 14.84000015258789,
+      "risk_score": 0.7024064064025879,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.022012578323483467,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1274234",
+      "timestamp": 192.0,
+      "sender": "4065",
+      "receiver": "8278",
+      "amount": 15.649999618530273,
+      "risk_score": 0.7021069526672363,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 0.3678794503211975,
+        "amount_layering_ratio": 0.09491176158189774,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.15351827442646027
+      }
+    },
+    {
+      "transfer_id": "1274635",
+      "timestamp": 192.0,
+      "sender": "7162",
+      "receiver": "2339",
+      "amount": 12.550000190734863,
+      "risk_score": 0.7021024227142334,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.0710042417049408,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1169048",
+      "timestamp": 176.0,
+      "sender": "8863",
+      "receiver": "2664",
+      "amount": 16.700000762939453,
+      "risk_score": 0.7020459175109863,
+      "is_fraud": true,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.05063214525580406,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1246541",
+      "timestamp": 188.0,
+      "sender": "3130",
+      "receiver": "9129",
+      "amount": 24.790000915527344,
+      "risk_score": 0.7018321752548218,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.08852306753396988,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1260144",
+      "timestamp": 190.0,
+      "sender": "3936",
+      "receiver": "4075",
+      "amount": 320.04998779296875,
+      "risk_score": 0.7017901539802551,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.2293558269739151,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.23407165706157684
+      }
+    },
+    {
+      "transfer_id": "1260868",
+      "timestamp": 190.0,
+      "sender": "6028",
+      "receiver": "4816",
+      "amount": 16.979999542236328,
+      "risk_score": 0.7017897367477417,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.10929454118013382,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.18126924335956573
+      }
+    },
+    {
+      "transfer_id": "1155427",
+      "timestamp": 174.0,
+      "sender": "9832",
+      "receiver": "7089",
+      "amount": 19.030000686645508,
+      "risk_score": 0.7016196250915527,
+      "is_fraud": true,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.01912524364888668,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1174825",
+      "timestamp": 177.0,
+      "sender": "2976",
+      "receiver": "1863",
+      "amount": 346.20001220703125,
+      "risk_score": 0.7015849351882935,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.2505047023296356,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.20811043679714203
+      }
+    },
+    {
+      "transfer_id": "1143705",
+      "timestamp": 172.0,
+      "sender": "6674",
+      "receiver": "1138",
+      "amount": 184.6300048828125,
+      "risk_score": 0.701551079750061,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.159897118806839,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.12482668459415436
+      }
+    },
+    {
+      "transfer_id": "1276872",
+      "timestamp": 192.0,
+      "sender": "9783",
+      "receiver": "8113",
+      "amount": 171.5800018310547,
+      "risk_score": 0.7015312910079956,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.08746049553155899,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1162870",
+      "timestamp": 175.0,
+      "sender": "1106",
+      "receiver": "7046",
+      "amount": 25.5,
+      "risk_score": 0.7013120651245117,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.047080110758543015,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.12482668459415436
+      }
+    },
+    {
+      "transfer_id": "1221172",
+      "timestamp": 184.0,
+      "sender": "6217",
+      "receiver": "3761",
+      "amount": 3.069999933242798,
+      "risk_score": 0.7011566162109375,
+      "is_fraud": true,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.04875337332487106,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1159822",
+      "timestamp": 175.0,
+      "sender": "8651",
+      "receiver": "7981",
+      "amount": 122.0199966430664,
+      "risk_score": 0.7011201977729797,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.6321205496788025,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.04975919798016548,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1136810",
+      "timestamp": 171.0,
+      "sender": "3227",
+      "receiver": "2281",
+      "amount": 5356714.0,
+      "risk_score": 0.7011200785636902,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.3694753050804138,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.12482668459415436
+      }
+    },
+    {
+      "transfer_id": "1304454",
+      "timestamp": 197.0,
+      "sender": "1127",
+      "receiver": "9796",
+      "amount": 31.190000534057617,
+      "risk_score": 0.7010565996170044,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.7134951949119568,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.03565467894077301,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1221548",
+      "timestamp": 184.0,
+      "sender": "3705",
+      "receiver": "4682",
+      "amount": 162.8800048828125,
+      "risk_score": 0.7010554075241089,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.0842880979180336,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1308362",
+      "timestamp": 197.0,
+      "sender": "5140",
+      "receiver": "2746",
+      "amount": 19.790000915527344,
+      "risk_score": 0.7010387778282166,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.0841769427061081,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1289228",
+      "timestamp": 194.0,
+      "sender": "9961",
+      "receiver": "3082",
+      "amount": 323.6700134277344,
+      "risk_score": 0.7010154724121094,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.04781213775277138,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1174430",
+      "timestamp": 177.0,
+      "sender": "7001",
+      "receiver": "2731",
+      "amount": 16.299999237060547,
+      "risk_score": 0.7009704113006592,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.014797196723520756,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1200762",
+      "timestamp": 181.0,
+      "sender": "2681",
+      "receiver": "1090",
+      "amount": 160.16000366210938,
+      "risk_score": 0.7009653449058533,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.17506887018680573,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.15351827442646027
+      }
+    },
+    {
+      "transfer_id": "1320063",
+      "timestamp": 199.0,
+      "sender": "7680",
+      "receiver": "9037",
+      "amount": 149.7100067138672,
+      "risk_score": 0.7007248997688293,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.6781265735626221,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1214436",
+      "timestamp": 183.0,
+      "sender": "3501",
+      "receiver": "9026",
+      "amount": 561.52001953125,
+      "risk_score": 0.2977081835269928,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.7134951949119568,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1311679",
+      "timestamp": 198.0,
+      "sender": "3941",
+      "receiver": "9300",
+      "amount": 316.5400085449219,
+      "risk_score": 0.5320487022399902,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.5276334285736084,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1259402",
+      "timestamp": 190.0,
+      "sender": "8450",
+      "receiver": "9994",
+      "amount": 543.1099853515625,
+      "risk_score": 0.4840060770511627,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.9816843867301941,
+        "transit_velocity_sec": 0.3678794503211975,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1220134",
+      "timestamp": 184.0,
+      "sender": "9059",
+      "receiver": "7631",
+      "amount": 8.979999542236328,
+      "risk_score": 0.39546141028404236,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.7768698334693909,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.261135071516037,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1216985",
+      "timestamp": 184.0,
+      "sender": "9180",
+      "receiver": "5509",
+      "amount": 5.199999809265137,
+      "risk_score": 0.22476068139076233,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.9502129554748535,
+        "fan_in_degree": 0.39346933364868164,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1280359",
+      "timestamp": 193.0,
+      "sender": "9454",
+      "receiver": "7103",
+      "amount": 501.1700134277344,
+      "risk_score": 0.47582197189331055,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.5276334285736084,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1159775",
+      "timestamp": 175.0,
+      "sender": "1421",
+      "receiver": "9895",
+      "amount": 577.030029296875,
+      "risk_score": 0.3123668432235718,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.8646647334098816,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1192925",
+      "timestamp": 180.0,
+      "sender": "9417",
+      "receiver": "5162",
+      "amount": 456.5400085449219,
+      "risk_score": 0.47582197189331055,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.5276334285736084,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1161887",
+      "timestamp": 175.0,
+      "sender": "180",
+      "receiver": "1241",
+      "amount": 40.84000015258789,
+      "risk_score": 0.33863499760627747,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.5276334285736084,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1268567",
+      "timestamp": 191.0,
+      "sender": "1700",
+      "receiver": "7595",
+      "amount": 101.5199966430664,
+      "risk_score": 0.321654736995697,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.6321205496788025,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 0.3678794503211975,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1165228",
+      "timestamp": 176.0,
+      "sender": "8018",
+      "receiver": "9709",
+      "amount": 8.319999694824219,
+      "risk_score": 0.2155906856060028,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.9698026180267334,
+        "fan_in_degree": 0.39346933364868164,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1226138",
+      "timestamp": 185.0,
+      "sender": "7686",
+      "receiver": "3948",
+      "amount": 149.3800048828125,
+      "risk_score": 0.40606796741485596,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.7134951949119568,
+        "fan_in_degree": 0.39346933364868164,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.49548235535621643,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1213604",
+      "timestamp": 183.0,
+      "sender": "7691",
+      "receiver": "9220",
+      "amount": 181.86000061035156,
+      "risk_score": 0.40065455436706543,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.7134951949119568,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1288916",
+      "timestamp": 194.0,
+      "sender": "8701",
+      "receiver": "9082",
+      "amount": 132.49000549316406,
+      "risk_score": 0.35585373640060425,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.8646647334098816,
+        "fan_in_degree": 0.5276334285736084,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1201546",
+      "timestamp": 181.0,
+      "sender": "9669",
+      "receiver": "9982",
+      "amount": 140.47000122070312,
+      "risk_score": 0.5004449486732483,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.39346933364868164,
+        "fan_in_degree": 0.9994469285011292,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1264675",
+      "timestamp": 191.0,
+      "sender": "6743",
+      "receiver": "7400",
+      "amount": 100.61000061035156,
+      "risk_score": 0.3716682195663452,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.39346933364868164,
+        "fan_in_degree": 0.39346933364868164,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1290804",
+      "timestamp": 195.0,
+      "sender": "539",
+      "receiver": "5273",
+      "amount": 550.9600219726562,
+      "risk_score": 0.3663167953491211,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1168881",
+      "timestamp": 176.0,
+      "sender": "8501",
+      "receiver": "7880",
+      "amount": 568.7000122070312,
+      "risk_score": 0.3183685541152954,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.5276334285736084,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1301512",
+      "timestamp": 196.0,
+      "sender": "9727",
+      "receiver": "7064",
+      "amount": 130.36000061035156,
+      "risk_score": 0.35451558232307434,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.7768698334693909,
+        "fan_in_degree": 0.39346933364868164,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1316926",
+      "timestamp": 199.0,
+      "sender": "5139",
+      "receiver": "8604",
+      "amount": 17.399999618530273,
+      "risk_score": 0.3669641315937042,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.8262260556221008,
+        "fan_in_degree": 0.39346933364868164,
+        "transit_velocity_sec": 0.3678794503211975,
+        "amount_layering_ratio": 0.8144433498382568,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1173868",
+      "timestamp": 177.0,
+      "sender": "9907",
+      "receiver": "9266",
+      "amount": 315.4200134277344,
+      "risk_score": 0.36629050970077515,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.5276334285736084,
+        "fan_in_degree": 0.7134951949119568,
+        "transit_velocity_sec": 0.3678794503211975,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1308226",
+      "timestamp": 197.0,
+      "sender": "6031",
+      "receiver": "5072",
+      "amount": 14.960000038146973,
+      "risk_score": 0.35705509781837463,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.9179149866104126,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 0.3678794503211975,
+        "amount_layering_ratio": 0.2427586168050766,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.15351827442646027
+      }
+    },
+    {
+      "transfer_id": "1302535",
+      "timestamp": 196.0,
+      "sender": "6663",
+      "receiver": "7652",
+      "amount": 147.60000610351562,
+      "risk_score": 0.20592047274112701,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.7134951949119568,
+        "fan_in_degree": 0.39346933364868164,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1154706",
+      "timestamp": 174.0,
+      "sender": "8488",
+      "receiver": "9894",
+      "amount": 522.5700073242188,
+      "risk_score": 0.6834657192230225,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.8946007490158081,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 4.866743620368652e-05,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1161018",
+      "timestamp": 175.0,
+      "sender": "616",
+      "receiver": "9941",
+      "amount": 133.99000549316406,
+      "risk_score": 0.29221582412719727,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.6321205496788025,
+        "fan_in_degree": 0.6321205496788025,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1292194",
+      "timestamp": 195.0,
+      "sender": "6661",
+      "receiver": "9753",
+      "amount": 153.02000427246094,
+      "risk_score": 0.41515618562698364,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.8946007490158081,
+        "fan_in_degree": 0.39346933364868164,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.00012286897981539369,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1283720",
+      "timestamp": 193.0,
+      "sender": "9586",
+      "receiver": "5162",
+      "amount": 469.2300109863281,
+      "risk_score": 0.602204442024231,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.7134951949119568,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.1914736032485962,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1166574",
+      "timestamp": 176.0,
+      "sender": "1684",
+      "receiver": "9977",
+      "amount": 120.7300033569336,
+      "risk_score": 0.28277143836021423,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.7768698334693909,
+        "fan_in_degree": 0.8262260556221008,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1276787",
+      "timestamp": 192.0,
+      "sender": "9082",
+      "receiver": "8720",
+      "amount": 8.369999885559082,
+      "risk_score": 0.3133876919746399,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.9932620525360107,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1156969",
+      "timestamp": 175.0,
+      "sender": "6143",
+      "receiver": "4518",
+      "amount": 10.529999732971191,
+      "risk_score": 0.5362352728843689,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1176263",
+      "timestamp": 177.0,
+      "sender": "5443",
+      "receiver": "24",
+      "amount": 593.1699829101562,
+      "risk_score": 0.3366497755050659,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 0.3678794503211975,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1237105",
+      "timestamp": 187.0,
+      "sender": "7037",
+      "receiver": "3317",
+      "amount": 17.510000228881836,
+      "risk_score": 0.6897889375686646,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.5276334285736084,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.03599325940012932,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1265288",
+      "timestamp": 191.0,
+      "sender": "3629",
+      "receiver": "9876",
+      "amount": 153.52000427246094,
+      "risk_score": 0.4539391100406647,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.5276334285736084,
+        "fan_in_degree": 0.8262260556221008,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1231663",
+      "timestamp": 186.0,
+      "sender": "58",
+      "receiver": "9831",
+      "amount": 56.880001068115234,
+      "risk_score": 0.31461969017982483,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.5276334285736084,
+        "fan_in_degree": 0.6321205496788025,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1235334",
+      "timestamp": 186.0,
+      "sender": "2477",
+      "receiver": "5483",
+      "amount": 536.7100219726562,
+      "risk_score": 0.617656946182251,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.5276334285736084,
+        "transit_velocity_sec": 0.3678794503211975,
+        "amount_layering_ratio": 4.998501390218735e-05,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1185690",
+      "timestamp": 179.0,
+      "sender": "8012",
+      "receiver": "6764",
+      "amount": 10.920000076293945,
+      "risk_score": 0.3497655391693115,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.8262260556221008,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 0.3678794503211975,
+        "amount_layering_ratio": 0.14958611130714417,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1304950",
+      "timestamp": 197.0,
+      "sender": "8449",
+      "receiver": "6175",
+      "amount": 508.0799865722656,
+      "risk_score": 0.3311004042625427,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.5276334285736084,
+        "transit_velocity_sec": 0.3678794503211975,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1281816",
+      "timestamp": 193.0,
+      "sender": "3162",
+      "receiver": "9662",
+      "amount": 16.850000381469727,
+      "risk_score": 0.5061588287353516,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.39346933364868164,
+        "fan_in_degree": 0.5276334285736084,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.2695137560367584,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1254352",
+      "timestamp": 189.0,
+      "sender": "8797",
+      "receiver": "2798",
+      "amount": 111.76000213623047,
+      "risk_score": 0.40973663330078125,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.8946007490158081,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 4.6837725676596165e-05,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.15351827442646027
+      }
+    },
+    {
+      "transfer_id": "1278351",
+      "timestamp": 193.0,
+      "sender": "8044",
+      "receiver": "6570",
+      "amount": 13.270000457763672,
+      "risk_score": 0.3160831332206726,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.9698026180267334,
+        "fan_in_degree": 0.39346933364868164,
+        "transit_velocity_sec": 0.3678794503211975,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1147757",
+      "timestamp": 173.0,
+      "sender": "4725",
+      "receiver": "9867",
+      "amount": 188.5800018310547,
+      "risk_score": 0.2638963460922241,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.7768698334693909,
+        "fan_in_degree": 0.6321205496788025,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1292632",
+      "timestamp": 195.0,
+      "sender": "8074",
+      "receiver": "8685",
+      "amount": 11.34000015258789,
+      "risk_score": 0.3538059592247009,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.9698026180267334,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.894603967666626,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1235569",
+      "timestamp": 186.0,
+      "sender": "3880",
+      "receiver": "5151",
+      "amount": 208.52000427246094,
+      "risk_score": 0.5615900754928589,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.6321205496788025,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.6638438701629639,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1204844",
+      "timestamp": 182.0,
+      "sender": "1671",
+      "receiver": "8685",
+      "amount": 166.32000732421875,
+      "risk_score": 0.5751988887786865,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1215624",
+      "timestamp": 183.0,
+      "sender": "3468",
+      "receiver": "7032",
+      "amount": 546.7899780273438,
+      "risk_score": 0.6901434659957886,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.6321205496788025,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 9.745539864525199e-05,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1221882",
+      "timestamp": 184.0,
+      "sender": "6150",
+      "receiver": "7914",
+      "amount": 19.440000534057617,
+      "risk_score": 0.20516738295555115,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.8262260556221008,
+        "fan_in_degree": 0.39346933364868164,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1251665",
+      "timestamp": 189.0,
+      "sender": "6400",
+      "receiver": "6373",
+      "amount": 574.6900024414062,
+      "risk_score": 0.3311004042625427,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.5276334285736084,
+        "transit_velocity_sec": 0.3678794503211975,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1143078",
+      "timestamp": 172.0,
+      "sender": "2124",
+      "receiver": "7648",
+      "amount": 21.920000076293945,
+      "risk_score": 0.36872079968452454,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.6321205496788025,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 0.3678794503211975,
+        "amount_layering_ratio": 0.4181011915206909,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1276998",
+      "timestamp": 192.0,
+      "sender": "5009",
+      "receiver": "9339",
+      "amount": 13.420000076293945,
+      "risk_score": 0.21648626029491425,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.7768698334693909,
+        "fan_in_degree": 0.39346933364868164,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1173814",
+      "timestamp": 177.0,
+      "sender": "7457",
+      "receiver": "4296",
+      "amount": 563.260009765625,
+      "risk_score": 0.3366497755050659,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 0.3678794503211975,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1256405",
+      "timestamp": 190.0,
+      "sender": "9606",
+      "receiver": "3230",
+      "amount": 174.9600067138672,
+      "risk_score": 0.3019930422306061,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.9975212216377258,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 0.3678794503211975,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1303536",
+      "timestamp": 197.0,
+      "sender": "8603",
+      "receiver": "9799",
+      "amount": 175.0500030517578,
+      "risk_score": 0.5292340517044067,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.39346933364868164,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 0.3678794503211975,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1261944",
+      "timestamp": 190.0,
+      "sender": "2579",
+      "receiver": "1612",
+      "amount": 528.1900024414062,
+      "risk_score": 0.3311004042625427,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.5276334285736084,
+        "transit_velocity_sec": 0.3678794503211975,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1200807",
+      "timestamp": 181.0,
+      "sender": "1064",
+      "receiver": "9364",
+      "amount": 38.470001220703125,
+      "risk_score": 0.5991385579109192,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.6321205496788025,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.21021857857704163,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1216070",
+      "timestamp": 183.0,
+      "sender": "8020",
+      "receiver": "6632",
+      "amount": 13.779999732971191,
+      "risk_score": 0.20440949499607086,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.8262260556221008,
+        "fan_in_degree": 0.39346933364868164,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1219412",
+      "timestamp": 184.0,
+      "sender": "5422",
+      "receiver": "5496",
+      "amount": 500.4800109863281,
+      "risk_score": 0.3365069329738617,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.39346933364868164,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1309010",
+      "timestamp": 197.0,
+      "sender": "8080",
+      "receiver": "9998",
+      "amount": 13.130000114440918,
+      "risk_score": 0.3862415850162506,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.9698026180267334,
+        "fan_in_degree": 0.9998766183853149,
+        "transit_velocity_sec": 0.3678794503211975,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1229103",
+      "timestamp": 185.0,
+      "sender": "6025",
+      "receiver": "5798",
+      "amount": 14.460000038146973,
+      "risk_score": 0.20382997393608093,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.9179149866104126,
+        "fan_in_degree": 0.39346933364868164,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1272099",
+      "timestamp": 192.0,
+      "sender": "5013",
+      "receiver": "9871",
+      "amount": 17.940000534057617,
+      "risk_score": 0.4295976161956787,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.8946007490158081,
+        "fan_in_degree": 0.7134951949119568,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 9.189359843730927e-06,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1273605",
+      "timestamp": 192.0,
+      "sender": "3659",
+      "receiver": "6560",
+      "amount": 171.0500030517578,
+      "risk_score": 0.5859870910644531,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.39346933364868164,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.12482668459415436
+      }
+    },
+    {
+      "transfer_id": "1207706",
+      "timestamp": 182.0,
+      "sender": "5191",
+      "receiver": "9981",
+      "amount": 17.649999618530273,
+      "risk_score": 0.3984987139701843,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.5276334285736084,
+        "fan_in_degree": 0.9612258076667786,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.354465126991272,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1201594",
+      "timestamp": 181.0,
+      "sender": "3409",
+      "receiver": "5185",
+      "amount": 548.469970703125,
+      "risk_score": 0.3183685541152954,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.5276334285736084,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1279465",
+      "timestamp": 193.0,
+      "sender": "9582",
+      "receiver": "9366",
+      "amount": 592.6300048828125,
+      "risk_score": 0.4453660845756531,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.7134951949119568,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1144709",
+      "timestamp": 173.0,
+      "sender": "8745",
+      "receiver": "9996",
+      "amount": 127.44999694824219,
+      "risk_score": 0.2920905649662018,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.7768698334693909,
+        "fan_in_degree": 0.9502129554748535,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1253025",
+      "timestamp": 189.0,
+      "sender": "3666",
+      "receiver": "4866",
+      "amount": 180.3300018310547,
+      "risk_score": 0.21228140592575073,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.8646647334098816,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1261863",
+      "timestamp": 190.0,
+      "sender": "9827",
+      "receiver": "9025",
+      "amount": 236.72000122070312,
+      "risk_score": 0.5639854669570923,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.39346933364868164,
+        "fan_in_degree": 0.8646647334098816,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1289865",
+      "timestamp": 194.0,
+      "sender": "9473",
+      "receiver": "9267",
+      "amount": 415.29998779296875,
+      "risk_score": 0.4453660845756531,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.7134951949119568,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1146557",
+      "timestamp": 173.0,
+      "sender": "3642",
+      "receiver": "3029",
+      "amount": 151.3300018310547,
+      "risk_score": 0.3049061894416809,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.5276334285736084,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1183437",
+      "timestamp": 179.0,
+      "sender": "2406",
+      "receiver": "8699",
+      "amount": 553.77001953125,
+      "risk_score": 0.3365069329738617,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.39346933364868164,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1148746",
+      "timestamp": 173.0,
+      "sender": "4085",
+      "receiver": "5229",
+      "amount": 22.510000228881836,
+      "risk_score": 0.34464213252067566,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.8262260556221008,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 0.3678794503211975,
+        "amount_layering_ratio": 0.949102520942688,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1317523",
+      "timestamp": 199.0,
+      "sender": "1415",
+      "receiver": "7265",
+      "amount": 441.6099853515625,
+      "risk_score": 0.3311004042625427,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.5276334285736084,
+        "transit_velocity_sec": 0.3678794503211975,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1276431",
+      "timestamp": 192.0,
+      "sender": "9647",
+      "receiver": "4623",
+      "amount": 172.63999938964844,
+      "risk_score": 0.3518112599849701,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.9888910055160522,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1138421",
+      "timestamp": 172.0,
+      "sender": "2794",
+      "receiver": "9896",
+      "amount": 103.30000305175781,
+      "risk_score": 0.41396504640579224,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.6321205496788025,
+        "fan_in_degree": 0.5276334285736084,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1295824",
+      "timestamp": 195.0,
+      "sender": "9163",
+      "receiver": "9999",
+      "amount": 6.650000095367432,
+      "risk_score": 0.3067786991596222,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.9888910055160522,
+        "fan_in_degree": 0.9968172311782837,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1265308",
+      "timestamp": 191.0,
+      "sender": "5578",
+      "receiver": "9892",
+      "amount": 500.260009765625,
+      "risk_score": 0.4347391724586487,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.8946007490158081,
+        "transit_velocity_sec": 0.3678794503211975,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1214066",
+      "timestamp": 183.0,
+      "sender": "8093",
+      "receiver": "9352",
+      "amount": 13.390000343322754,
+      "risk_score": 0.39046287536621094,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.8646647334098816,
+        "fan_in_degree": 0.39346933364868164,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.3632664084434509,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1295792",
+      "timestamp": 195.0,
+      "sender": "3784",
+      "receiver": "9821",
+      "amount": 101.83000183105469,
+      "risk_score": 0.40607088804244995,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.6321205496788025,
+        "fan_in_degree": 0.6321205496788025,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1167569",
+      "timestamp": 176.0,
+      "sender": "6089",
+      "receiver": "8879",
+      "amount": 15.180000305175781,
+      "risk_score": 0.20516738295555115,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.8262260556221008,
+        "fan_in_degree": 0.39346933364868164,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1200276",
+      "timestamp": 181.0,
+      "sender": "9733",
+      "receiver": "8053",
+      "amount": 165.66000366210938,
+      "risk_score": 0.32452306151390076,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.9360721111297607,
+        "fan_in_degree": 0.39346933364868164,
+        "transit_velocity_sec": 0.3678794503211975,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1142286",
+      "timestamp": 172.0,
+      "sender": "7720",
+      "receiver": "9982",
+      "amount": 114.5199966430664,
+      "risk_score": 0.4630574584007263,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.9995692372322083,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1148150",
+      "timestamp": 173.0,
+      "sender": "9664",
+      "receiver": "7968",
+      "amount": 117.54000091552734,
+      "risk_score": 0.35523802042007446,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.9997965097427368,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1226616",
+      "timestamp": 185.0,
+      "sender": "8094",
+      "receiver": "5594",
+      "amount": 8.5,
+      "risk_score": 0.2845212519168854,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.5276334285736084,
+        "fan_in_degree": 0.39346933364868164,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1318441",
+      "timestamp": 199.0,
+      "sender": "9091",
+      "receiver": "9991",
+      "amount": 7.269999980926514,
+      "risk_score": 0.2920905649662018,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.7768698334693909,
+        "fan_in_degree": 0.9502129554748535,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1214734",
+      "timestamp": 183.0,
+      "sender": "9798",
+      "receiver": "6493",
+      "amount": 144.36000061035156,
+      "risk_score": 0.4223073124885559,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.5276334285736084,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.42228636145591736,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1190332",
+      "timestamp": 180.0,
+      "sender": "6631",
+      "receiver": "2915",
+      "amount": 144.16000366210938,
+      "risk_score": 0.33111074566841125,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.9179149866104126,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 0.3678794503211975,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.09516258537769318
+      }
+    },
+    {
+      "transfer_id": "1285492",
+      "timestamp": 194.0,
+      "sender": "5101",
+      "receiver": "9912",
+      "amount": 21.360000610351562,
+      "risk_score": 0.20440949499607086,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.8262260556221008,
+        "fan_in_degree": 0.39346933364868164,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1252003",
+      "timestamp": 189.0,
+      "sender": "1096",
+      "receiver": "9992",
+      "amount": 22.209999084472656,
+      "risk_score": 0.2940566837787628,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.7134951949119568,
+        "fan_in_degree": 0.9502129554748535,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1260946",
+      "timestamp": 190.0,
+      "sender": "2587",
+      "receiver": "1315",
+      "amount": 482.0199890136719,
+      "risk_score": 0.46946150064468384,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.6321205496788025,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.06449301540851593
+      }
+    },
+    {
+      "transfer_id": "1220690",
+      "timestamp": 184.0,
+      "sender": "9772",
+      "receiver": "9994",
+      "amount": 176.72000122070312,
+      "risk_score": 0.36955374479293823,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.9990881085395813,
+        "fan_in_degree": 0.9980695247650146,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 0.00023040709493216127,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1280954",
+      "timestamp": 193.0,
+      "sender": "1787",
+      "receiver": "8900",
+      "amount": 166.44000244140625,
+      "risk_score": 0.4388471245765686,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.5276334285736084,
+        "fan_in_degree": 0.6321205496788025,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1209351",
+      "timestamp": 182.0,
+      "sender": "7425",
+      "receiver": "9047",
+      "amount": 563.260009765625,
+      "risk_score": 0.3935610055923462,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.7768698334693909,
+        "transit_velocity_sec": 0.3678794503211975,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1198461",
+      "timestamp": 181.0,
+      "sender": "5696",
+      "receiver": "1598",
+      "amount": 196.99000549316406,
+      "risk_score": 0.23133552074432373,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.7768698334693909,
+        "fan_in_degree": 0.22119921445846558,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1273874",
+      "timestamp": 192.0,
+      "sender": "9731",
+      "receiver": "8965",
+      "amount": 150.02000427246094,
+      "risk_score": 0.3152804374694824,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.9502129554748535,
+        "fan_in_degree": 0.39346933364868164,
+        "transit_velocity_sec": 0.3678794503211975,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1155062",
+      "timestamp": 174.0,
+      "sender": "6449",
+      "receiver": "7660",
+      "amount": 573.2000122070312,
+      "risk_score": 0.3365069329738617,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.39346933364868164,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1262616",
+      "timestamp": 190.0,
+      "sender": "6691",
+      "receiver": "7620",
+      "amount": 166.25,
+      "risk_score": 0.35044336318969727,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.5276334285736084,
+        "fan_in_degree": 0.6321205496788025,
+        "transit_velocity_sec": 0.3678794503211975,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1193772",
+      "timestamp": 180.0,
+      "sender": "9916",
+      "receiver": "8177",
+      "amount": 204.11000061035156,
+      "risk_score": 0.4286075532436371,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.5276334285736084,
+        "fan_in_degree": 0.39346933364868164,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 4.759216244565323e-05,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1147195",
+      "timestamp": 173.0,
+      "sender": "1323",
+      "receiver": "9830",
+      "amount": 21474836.0,
+      "risk_score": 0.5952287912368774,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.5276334285736084,
+        "transit_velocity_sec": 0.0,
+        "amount_layering_ratio": 0.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.15351827442646027
+      }
+    },
+    {
+      "transfer_id": "1239045",
+      "timestamp": 187.0,
+      "sender": "9198",
+      "receiver": "8945",
+      "amount": 5.789999961853027,
+      "risk_score": 0.3324626088142395,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.9959132075309753,
+        "fan_in_degree": 0.5276334285736084,
+        "transit_velocity_sec": 1.0,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.0
+      }
+    },
+    {
+      "transfer_id": "1216966",
+      "timestamp": 184.0,
+      "sender": "9511",
+      "receiver": "5880",
+      "amount": 501.7699890136719,
+      "risk_score": 0.3089389204978943,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.22119921445846558,
+        "fan_in_degree": 0.39346933364868164,
+        "transit_velocity_sec": 0.3678794503211975,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    },
+    {
+      "transfer_id": "1290880",
+      "timestamp": 195.0,
+      "sender": "9779",
+      "receiver": "8322",
+      "amount": 168.61000061035156,
+      "risk_score": 0.3222956657409668,
+      "is_fraud": false,
+      "signals": {
+        "fan_out_degree": 0.9959132075309753,
+        "fan_in_degree": 0.39346933364868164,
+        "transit_velocity_sec": 0.3678794503211975,
+        "amount_layering_ratio": 1.0,
+        "shared_device_cluster": 0.0,
+        "account_dormancy_score": 0.03278389945626259
+      }
+    }
+  ],
+  "observed_alert_types": {
+    "cycle": {
+      "count": 131,
+      "recall": 0.22137404580152673
+    },
+    "fan_in": {
+      "count": 135,
+      "recall": 0.2074074074074074
+    }
+  },
+  "runtime_sec": 44.76
+}
+Saved D:\Hackathon\Mastercard\tanishq\results\mm_results.json

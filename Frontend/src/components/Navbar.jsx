@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, Activity, Zap, Crosshair, Search, Layers, Radio } from 'lucide-react';
+import { Shield, Activity, Zap, Crosshair, Search, Layers, Radio, Database, FlaskConical } from 'lucide-react';
 import { checkHealth } from '../api/client';
 
 export default function Navbar({ activeTab, setActiveTab, isStreaming }) {
@@ -32,6 +32,8 @@ export default function Navbar({ activeTab, setActiveTab, isStreaming }) {
     { id: 'defender', label: '03 DEFEND', icon: Shield },
     { id: 'stream', label: 'LIVE STREAM', icon: Activity, badge: isStreaming ? 'LIVE' : null },
     { id: 'investigate', label: 'INVESTIGATE', icon: Search },
+    { id: 'dataset-lab', label: 'MM DATASET LAB', icon: Database },
+    { id: 'mm-red-team', label: 'MM RED TEAM', icon: FlaskConical },
   ];
 
   return (

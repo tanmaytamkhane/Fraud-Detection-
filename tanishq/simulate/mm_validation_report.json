@@ -1,0 +1,21 @@
+{
+  "rows": 22539,
+  "fraud_rows": 900,
+  "fraud_ratio": 0.03993078663649674,
+  "variants": {
+    "MM-V2": 480,
+    "MM-V3": 260,
+    "MM-V1": 120,
+    "MM-V4": 40
+  },
+  "legit_lookalike_rate": 0.014197613026309952,
+  "amount_quantiles": {
+    "(False, 0.1)": 19.598000000000003,
+    "(False, 0.5)": 87.88,
+    "(False, 0.9)": 384.274,
+    "(True, 0.1)": 130.104,
+    "(True, 0.5)": 531.5450000000001,
+    "(True, 0.9)": 1232.3490000000002
+  },
+  "warning": "Synthetic stress-test data; do not present its metrics as real-world accuracy."
+}

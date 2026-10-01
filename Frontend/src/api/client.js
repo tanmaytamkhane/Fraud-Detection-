@@ -160,6 +160,71 @@ export async function getMuleGraph(txId) {
   return res.json();
 }
 
+export async function getMMGraph(account) {
+  const res = await fetch(`${API_BASE_URL}/mm/graph/${encodeURIComponent(account)}`);
+  if (!res.ok) throw new Error(`MM graph: ${res.status}`);
+  return res.json();
+}
+
+export async function getMMResults() {
+  const res = await fetch(`${API_BASE_URL}/mm/results`);
+  if (!res.ok) throw new Error(`MM results: ${res.status}`);
+  return res.json();
+}
+
+export async function getMMStream() {
+  const res = await fetch(`${API_BASE_URL}/mm/stream`);
+  if (!res.ok) throw new Error(`MM stream: ${res.status}`);
+  return res.json();
+}
+
+export async function probeMMDataset(file) {
+  const form = new FormData();
+  form.append('file', file);
+  const res = await fetch(`${API_BASE_URL}/mm/dataset/probe`, { method: 'POST', body: form });
+  if (!res.ok) throw new Error((await res.json()).detail || `Probe failed: ${res.status}`);
+  return res.json();
+}
+
+export async function runMMDataset(file, config) {
+  const form = new FormData();
+  form.append('file', file);
+  form.append('config', JSON.stringify(config));
+  const res = await fetch(`${API_BASE_URL}/mm/dataset/run`, { method: 'POST', body: form });
+  if (!res.ok) throw new Error((await res.json()).detail || `Run failed: ${res.status}`);
+  return res.json();
+}
+
+export async function getMMJob(id) {
+  const res = await fetch(`${API_BASE_URL}/mm/dataset/job/${encodeURIComponent(id)}`);
+  if (!res.ok) throw new Error(`Job: ${res.status}`);
+  return res.json();
+}
+
+export async function startMMRedTeam(payload) {
+  const res = await fetch(`${API_BASE_URL}/mm/red-team`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+  if (!res.ok) throw new Error((await res.json()).detail || `Red team failed: ${res.status}`);
+  return res.json();
+}
+
+export async function getMMRedTeamJob(id) {
+  const res = await fetch(`${API_BASE_URL}/mm/red-team/job/${encodeURIComponent(id)}`);
+  if (!res.ok) throw new Error(`Red-team job: ${res.status}`);
+  return res.json();
+}
+
+export async function getMMRedTeamResults() {
+  const res = await fetch(`${API_BASE_URL}/mm/red-team/results`);
+  if (!res.ok) throw new Error(`No red-team run: ${res.status}`);
+  return res.json();
+}
+
+export async function generateMMCampaign(payload) {
+  const res = await fetch(`${API_BASE_URL}/mm/generate`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+  if (!res.ok) throw new Error((await res.json()).detail || `MM generation failed: ${res.status}`);
+  return res.json();
+}
+
 export async function getContract() {
   const res = await fetch(`${API_BASE_URL}/contract`);
   if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);

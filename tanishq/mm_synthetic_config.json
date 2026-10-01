@@ -1,0 +1,14 @@
+{
+  "column_map": {
+    "transfer_id": "transfer_id", "sender": "sender", "receiver": "receiver",
+    "amount": "amount", "timestamp": "timestamp", "label": "is_fraud",
+    "device_id": "device_id", "channel": "channel", "variant": "variant_id"
+  },
+  "time_unit": "steps", "seconds_per_step": null,
+  "short_window_steps": 1, "long_window_steps": 24, "dormancy_steps": 30,
+  "currency_threshold": null, "structuring_band": [0.85, 1.0],
+  "label_positive_values": [true, "True", "1", 1],
+  "mode": "train", "split": "time", "seed": 42,
+  "max_train_rows": 30000, "hdc_dim": 2048,
+  "model_dir": "models/synthetic_mm", "results_path": "results/mm_synthetic_results.json"
+}

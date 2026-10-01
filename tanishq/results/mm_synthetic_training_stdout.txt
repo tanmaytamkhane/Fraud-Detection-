@@ -1,0 +1,118 @@
+WARNING: timestamp step duration unknown; windows and transit are in steps, not seconds.
+{
+  "mode": "train",
+  "source": "simulate/mm_raw_dataset.csv",
+  "n_total": 22539,
+  "split": {
+    "train": 15831,
+    "validation": 3337,
+    "test": 3371,
+    "train_last_time": 140.0,
+    "validation_last_time": 169.0
+  },
+  "metrics": {
+    "hdc": {
+      "n": 3371,
+      "fraud_n": 134,
+      "threshold": 0.688025951385498,
+      "precision": 0.46060606060606063,
+      "recall": 0.5671641791044776,
+      "f1": 0.5083612040133779,
+      "pr_auc": 0.5391564672268265,
+      "roc_auc": 0.9039095532531964,
+      "confusion_matrix": [
+        [
+          3148,
+          89
+        ],
+        [
+          58,
+          76
+        ]
+      ],
+      "recall_at_90pct_precision": 0.208955223880597
+    },
+    "xgb": {
+      "n": 3371,
+      "fraud_n": 134,
+      "threshold": 0.9140702486038208,
+      "precision": 0.7723577235772358,
+      "recall": 0.7089552238805971,
+      "f1": 0.7392996108949417,
+      "pr_auc": 0.7703768127154016,
+      "roc_auc": 0.9359308646756948,
+      "confusion_matrix": [
+        [
+          3209,
+          28
+        ],
+        [
+          39,
+          95
+        ]
+      ],
+      "recall_at_90pct_precision": 0.5746268656716418
+    },
+    "fused": {
+      "n": 3371,
+      "fraud_n": 134,
+      "threshold": 0.6836721897125244,
+      "precision": 0.6929133858267716,
+      "recall": 0.6567164179104478,
+      "f1": 0.6743295019157088,
+      "pr_auc": 0.6378433874289979,
+      "roc_auc": 0.9215553373078997,
+      "confusion_matrix": [
+        [
+          3198,
+          39
+        ],
+        [
+          46,
+          88
+        ]
+      ],
+      "recall_at_90pct_precision": 0.04477611940298507
+    }
+  },
+  "latency_ms_per_transfer": 0.10248056956372459,
+  "notes": [
+    "Features are calculated from prior and current transfers only.",
+    "No currency threshold: amount_layering_ratio uses pass-through only; structuring is unavailable.",
+    "Unknown step duration: transit and dormancy use relative steps, not seconds/days."
+  ],
+  "feature_names": [
+    "fan_out_degree",
+    "fan_in_degree",
+    "transit_velocity_sec",
+    "amount_layering_ratio",
+    "shared_device_cluster",
+    "account_dormancy_score"
+  ],
+  "fusion_weights": {
+    "hdc": 0.5,
+    "xgb": 0.2,
+    "behaviour": 0.15,
+    "anomaly": 0.15
+  },
+  "per_variant_detection": {
+    "MM-V1": {
+      "count": 18,
+      "recall": 0.4444444444444444
+    },
+    "MM-V2": {
+      "count": 72,
+      "recall": 0.7222222222222222
+    },
+    "MM-V3": {
+      "count": 39,
+      "recall": 0.6923076923076923
+    },
+    "MM-V4": {
+      "count": 5,
+      "recall": 0.2
+    }
+  },
+  "runtime_sec": 4.98
+}
+Saved D:\Hackathon\Mastercard\tanishq\results\mm_synthetic_results.json

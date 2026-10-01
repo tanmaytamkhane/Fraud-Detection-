@@ -1,0 +1,114 @@
+{
+  "attack_id": "MM-001",
+  "name": "Money Movement & Mule Networks",
+  "signals": [
+    "fan_out_degree",
+    "fan_in_degree",
+    "transit_velocity_sec",
+    "amount_layering_ratio",
+    "shared_device_cluster",
+    "account_dormancy_score"
+  ],
+  "variants": [
+    {
+      "variant_id": "MM-V1",
+      "name": "Rapid Cash-Out Burst",
+      "simulation_config": {
+        "fan_out_change": 0.4,
+        "fan_in_change": 0.2,
+        "transit_velocity_change": 0.95,
+        "layering_ratio_change": 0.98,
+        "shared_device_change": true,
+        "dormancy_change": 0.3,
+        "n_receivers": 3,
+        "n_senders": 1,
+        "dwell_steps": 0,
+        "pass_through_ratio": 0.95,
+        "structuring_fraction": 0.0,
+        "hop_depth": 2,
+        "shared_device_prob": 0.5,
+        "dormant_steps_before_activation": 0,
+        "amount_range": [
+          100,
+          1500
+        ]
+      },
+      "expected_mitigation": "block"
+    },
+    {
+      "variant_id": "MM-V2",
+      "name": "Smurfing / Layered Fan-Out",
+      "simulation_config": {
+        "fan_out_change": 0.95,
+        "fan_in_change": 0.2,
+        "transit_velocity_change": 0.75,
+        "layering_ratio_change": 0.9,
+        "shared_device_change": false,
+        "dormancy_change": 0.2,
+        "n_receivers": 12,
+        "n_senders": 1,
+        "dwell_steps": 2,
+        "pass_through_ratio": 0.9,
+        "structuring_fraction": 0.7,
+        "hop_depth": 3,
+        "shared_device_prob": 0.1,
+        "dormant_steps_before_activation": 0,
+        "amount_range": [
+          100,
+          1500
+        ]
+      },
+      "expected_mitigation": "hold"
+    },
+    {
+      "variant_id": "MM-V3",
+      "name": "Fan-In Consolidation Ring",
+      "simulation_config": {
+        "fan_out_change": 0.2,
+        "fan_in_change": 0.95,
+        "transit_velocity_change": 0.8,
+        "layering_ratio_change": 0.95,
+        "shared_device_change": true,
+        "dormancy_change": 0.25,
+        "n_receivers": 1,
+        "n_senders": 12,
+        "dwell_steps": 2,
+        "pass_through_ratio": 0.95,
+        "structuring_fraction": 0.2,
+        "hop_depth": 2,
+        "shared_device_prob": 0.5,
+        "dormant_steps_before_activation": 0,
+        "amount_range": [
+          5,
+          500
+        ]
+      },
+      "expected_mitigation": "block"
+    },
+    {
+      "variant_id": "MM-V4",
+      "name": "Dormant Mule Ring Activation",
+      "simulation_config": {
+        "fan_out_change": 0.35,
+        "fan_in_change": 0.35,
+        "transit_velocity_change": 0.5,
+        "layering_ratio_change": 0.85,
+        "shared_device_change": false,
+        "dormancy_change": 0.95,
+        "n_receivers": 3,
+        "n_senders": 2,
+        "dwell_steps": 5,
+        "pass_through_ratio": 0.85,
+        "structuring_fraction": 0.1,
+        "hop_depth": 3,
+        "shared_device_prob": 0.1,
+        "dormant_steps_before_activation": 60,
+        "amount_range": [
+          50,
+          1000
+        ]
+      },
+      "expected_mitigation": "hold"
+    }
+  ]
+}

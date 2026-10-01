@@ -1,0 +1,22 @@
+{
+  "column_map": {
+    "transfer_id": "TX_ID", "sender": "SENDER_ACCOUNT_ID", "receiver": "RECEIVER_ACCOUNT_ID",
+    "amount": "TX_AMOUNT", "timestamp": "TIMESTAMP", "label": "IS_FRAUD",
+    "device_id": null, "ip": null, "channel": "TX_TYPE", "variant": null
+  },
+  "time_unit": "steps",
+  "seconds_per_step": null,
+  "short_window_steps": 1,
+  "long_window_steps": 24,
+  "dormancy_steps": 30,
+  "currency_threshold": null,
+  "structuring_band": [0.85, 1.0],
+  "label_positive_values": [true, "True", "1", 1],
+  "mode": "train",
+  "split": "time",
+  "seed": 42,
+  "max_train_rows": 30000,
+  "max_eval_rows": 10000,
+  "hdc_dim": 2048,
+  "notes": "TIMESTAMP step duration is unknown. Window values are steps; no seconds/day claims are made. Set seconds_per_step after provenance is confirmed."
+}

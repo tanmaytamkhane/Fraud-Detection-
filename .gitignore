@@ -23,3 +23,5 @@ yarn-error.log*
 *.csv.gz
 scratch/
 .system_generated/
+# User-supplied MM dataset; provenance and redistribution rights are unconfirmed.
+dataset MM/

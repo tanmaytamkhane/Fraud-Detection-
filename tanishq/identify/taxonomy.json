@@ -346,6 +346,34 @@
         "description": "Immediately block the transaction and freeze the account",
         "severity_impact": "critical",
         "customer_friction": "very_high"
+      },
+      {
+        "mitigation_id": "MIT-MM-001",
+        "name": "hold_transfer",
+        "description": "Pause a suspected money movement transfer for review",
+        "severity_impact": "high",
+        "customer_friction": "high"
+      },
+      {
+        "mitigation_id": "MIT-MM-002",
+        "name": "freeze_receiver",
+        "description": "Request a receiver account freeze after analyst or institution review",
+        "severity_impact": "critical",
+        "customer_friction": "very_high"
+      },
+      {
+        "mitigation_id": "MIT-MM-003",
+        "name": "block_chain",
+        "description": "Request review of observed downstream accounts in a suspicious transfer ring",
+        "severity_impact": "critical",
+        "customer_friction": "very_high"
+      },
+      {
+        "mitigation_id": "MIT-MM-004",
+        "name": "escalate_sar",
+        "description": "Escalate evidence to compliance for a possible suspicious activity report",
+        "severity_impact": "high",
+        "customer_friction": "low"
       }
     ]
   }

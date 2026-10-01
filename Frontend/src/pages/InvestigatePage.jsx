@@ -8,7 +8,8 @@ import {
   scanPreset,
   scanMulePreset,
   scanGenAIPreset,
-  getMuleGraph
+  getMuleGraph,
+  getMMGraph
 } from '../api/client';
 import { Search, AlertTriangle, ShieldCheck, Sparkles, ChevronDown, Network, Radio } from 'lucide-react';
 import NetworkGraph from '../components/NetworkGraph';
@@ -157,11 +158,17 @@ export default function InvestigatePage({ selectedTx, setSelectedTx, liveTransac
     explanation: 'CRITICAL: High-Value New Device Takeover detected.'
   };
 
+  const isObservedMM = String(activeTx.id).startsWith('MM-');
+
   useEffect(() => {
     let isMounted = true;
+    setGraphData(null);
     async function loadGraph() {
       try {
-        const res = await getMuleGraph(activeTx.id);
+        const isMM = String(activeTx.attackVector || '').startsWith('MM') || String(activeTx.id || '').startsWith('MM-');
+        const res = isMM
+          ? await getMMGraph(activeTx.sender_account || activeTx.sender || activeTx.id)
+          : await getMuleGraph(activeTx.id);
         if (isMounted && res) setGraphData(res);
       } catch {
         if (isMounted) setGraphData(null);
@@ -174,7 +181,7 @@ export default function InvestigatePage({ selectedTx, setSelectedTx, liveTransac
   }, [activeTx.id]);
 
   const filteredTransactions = allTransactions.filter((tx) => {
-    if (filterType === 'FLAGGED ONLY' && !tx.decision?.includes('BLOCK') && !tx.decision?.includes('HOLD')) return false;
+    if (filterType === 'FLAGGED ONLY' && !tx.decision?.includes('BLOCK') && !tx.decision?.includes('HOLD') && tx.decision !== 'MODEL_FLAG') return false;
     if (filterType === 'MISSED ONLY' && tx.matrixTag !== 'FN') return false;
     if (filterAttack !== 'ALL ATTACKS' && tx.attackVector !== filterAttack) return false;
     if (searchQuery && !tx.id.toLowerCase().includes(searchQuery.toLowerCase())) return false;
@@ -336,7 +343,7 @@ export default function InvestigatePage({ selectedTx, setSelectedTx, liveTransac
 
           <div className="grid grid-cols-2 gap-4 font-mono">
             <div className="bg-[#07090e] border border-[#1a1f2c] p-4 rounded-lg space-y-1">
-              <div className="text-[10px] text-zinc-400 uppercase tracking-widest">FRAUD PROB</div>
+              <div className="text-[10px] text-zinc-400 uppercase tracking-widest">{String(activeTx.id).startsWith('MM-') ? 'MODEL SCORE' : 'FRAUD PROB'}</div>
               <div className="text-2xl font-bold text-red-500">{activeTx.fraudProb}%</div>
             </div>
 
@@ -378,7 +385,7 @@ export default function InvestigatePage({ selectedTx, setSelectedTx, liveTransac
           {/* Feature Contributions */}
           <div className="space-y-3">
             <div className="text-[10px] font-mono text-zinc-400 tracking-widest uppercase font-semibold">
-              SIGNAL CONTRIBUTIONS (HDC, ACOUSTIC &amp; GRAPH TELEMETRY)
+              {isObservedMM ? 'ENGINEERED MM SIGNALS' : <>SIGNAL CONTRIBUTIONS (HDC, ACOUSTIC &amp; GRAPH TELEMETRY)</>}
             </div>
 
             <div className="space-y-2.5 font-mono text-xs">
@@ -389,20 +396,20 @@ export default function InvestigatePage({ selectedTx, setSelectedTx, liveTransac
                   <div className="flex-1 h-2 bg-[#1a1f2c] rounded-full overflow-hidden">
                     <div
                       className={`h-full rounded-full ${
-                        feat.contribution > 0 ? 'bg-red-500' : 'bg-emerald-400'
+                        isObservedMM ? 'bg-cyan-500' : (feat.contribution > 0 ? 'bg-red-500' : 'bg-emerald-400')
                       }`}
                       style={{
-                        width: `${Math.min(100, Math.max(15, Math.abs(feat.contribution) * 22))}%`,
+                        width: `${isObservedMM ? Math.max(2, Number(feat.value) * 100) : Math.min(100, Math.max(15, Math.abs(feat.contribution) * 22))}%`,
                       }}
                     />
                   </div>
-                  <span
+                  {!isObservedMM && <span
                     className={`w-14 text-right font-bold ${
                       feat.contribution > 0 ? 'text-red-400' : 'text-emerald-400'
                     }`}
                   >
                     {feat.contribution > 0 ? `+${Number(feat.contribution).toFixed(2)}` : Number(feat.contribution).toFixed(2)}
-                  </span>
+                  </span>}
                 </div>
               ))}
             </div>
@@ -416,7 +423,7 @@ export default function InvestigatePage({ selectedTx, setSelectedTx, liveTransac
                 <span>AI FORENSIC ANALYST BRIEFING &amp; NARRATIVE</span>
               </div>
               <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-400/10 text-cyan-400 border border-cyan-400/20">
-                10,000-D Closed-Loop Intelligence
+                {isObservedMM ? '2,048-D MM HDC + XGBoost' : '10,000-D Closed-Loop Intelligence'}
               </span>
             </div>
 
@@ -432,7 +439,7 @@ export default function InvestigatePage({ selectedTx, setSelectedTx, liveTransac
                 </div>
                 <div className="flex items-center gap-2 p-2.5 rounded bg-[#0b0e14] border border-[#171c2a]">
                   <span className="text-zinc-500 uppercase text-[10px]">Mitigation Tier:</span>
-                  <span className="text-zinc-300 font-semibold">{activeTx.explanation}</span>
+                  <span className="text-zinc-300 font-semibold">{isObservedMM ? 'Research replay; no operational action issued' : activeTx.explanation}</span>
                 </div>
               </div>
             </div>

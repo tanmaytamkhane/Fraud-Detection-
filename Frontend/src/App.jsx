@@ -6,6 +6,8 @@ import GeneratorPage from './pages/GeneratorPage';
 import DefenderPage from './pages/DefenderPage';
 import StreamPage from './pages/StreamPage';
 import InvestigatePage from './pages/InvestigatePage';
+import DatasetLabPage from './pages/DatasetLabPage';
+import MMRedTeamPage from './pages/MMRedTeamPage';
 import { Shield } from 'lucide-react';
 
 export default function App() {
@@ -52,6 +54,8 @@ export default function App() {
             liveTransactions={liveTransactions}
           />
         )}
+        {activeTab === 'dataset-lab' && <DatasetLabPage />}
+        {activeTab === 'mm-red-team' && <MMRedTeamPage />}
       </main>
 
       {/* Footer */}

@@ -1,0 +1,99 @@
+{
+  "mode": "train",
+  "source": "tests/fixtures/paysim_like.csv",
+  "n_total": 4000,
+  "split": {
+    "train": 2800,
+    "validation": 600,
+    "test": 600,
+    "train_last_time": 501479.999999999,
+    "validation_last_time": 608940.0000000003
+  },
+  "metrics": {
+    "hdc": {
+      "n": 600,
+      "fraud_n": 6,
+      "threshold": 0.5413990020751953,
+      "precision": 0.06521739130434782,
+      "recall": 0.5,
+      "f1": 0.11538461538461539,
+      "pr_auc": 0.04523956158370027,
+      "roc_auc": 0.7885802469135803,
+      "confusion_matrix": [
+        [
+          551,
+          43
+        ],
+        [
+          3,
+          3
+        ]
+      ],
+      "recall_at_90pct_precision": 0.0
+    },
+    "xgb": {
+      "n": 600,
+      "fraud_n": 6,
+      "threshold": 0.8635589480400085,
+      "precision": 0.061224489795918366,
+      "recall": 0.5,
+      "f1": 0.10909090909090909,
+      "pr_auc": 0.070578231292517,
+      "roc_auc": 0.9299943883277216,
+      "confusion_matrix": [
+        [
+          548,
+          46
+        ],
+        [
+          3,
+          3
+        ]
+      ],
+      "recall_at_90pct_precision": 0.0
+    },
+    "fused": {
+      "n": 600,
+      "fraud_n": 6,
+      "threshold": 0.4704113006591797,
+      "precision": 0.07575757575757576,
+      "recall": 0.8333333333333334,
+      "f1": 0.1388888888888889,
+      "pr_auc": 0.10336289726533629,
+      "roc_auc": 0.9109147025813692,
+      "confusion_matrix": [
+        [
+          533,
+          61
+        ],
+        [
+          1,
+          5
+        ]
+      ],
+      "recall_at_90pct_precision": 0.0
+    }
+  },
+  "latency_ms_per_transfer": 0.08442299999842362,
+  "notes": [
+    "Features are calculated from prior and current transfers only.",
+    "No device ID: shared_device_cluster is zero for every row.",
+    "No currency threshold: amount_layering_ratio uses pass-through only; structuring is unavailable."
+  ],
+  "feature_names": [
+    "fan_out_degree",
+    "fan_in_degree",
+    "transit_velocity_sec",
+    "amount_layering_ratio",
+    "shared_device_cluster",
+    "account_dormancy_score"
+  ],
+  "fusion_weights": {
+    "hdc": 0.5,
+    "xgb": 0.2,
+    "behaviour": 0.15,
+    "anomaly": 0.15
+  },
+  "runtime_sec": 0.77
+}
+Saved D:\Hackathon\Mastercard\tanishq\results\mm_fixture_paysim_results.json

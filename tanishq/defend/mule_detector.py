@@ -23,7 +23,7 @@ VARIANT_NAMES = {
 
 class MMDetector:
 
-    def scan_transfer(self, signals=None, sender_account="VICTIM-DEMO", receiver_account="MULE-MSTR-99", amount=1000.0, device_id=None, variant_hint=None):
+    def scan_transfer(self, signals=None, sender_account="VICTIM-DEMO", receiver_account="MULE-MSTR-99", amount=1000.0, device_id=None, variant_hint=None, transfer_id=None):
         if isinstance(signals, (list, tuple, np.ndarray)):
             sigs = {self.SIGNAL_NAMES[i]: float(signals[i]) for i in range(min(len(signals), len(self.SIGNAL_NAMES)))}
         elif isinstance(signals, dict):
@@ -33,13 +33,13 @@ class MMDetector:
         res = self.scan(sigs, variant_hint=variant_hint)
         try:
             import uuid
-            tx_id = f"TXN-{uuid.uuid4().hex[:6].upper()}"
+            tx_id = transfer_id or f"TXN-{uuid.uuid4().hex[:6].upper()}"
             if hasattr(self, "graph_engine") and self.graph_engine is not None:
                 self.graph_engine.add_transfer(
                     transfer_id=tx_id,
                     sender_account=sender_account,
                     receiver_account=receiver_account,
-                    amount=float(amount),
+                    amount=float(amount or 0),
                     device_id=device_id,
                     decision=res.get("action", "APPROVE")
                 )
@@ -81,16 +81,16 @@ class MMDetector:
         per_variant = compute_per_variant_detection(df_test, preds, VARIANT_NAMES)
         sig_imp = compute_signal_importance(df_test, self.SIGNAL_NAMES)
 
-        # XGBoost Comparison
+        # XGBoost Comparison: never present invented baseline metrics.
         if self.xgb_model is not None:
             try:
                 xgb_preds = self.xgb_model.predict(X_test)
                 xgb_scores = self.xgb_model.predict_proba(X_test)[:, 1]
                 xgb_m = compute_metrics(y_test, xgb_preds, xgb_scores)
             except Exception:
-                xgb_m = {"accuracy": 0.998, "precision": 0.997, "recall": 0.998, "f1_score": 0.997, "auc_roc": 0.999}
+                xgb_m = None
         else:
-            xgb_m = {"accuracy": 0.998, "precision": 0.997, "recall": 0.998, "f1_score": 0.997, "auc_roc": 0.999}
+            xgb_m = None
 
         self.benchmark_results = {
             "category": "MM",
@@ -106,13 +106,13 @@ class MMDetector:
                 "auc_roc": round(float(hdc_m["auc_roc"] * 100), 1),
                 "threshold": float(self.classifier.threshold)
             },
-            "xgboost_comparison": {
+            "xgboost_comparison": ({
                 "accuracy": round(float(xgb_m["accuracy"] * 100), 1),
                 "precision": round(float(xgb_m["precision"] * 100), 1),
                 "recall": round(float(xgb_m["recall"] * 100), 1),
                 "f1_score": round(float(xgb_m["f1_score"] * 100), 1),
                 "auc_roc": round(float(xgb_m["auc_roc"] * 100), 1),
-            },
+            } if xgb_m is not None else None),
             "per_variant_detection": per_variant,
             "signal_importance": sig_imp,
             "roc_curve": roc_pts,
@@ -126,6 +126,14 @@ class MMDetector:
         x_path = md / "xgb_mm_model.json"
         if p_path.exists():
             data = np.load(p_path)
+            if data["prototypes"].shape[1] != self.dim:
+                meta_path = md / "hdc_mm_encoder_meta.json"
+                if not meta_path.exists():
+                    return False
+                meta = json.loads(meta_path.read_text(encoding="utf-8"))
+                self.dim = int(meta["dim"])
+                self.encoder = HDCEncoder(dim=self.dim, num_levels=meta.get("num_levels", 100), seed=meta.get("seed", 42))
+                self.classifier = HDCClassifier(dim=self.dim)
             self.classifier.prototypes = data["prototypes"].astype(np.float32)
             self.classifier.threshold = float(data["threshold"][0]) if "threshold" in data else 0.0
             self.classifier.is_trained = True
@@ -136,7 +144,32 @@ class MMDetector:
                     self.xgb_model.load_model(str(x_path))
                 except Exception:
                     pass
-            self._evaluate_on_test_split()
+            real_results = Path(__file__).parent.parent / "results" / "mm_results.json"
+            if real_results.exists():
+                results = json.loads(real_results.read_text(encoding="utf-8"))
+                def percent_metrics(m):
+                    if not m:
+                        return None
+                    return {"accuracy": 100 * (m["confusion_matrix"][0][0] + m["confusion_matrix"][1][1]) / max(1, m["n"]),
+                            "precision": 100*m["precision"], "recall": 100*m["recall"],
+                            "f1_score": 100*m["f1"], "auc_roc": 100*m["roc_auc"],
+                            "pr_auc": 100*m["pr_auc"], "threshold": m["threshold"],
+                            "confusion_matrix": m["confusion_matrix"]}
+                observed = results.get("observed_alert_types", {})
+                curves = results.get("curves", {}).get("hdc", {})
+                self.benchmark_results = {
+                    "category": "MM", "attack_id": "MM-001", "name": "Money Movement & Mule Networks",
+                    "dataset": results.get("source", "unknown"), "sample_tested": str(results.get("split", {}).get("test", 0)),
+                    "overall_metrics": percent_metrics(results.get("metrics", {}).get("hdc")),
+                    "xgboost_comparison": percent_metrics(results.get("metrics", {}).get("xgb")),
+                    "per_variant_detection": [{"variant": name, "name": name, "cases": d["count"], "catch_rate": 100*d["recall"]}
+                                               for name, d in observed.items()],
+                    "signal_importance": [],
+                    "roc_curve": [{"fpr": p[0], "tpr": p[1], "baseline": p[0]} for p in curves.get("roc", [])],
+                    "pr_curve": [{"precision": p[0], "recall": p[1]} for p in curves.get("pr", [])],
+                    "provenance": "held-out chronological raw transfers"}
+            else:
+                self.benchmark_results = None
             return True
         return False
 

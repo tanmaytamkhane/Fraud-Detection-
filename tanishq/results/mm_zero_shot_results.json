@@ -1,0 +1,250 @@
+{
+  "mode": "zero-shot",
+  "label_status": "unlabeled; no accuracy claim possible",
+  "n_scored": 5000,
+  "score_quantiles": [
+    0.19866599142551422,
+    0.33245837688446045,
+    0.46314510703086853,
+    0.6050224900245667,
+    0.6981539726257324
+  ],
+  "top_transfers": [
+    {
+      "transfer_id": "3672",
+      "risk_score": 0.6981539726257324
+    },
+    {
+      "transfer_id": "3139",
+      "risk_score": 0.6966840028762817
+    },
+    {
+      "transfer_id": "1920",
+      "risk_score": 0.6959419250488281
+    },
+    {
+      "transfer_id": "4098",
+      "risk_score": 0.69346022605896
+    },
+    {
+      "transfer_id": "1586",
+      "risk_score": 0.6910486221313477
+    },
+    {
+      "transfer_id": "1018",
+      "risk_score": 0.6910486221313477
+    },
+    {
+      "transfer_id": "2174",
+      "risk_score": 0.6901681423187256
+    },
+    {
+      "transfer_id": "3636",
+      "risk_score": 0.6879075765609741
+    },
+    {
+      "transfer_id": "2317",
+      "risk_score": 0.6815837621688843
+    },
+    {
+      "transfer_id": "3406",
+      "risk_score": 0.6814687252044678
+    },
+    {
+      "transfer_id": "3673",
+      "risk_score": 0.6802347898483276
+    },
+    {
+      "transfer_id": "1459",
+      "risk_score": 0.6790546178817749
+    },
+    {
+      "transfer_id": "4323",
+      "risk_score": 0.676852822303772
+    },
+    {
+      "transfer_id": "2505",
+      "risk_score": 0.6706086993217468
+    },
+    {
+      "transfer_id": "2655",
+      "risk_score": 0.6647908687591553
+    },
+    {
+      "transfer_id": "2441",
+      "risk_score": 0.6558709144592285
+    },
+    {
+      "transfer_id": "4285",
+      "risk_score": 0.6552837491035461
+    },
+    {
+      "transfer_id": "1208",
+      "risk_score": 0.6522485613822937
+    },
+    {
+      "transfer_id": "1921",
+      "risk_score": 0.6374968886375427
+    },
+    {
+      "transfer_id": "1549",
+      "risk_score": 0.6327058672904968
+    }
+  ],
+  "notes": [
+    "Features are calculated from prior and current transfers only.",
+    "No device ID: shared_device_cluster is zero for every row.",
+    "No currency threshold: amount_layering_ratio uses pass-through only; structuring is unavailable.",
+    "Unknown step duration: transit and dormancy use relative steps, not seconds/days.",
+    "Suspicious components use observed transfer edges among the top-scored rows; they are leads, not confirmed rings."
+  ],
+  "top_suspicious_components": [
+    {
+      "accounts": [
+        "3555",
+        "551",
+        "7263"
+      ],
+      "account_count": 3,
+      "max_edge_risk": 0.6981539726257324
+    },
+    {
+      "accounts": [
+        "1001",
+        "1064",
+        "1071",
+        "1101",
+        "1133",
+        "1251",
+        "1296",
+        "1385",
+        "14",
+        "1411",
+        "1434",
+        "1436",
+        "1446",
+        "1449",
+        "1453",
+        "1461",
+        "1463",
+        "1470",
+        "1480",
+        "1481",
+        "1487",
+        "1505",
+        "1514",
+        "1515",
+        "1516",
+        "1521",
+        "1522",
+        "1532",
+        "1581",
+        "1585"
+      ],
+      "account_count": 704,
+      "max_edge_risk": 0.6966840028762817
+    },
+    {
+      "accounts": [
+        "2204",
+        "5499",
+        "8330"
+      ],
+      "account_count": 3,
+      "max_edge_risk": 0.6910486221313477
+    },
+    {
+      "accounts": [
+        "1472",
+        "3303",
+        "333",
+        "7481"
+      ],
+      "account_count": 4,
+      "max_edge_risk": 0.6910486221313477
+    },
+    {
+      "accounts": [
+        "2180",
+        "2664",
+        "2899",
+        "5566",
+        "5903",
+        "6186",
+        "6366",
+        "7330",
+        "7509",
+        "8684",
+        "9897"
+      ],
+      "account_count": 11,
+      "max_edge_risk": 0.6901681423187256
+    },
+    {
+      "accounts": [
+        "3476",
+        "4361",
+        "4421",
+        "4987",
+        "5129",
+        "5240",
+        "5696",
+        "8048",
+        "8184",
+        "8559",
+        "9037",
+        "9143",
+        "9911",
+        "9936",
+        "9977"
+      ],
+      "account_count": 15,
+      "max_edge_risk": 0.6879075765609741
+    },
+    {
+      "accounts": [
+        "1315",
+        "2587",
+        "5468",
+        "5569",
+        "6691",
+        "7818",
+        "9908"
+      ],
+      "account_count": 7,
+      "max_edge_risk": 0.6552837491035461
+    },
+    {
+      "accounts": [
+        "3497",
+        "5254",
+        "5283"
+      ],
+      "account_count": 3,
+      "max_edge_risk": 0.6327058672904968
+    },
+    {
+      "accounts": [
+        "1511",
+        "2458",
+        "3463",
+        "4721"
+      ],
+      "account_count": 4,
+      "max_edge_risk": 0.6302267909049988
+    },
+    {
+      "accounts": [
+        "3515",
+        "4074",
+        "4480",
+        "7659",
+        "8553",
+        "8583"
+      ],
+      "account_count": 6,
+      "max_edge_risk": 0.630165696144104
+    }
+  ],
+  "runtime_sec": 0.51
+}

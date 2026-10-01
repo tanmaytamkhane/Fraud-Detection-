@@ -1,0 +1,44 @@
+{
+  "column_map": {
+    "transfer_id": null,
+    "sender": "Account",
+    "receiver": "Account.1",
+    "sender_bank": "From Bank",
+    "receiver_bank": "To Bank",
+    "amount": "Amount Received",
+    "timestamp": "Timestamp",
+    "label": "Is Laundering",
+    "device_id": null,
+    "ip": null,
+    "channel": "Payment Format",
+    "variant": null
+  },
+  "time_unit": "ISO string",
+  "seconds_per_step": null,
+  "short_window_steps": 1,
+  "long_window_steps": 24,
+  "dormancy_steps": 30,
+  "currency_threshold": null,
+  "structuring_band": [
+    0.85,
+    1.0
+  ],
+  "label_positive_values": [
+    true,
+    "True",
+    "1",
+    1
+  ],
+  "mode": "train",
+  "split": "time",
+  "seed": 42,
+  "max_train_rows": 30000,
+  "max_eval_rows": 10000,
+  "hdc_dim": 2048,
+  "notes": "TIMESTAMP step duration is unknown. Window values are steps; no seconds/day claims are made. Set seconds_per_step after provenance is confirmed.",
+  "short_window_sec": 3600,
+  "long_window_days": 1,
+  "dormancy_days": 2,
+  "model_dir": "models/fixture_ibm",
+  "results_path": "results/mm_fixture_ibm_results.json"
+}

@@ -40,6 +40,16 @@ from defend.tb_detector import TBDetector
 from defend.mrf_detector import MRFDetector
 from defend.category_detector import CategoryHDCDetector
 from response.llm_summarizer import generate_case_summary
+from defend.mm_scanner import UnifiedMMScanner
+from response.mm_graph_engine import MMGraph
+from defend.mm_behaviour import score_matrix as mm_behaviour_scores
+from train_mm import fuse as mm_fuse
+from pipeline.mm_loader import probe as probe_mm_dataset
+from fastapi import UploadFile, File, Form, BackgroundTasks
+import tempfile
+import uuid
+import threading
+import networkx as nx
 
 def sanitize_json(obj):
     """Recursively convert NumPy scalars and arrays to native Python types."""
@@ -135,6 +145,24 @@ if xgb_path.exists():
 mule_detector = MuleDetector(dim=10000)
 if not mule_detector.load_persisted():
     mule_detector.train_on_dataset()
+mm_scanner = UnifiedMMScanner()
+mm_display_graph = MMGraph()
+
+
+def load_mm_display_graph():
+    global mm_display_graph
+    graph = MMGraph()
+    path = Path(__file__).parent / "results" / "mm_results.json"
+    if path.exists():
+        result = json.loads(path.read_text(encoding="utf-8"))
+        for row in result.get("scored_sample", []):
+            graph.add_transfer(row["transfer_id"], row["sender"], row["receiver"],
+                               row["amount"], row["risk_score"], "MODEL_FLAG" if row["risk_score"] >= result["metrics"]["fused"]["threshold"] else "MODEL_CLEAR",
+                               row.get("timestamp"))
+    mm_display_graph = graph
+
+
+load_mm_display_graph()
 
 genai_detector = GenAIDetector(dim=10000)
 if not genai_detector.load_persisted():
@@ -367,14 +395,33 @@ def scan_transfer_endpoint(request: ScanTransferRequest):
         request.shared_device_cluster,
         request.account_dormancy_score,
     ]
-    res = mule_detector.scan_transfer(
-        signals=signals,
-        transfer_id=request.transfer_id,
-        sender_account=request.sender_account,
-        receiver_account=request.receiver_account,
-        amount=request.amount,
-        device_id=request.device_id,
-    )
+    # Legacy signal-input route, scored by the trained MM models and MM response path.
+    arr = np.asarray(signals, dtype=np.float32).reshape(1, 6)
+    hdc_score = float(mm_scanner.hdc.get_fraud_score(mm_scanner.encoder.encode_batch(arr))[0])
+    xgb_score = float(mm_scanner.xgb.predict_proba(arr)[0, 1])
+    behaviour_score = float(mm_behaviour_scores(arr)[0])
+    anomaly_score = float(mm_scanner.anomaly.score(arr)[0])
+    risk = float(mm_fuse(hdc_score, xgb_score, behaviour_score, anomaly_score))
+    transfer_id = request.transfer_id or f"MM-{len(mm_scanner.response.audit)+1}"
+    sender = request.sender_account or "UNKNOWN-SENDER"
+    receiver = request.receiver_account or "UNKNOWN-RECEIVER"
+    context = mm_scanner.graph.get_mule_cluster(sender)
+    network_risk = mm_scanner.graph.get_network_risk(sender, receiver)
+    decision = mm_scanner.response.execute_action(transfer_id, risk, network_risk,
+                                                  graph_context=context, explanation="Supplied MM signals")
+    mm_scanner.graph.add_transfer(transfer_id, sender, receiver, request.amount or 0,
+                                  risk, decision["action"], device_id=request.device_id)
+    res = {
+        "is_fraud": risk >= mm_scanner.threshold, "risk_score": round(risk, 4),
+        "risk_percent": f"{risk*100:.1f}%", "verdict": "FRAUD" if risk >= mm_scanner.threshold else "LEGITIMATE",
+        "action": decision["action"], "action_message": decision["message"], "severity": decision["severity"],
+        "matched_variant": None, "variant_name": "Unclassified money movement",
+        "signals": dict(zip(mule_detector.SIGNAL_NAMES, signals)),
+        "signal_attributions": {}, "timestamp": datetime.utcnow().isoformat() + "Z",
+        "sub_scores": {"hdc": hdc_score, "xgb": xgb_score, "behaviour": behaviour_score, "anomaly": anomaly_score}, "network_risk": network_risk,
+        "effective_risk": decision["effective_risk"], "graph_context": mm_scanner.graph.get_mule_cluster(sender),
+        "input_type": "precomputed_signals"
+    }
     decision_ctx = {
         "action": res["action"],
         "risk_score": res["risk_score"],
@@ -751,6 +798,10 @@ def get_mrf_variants():
 
 @app.get("/mule-graph/{transfer_id}")
 def get_mule_graph(transfer_id: str):
+    if transfer_id.upper().startswith("MM-"):
+        account = transfer_id[3:]
+        live = mm_scanner.graph.get_mule_cluster(account)
+        return live if live["found"] else mm_display_graph.get_mule_cluster(account)
     if hasattr(mule_detector, "graph_engine") and mule_detector.graph_engine is not None:
         return sanitize_json(mule_detector.graph_engine.get_graph_data(transfer_id))
     return sanitize_json({
@@ -770,6 +821,243 @@ def get_mule_graph(transfer_id: str):
             {"cluster_id": "RING-01", "mule_nodes": ["MULE-WRK-104", "MULE-WRK-208"], "master_cashout": "MULE-MSTR-99", "risk_score": 0.94}
         ]
     })
+
+
+class RawMMTransfer(BaseModel):
+    transfer_id: str
+    timestamp: float
+    sender: str
+    receiver: str
+    amount: float = Field(ge=0)
+    device_id: Optional[str] = None
+    channel: Optional[str] = None
+
+
+@app.post("/mm/scan")
+def mm_scan(request: RawMMTransfer):
+    try:
+        return sanitize_json(mm_scanner.scan_transfer(**request.model_dump()))
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc))
+
+
+@app.post("/mm/scan-batch")
+def mm_scan_batch(requests: List[RawMMTransfer]):
+    if len(requests) > 1000:
+        raise HTTPException(status_code=413, detail="Maximum 1000 transfers per batch")
+    return [mm_scan(r) for r in requests]
+
+
+@app.get("/mm/graph/{account}")
+def mm_graph(account: str):
+    live = mm_scanner.graph.get_mule_cluster(account)
+    return live if live["found"] else mm_display_graph.get_mule_cluster(account)
+
+
+@app.get("/mm/results")
+def mm_results():
+    path = Path(__file__).parent / "results" / "mm_results.json"
+    if not path.exists():
+        raise HTTPException(status_code=404, detail="No MM training run yet")
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+@app.get("/mm/stream")
+def mm_stream():
+    path = Path(__file__).parent / "results" / "mm_results.json"
+    if not path.exists():
+        return {"rows": [], "message": "No scored MM dataset yet"}
+    result = json.loads(path.read_text(encoding="utf-8"))
+    return {"rows": result.get("scored_sample", []),
+            "source": result.get("source"),
+            "message": "Held-out scored sample: 100 highest risk and 100 seeded normal transfers"}
+
+
+@app.get("/mm/audit-log")
+def mm_audit_log():
+    return {"records": mm_scanner.response.audit}
+
+
+@app.get("/mm/rings")
+def mm_rings():
+    rings = []
+    for component in nx.strongly_connected_components(mm_display_graph.graph):
+        if len(component) > 1:
+            rings.append({"accounts": sorted(component)[:20], "account_count": len(component)})
+    return {"rings": rings, "source": "held-out scored transfer sample only"}
+
+
+class MMGenerateRequest(BaseModel):
+    variant_id: str
+    n_rings: int = Field(default=2, ge=1, le=20)
+    n_receivers: Optional[int] = Field(default=None, ge=1, le=30)
+    n_senders: Optional[int] = Field(default=None, ge=1, le=30)
+    dwell_steps: Optional[int] = Field(default=None, ge=0, le=100)
+    pass_through_ratio: Optional[float] = Field(default=None, ge=0, le=1)
+    shared_device_prob: Optional[float] = Field(default=None, ge=0, le=1)
+    seed: int = 42
+
+
+@app.post("/mm/generate")
+def mm_generate(request: MMGenerateRequest):
+    from simulate.mm_world import build_world
+    from simulate.mm_simulator import simulate_mm
+    catalog = json.loads((Path(__file__).parent / "identify" / "attacks.json").read_text(encoding="utf-8"))
+    mm = next(a for a in catalog["attacks"] if a["attack_id"] == "MM-001")
+    variant = next((v for v in mm["variants"] if v["variant_id"] == request.variant_id), None)
+    if variant is None:
+        raise HTTPException(status_code=422, detail="Unknown MM variant")
+    knobs = dict(variant["simulation_config"])
+    for key in ("n_receivers", "n_senders", "dwell_steps", "pass_through_ratio", "shared_device_prob"):
+        value = getattr(request, key)
+        if value is not None:
+            knobs[key] = value
+    world = build_world(n_accounts=300, n_steps=200, seed=request.seed)
+    events = simulate_mm(world, request.variant_id, knobs, request.n_rings, request.seed)
+    return {"source": "synthetic injection", "variant_id": request.variant_id,
+            "knobs": knobs, "event_count": len(events),
+            "events": json.loads(events.head(300).to_json(orient="records"))}
+
+
+_mm_red_jobs = {}
+_mm_red_lock = threading.Lock()
+
+
+def _run_mm_red_job(job_id, variants, attempts):
+    try:
+        from simulate.mm_red_team import run_mm_red_team
+        _mm_red_jobs[job_id]["status"] = "running"
+        report = run_mm_red_team(variants, attempts)
+        _mm_red_jobs[job_id].update(status="complete", result=report)
+    except Exception as exc:
+        _mm_red_jobs[job_id].update(status="failed", error=str(exc))
+    finally:
+        _mm_red_lock.release()
+
+
+class MMRedTeamRequest(BaseModel):
+    variants: Optional[List[str]] = None
+    n_attempts_per_variant: int = Field(default=10, ge=1, le=50)
+
+
+@app.post("/mm/red-team")
+def mm_red_team(request: MMRedTeamRequest, background_tasks: BackgroundTasks):
+    if request.variants and any(v not in {"MM-V1", "MM-V2", "MM-V3", "MM-V4"} for v in request.variants):
+        raise HTTPException(status_code=422, detail="Unknown MM variant")
+    if not _mm_red_lock.acquire(blocking=False):
+        raise HTTPException(status_code=409, detail="An MM red-team job is already running")
+    job_id = uuid.uuid4().hex
+    _mm_red_jobs[job_id] = {"status": "queued"}
+    background_tasks.add_task(_run_mm_red_job, job_id, request.variants, request.n_attempts_per_variant)
+    return {"job_id": job_id, "status": "queued"}
+
+
+@app.get("/mm/red-team/job/{job_id}")
+def mm_red_team_job(job_id: str):
+    if job_id not in _mm_red_jobs:
+        raise HTTPException(status_code=404, detail="Unknown job")
+    return _mm_red_jobs[job_id]
+
+
+@app.get("/mm/red-team/results")
+def mm_red_team_results():
+    path = Path(__file__).parent / "results" / "mm_red_team.json"
+    if not path.exists():
+        raise HTTPException(status_code=404, detail="No MM red-team run yet")
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+@app.post("/mm/dataset/probe")
+async def mm_dataset_probe(file: UploadFile = File(...)):
+    if not file.filename or not file.filename.lower().endswith(".csv"):
+        raise HTTPException(status_code=415, detail="CSV file required")
+    content = await file.read(2_000_000)
+    content = content[:content.rfind(b"\n")+1]
+    with tempfile.NamedTemporaryFile(suffix=".csv", delete=False) as tmp:
+        tmp.write(content)
+        path = Path(tmp.name)
+    try:
+        return probe_mm_dataset(path)
+    finally:
+        path.unlink(missing_ok=True)
+
+
+_mm_jobs = {}
+_mm_job_lock = threading.Lock()
+
+
+def _run_mm_job(job_id, data_path, config_path):
+    global mm_scanner, mule_detector
+    try:
+        from train_mm import run as train_mm_run
+        from pipeline.mm_loader import load_config
+        _mm_jobs[job_id]["status"] = "running"
+        cfg = load_config(config_path)
+        result = train_mm_run(cfg, data_path)
+        if cfg["mode"] != "zero-shot":
+            mm_scanner = UnifiedMMScanner(config_path)
+            mule_detector.load_persisted()
+            load_mm_display_graph()
+        _mm_jobs[job_id].update(status="complete", result={k: v for k, v in result.items() if k != "curves"})
+    except Exception as exc:
+        _mm_jobs[job_id].update(status="failed", error=str(exc))
+    finally:
+        Path(data_path).unlink(missing_ok=True)
+        Path(config_path).unlink(missing_ok=True)
+        _mm_job_lock.release()
+
+
+@app.post("/mm/dataset/run")
+async def mm_dataset_run(background_tasks: BackgroundTasks, file: UploadFile = File(...), config: str = Form(...)):
+    if not file.filename or not file.filename.lower().endswith(".csv"):
+        raise HTTPException(status_code=415, detail="CSV file required")
+    try:
+        default_cfg = json.loads((Path(__file__).parent / "mm_config.json").read_text(encoding="utf-8"))
+        submitted = json.loads(config)
+        cfg = {**default_cfg, **submitted,
+               "column_map": {**default_cfg["column_map"], **submitted.get("column_map", {})}}
+        cfg["model_dir"] = "models"
+        cfg["results_path"] = "results/mm_zero_shot_results.json" if cfg.get("mode") == "zero-shot" else "results/mm_results.json"
+        cfg["pretrained_model_dir"] = "models/synthetic_mm"
+        if cfg.get("mode") not in ("train", "finetune", "zero-shot"):
+            raise ValueError("mode must be train, finetune, or zero-shot")
+        for key in ("sender", "receiver", "amount", "timestamp"):
+            if not cfg.get("column_map", {}).get(key):
+                raise ValueError(f"Confirm column_map.{key}")
+    except (ValueError, json.JSONDecodeError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc))
+    if not _mm_job_lock.acquire(blocking=False):
+        raise HTTPException(status_code=409, detail="An MM training job is already running")
+    data_tmp = tempfile.NamedTemporaryFile(suffix=".csv", delete=False)
+    config_tmp = tempfile.NamedTemporaryFile(suffix=".json", delete=False)
+    data_path, config_path = data_tmp.name, config_tmp.name
+    data_tmp.close()
+    config_tmp.close()
+    try:
+        size = 0
+        with open(data_path, "wb") as out:
+            while chunk := await file.read(1024*1024):
+                size += len(chunk)
+                if size > 150_000_000:
+                    raise HTTPException(status_code=413, detail="Upload limit is 150 MB")
+                out.write(chunk)
+        Path(config_path).write_text(json.dumps(cfg), encoding="utf-8")
+        job_id = uuid.uuid4().hex
+        _mm_jobs[job_id] = {"status": "queued", "filename": file.filename, "size_bytes": size}
+        background_tasks.add_task(_run_mm_job, job_id, data_path, config_path)
+        return {"job_id": job_id, "status": "queued"}
+    except Exception:
+        Path(data_path).unlink(missing_ok=True)
+        Path(config_path).unlink(missing_ok=True)
+        _mm_job_lock.release()
+        raise
+
+
+@app.get("/mm/dataset/job/{job_id}")
+def mm_dataset_job(job_id: str):
+    if job_id not in _mm_jobs:
+        raise HTTPException(status_code=404, detail="Unknown job")
+    return _mm_jobs[job_id]
 
 
 @app.get("/attacks")

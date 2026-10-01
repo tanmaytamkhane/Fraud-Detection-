@@ -1,0 +1,306 @@
+{
+  "source": "synthetic attack injection and synthetic MM model",
+  "warning": "Not a real-world evasion estimate; no adversarial retraining is performed.",
+  "table": [
+    {
+      "variant": "MM-V1",
+      "evasion_level": 0,
+      "rings": 50,
+      "evasion_rate": 0.0,
+      "mean_peak_risk": 0.8528644948303699,
+      "actions": {
+        "APPROVE": 0,
+        "REVIEW": 15,
+        "STEP_UP_AUTH": 31,
+        "HOLD_TRANSFER": 43,
+        "FREEZE_RECEIVER": 7,
+        "BLOCK_CHAIN": 46
+      }
+    },
+    {
+      "variant": "MM-V2",
+      "evasion_level": 0,
+      "rings": 50,
+      "evasion_rate": 0.0,
+      "mean_peak_risk": 0.8804426065981386,
+      "actions": {
+        "APPROVE": 0,
+        "REVIEW": 11,
+        "STEP_UP_AUTH": 42,
+        "HOLD_TRANSFER": 50,
+        "FREEZE_RECEIVER": 5,
+        "BLOCK_CHAIN": 50
+      }
+    },
+    {
+      "variant": "MM-V3",
+      "evasion_level": 0,
+      "rings": 50,
+      "evasion_rate": 0.0,
+      "mean_peak_risk": 0.8860760855674741,
+      "actions": {
+        "APPROVE": 0,
+        "REVIEW": 12,
+        "STEP_UP_AUTH": 32,
+        "HOLD_TRANSFER": 43,
+        "FREEZE_RECEIVER": 10,
+        "BLOCK_CHAIN": 50
+      }
+    },
+    {
+      "variant": "MM-V4",
+      "evasion_level": 0,
+      "rings": 50,
+      "evasion_rate": 0.02,
+      "mean_peak_risk": 0.5154143161699176,
+      "actions": {
+        "APPROVE": 1,
+        "REVIEW": 15,
+        "STEP_UP_AUTH": 31,
+        "HOLD_TRANSFER": 25,
+        "FREEZE_RECEIVER": 0,
+        "BLOCK_CHAIN": 15
+      }
+    },
+    {
+      "variant": "MM-V1",
+      "evasion_level": 0.25,
+      "rings": 50,
+      "evasion_rate": 0.0,
+      "mean_peak_risk": 0.8418781611770391,
+      "actions": {
+        "APPROVE": 0,
+        "REVIEW": 15,
+        "STEP_UP_AUTH": 30,
+        "HOLD_TRANSFER": 44,
+        "FREEZE_RECEIVER": 8,
+        "BLOCK_CHAIN": 44
+      }
+    },
+    {
+      "variant": "MM-V2",
+      "evasion_level": 0.25,
+      "rings": 50,
+      "evasion_rate": 0.0,
+      "mean_peak_risk": 0.867265465006232,
+      "actions": {
+        "APPROVE": 0,
+        "REVIEW": 21,
+        "STEP_UP_AUTH": 47,
+        "HOLD_TRANSFER": 48,
+        "FREEZE_RECEIVER": 2,
+        "BLOCK_CHAIN": 50
+      }
+    },
+    {
+      "variant": "MM-V3",
+      "evasion_level": 0.25,
+      "rings": 50,
+      "evasion_rate": 0.0,
+      "mean_peak_risk": 0.8885682004988196,
+      "actions": {
+        "APPROVE": 0,
+        "REVIEW": 20,
+        "STEP_UP_AUTH": 34,
+        "HOLD_TRANSFER": 43,
+        "FREEZE_RECEIVER": 8,
+        "BLOCK_CHAIN": 49
+      }
+    },
+    {
+      "variant": "MM-V4",
+      "evasion_level": 0.25,
+      "rings": 50,
+      "evasion_rate": 0.02,
+      "mean_peak_risk": 0.4863965265080332,
+      "actions": {
+        "APPROVE": 1,
+        "REVIEW": 20,
+        "STEP_UP_AUTH": 28,
+        "HOLD_TRANSFER": 28,
+        "FREEZE_RECEIVER": 0,
+        "BLOCK_CHAIN": 12
+      }
+    },
+    {
+      "variant": "MM-V1",
+      "evasion_level": 0.5,
+      "rings": 50,
+      "evasion_rate": 0.0,
+      "mean_peak_risk": 0.7662683733105662,
+      "actions": {
+        "APPROVE": 0,
+        "REVIEW": 20,
+        "STEP_UP_AUTH": 31,
+        "HOLD_TRANSFER": 41,
+        "FREEZE_RECEIVER": 4,
+        "BLOCK_CHAIN": 46
+      }
+    },
+    {
+      "variant": "MM-V2",
+      "evasion_level": 0.5,
+      "rings": 50,
+      "evasion_rate": 0.0,
+      "mean_peak_risk": 0.870893175855279,
+      "actions": {
+        "APPROVE": 0,
+        "REVIEW": 14,
+        "STEP_UP_AUTH": 44,
+        "HOLD_TRANSFER": 48,
+        "FREEZE_RECEIVER": 3,
+        "BLOCK_CHAIN": 50
+      }
+    },
+    {
+      "variant": "MM-V3",
+      "evasion_level": 0.5,
+      "rings": 50,
+      "evasion_rate": 0.0,
+      "mean_peak_risk": 0.8721816831231116,
+      "actions": {
+        "APPROVE": 0,
+        "REVIEW": 13,
+        "STEP_UP_AUTH": 37,
+        "HOLD_TRANSFER": 45,
+        "FREEZE_RECEIVER": 11,
+        "BLOCK_CHAIN": 46
+      }
+    },
+    {
+      "variant": "MM-V4",
+      "evasion_level": 0.5,
+      "rings": 50,
+      "evasion_rate": 0.04,
+      "mean_peak_risk": 0.49801250826567406,
+      "actions": {
+        "APPROVE": 0,
+        "REVIEW": 17,
+        "STEP_UP_AUTH": 33,
+        "HOLD_TRANSFER": 17,
+        "FREEZE_RECEIVER": 0,
+        "BLOCK_CHAIN": 14
+      }
+    },
+    {
+      "variant": "MM-V1",
+      "evasion_level": 0.75,
+      "rings": 50,
+      "evasion_rate": 0.0,
+      "mean_peak_risk": 0.7571909022927286,
+      "actions": {
+        "APPROVE": 0,
+        "REVIEW": 17,
+        "STEP_UP_AUTH": 32,
+        "HOLD_TRANSFER": 42,
+        "FREEZE_RECEIVER": 4,
+        "BLOCK_CHAIN": 42
+      }
+    },
+    {
+      "variant": "MM-V2",
+      "evasion_level": 0.75,
+      "rings": 50,
+      "evasion_rate": 0.0,
+      "mean_peak_risk": 0.8405125837177038,
+      "actions": {
+        "APPROVE": 0,
+        "REVIEW": 15,
+        "STEP_UP_AUTH": 39,
+        "HOLD_TRANSFER": 48,
+        "FREEZE_RECEIVER": 4,
+        "BLOCK_CHAIN": 50
+      }
+    },
+    {
+      "variant": "MM-V3",
+      "evasion_level": 0.75,
+      "rings": 50,
+      "evasion_rate": 0.0,
+      "mean_peak_risk": 0.863724258065224,
+      "actions": {
+        "APPROVE": 0,
+        "REVIEW": 19,
+        "STEP_UP_AUTH": 39,
+        "HOLD_TRANSFER": 48,
+        "FREEZE_RECEIVER": 13,
+        "BLOCK_CHAIN": 49
+      }
+    },
+    {
+      "variant": "MM-V4",
+      "evasion_level": 0.75,
+      "rings": 50,
+      "evasion_rate": 0.02,
+      "mean_peak_risk": 0.4848635304234922,
+      "actions": {
+        "APPROVE": 0,
+        "REVIEW": 17,
+        "STEP_UP_AUTH": 29,
+        "HOLD_TRANSFER": 19,
+        "FREEZE_RECEIVER": 0,
+        "BLOCK_CHAIN": 14
+      }
+    },
+    {
+      "variant": "MM-V1",
+      "evasion_level": 1,
+      "rings": 50,
+      "evasion_rate": 0.0,
+      "mean_peak_risk": 0.7597244036793708,
+      "actions": {
+        "APPROVE": 0,
+        "REVIEW": 19,
+        "STEP_UP_AUTH": 30,
+        "HOLD_TRANSFER": 35,
+        "FREEZE_RECEIVER": 5,
+        "BLOCK_CHAIN": 42
+      }
+    },
+    {
+      "variant": "MM-V2",
+      "evasion_level": 1,
+      "rings": 50,
+      "evasion_rate": 0.0,
+      "mean_peak_risk": 0.8284141645729545,
+      "actions": {
+        "APPROVE": 0,
+        "REVIEW": 21,
+        "STEP_UP_AUTH": 45,
+        "HOLD_TRANSFER": 50,
+        "FREEZE_RECEIVER": 2,
+        "BLOCK_CHAIN": 50
+      }
+    },
+    {
+      "variant": "MM-V3",
+      "evasion_level": 1,
+      "rings": 50,
+      "evasion_rate": 0.0,
+      "mean_peak_risk": 0.8689286118447783,
+      "actions": {
+        "APPROVE": 0,
+        "REVIEW": 22,
+        "STEP_UP_AUTH": 44,
+        "HOLD_TRANSFER": 45,
+        "FREEZE_RECEIVER": 13,
+        "BLOCK_CHAIN": 46
+      }
+    },
+    {
+      "variant": "MM-V4",
+      "evasion_level": 1,
+      "rings": 50,
+      "evasion_rate": 0.04,
+      "mean_peak_risk": 0.4885714890956877,
+      "actions": {
+        "APPROVE": 0,
+        "REVIEW": 25,
+        "STEP_UP_AUTH": 33,
+        "HOLD_TRANSFER": 19,
+        "FREEZE_RECEIVER": 1,
+        "BLOCK_CHAIN": 9
+      }
+    }
+  ]
+}
